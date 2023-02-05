@@ -1,0 +1,58 @@
+<div class="main">
+    {{> nav}}
+
+    <div class="content">
+        <ul class="menu">
+            <li class="title" onclick="newFolder()">nowy folder</li>
+            {{#if (currentDir)}}
+            <li class="title" onclick="changeFolderName('{{currentDir}}')">zmiana nazwy katalogu</li>
+            {{/if}}
+            <li class="title" onclick="newTextFile()">nowy plik tekstowy</li>
+            <li class="title" onclick="select()">[wybierz...]</li>
+        </ul>
+        <dialog id="dialog">
+            <p></p>
+            <form action="" method="get">
+                <input type="hidden" name="currentDir" value="{{currentDir}}">
+                <input type="text" name="name">
+                <button type="submit">OK</button>
+                <button type="reset" onclick="hideDialog()">cancel</button>
+            </form>
+        </dialog>
+        <dialog id="dialog-select">
+            <p>Wybierz plik/pliki</p>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="currentDir" value="{{currentDir}}">
+                <input type="file" name="files" multiple>
+                <button type="submit">OK</button>
+                <button type="reset" onclick="hideDialogSelect()">cancel</button>
+            </form>
+        </dialog>
+        <div>
+            <div class="row dirName">
+                {{#each dirName}}
+                {{> dirName}}
+                {{/each}}
+            </div>
+            <div class="row">
+                {{#each folders}}
+                {{> folder}}
+                {{/each}}
+            </div>
+
+
+            <div class="row">
+                {{#each files}}
+                {{> file}}
+                {{/each}}
+            </div>
+
+            <div class="row">
+                {{#each others}}
+                {{> file}}
+                {{/each}}
+            </div>
+
+        </div>
+    </div>
+</div>

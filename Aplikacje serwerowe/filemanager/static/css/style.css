@@ -1,0 +1,218 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.nav {
+    width: 100%;
+    height: 100px;
+    background-image: url("../gfx/xfce4.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: 70%;
+    display: flex;
+    align-items: center;
+}
+
+.nav a {
+    padding: 10px;
+    text-decoration: underline;
+    color: white;
+    font-size: 25px;
+}
+
+.content {
+    height: 100%;
+    display: flex;
+}
+
+input {
+    padding: 10px;
+}
+
+button {
+    width: 100px;
+    height: 30px;
+}
+
+.menu {
+    width: 200px;
+    height: 100%;
+    background-color: rgb(206, 236, 255);
+    text-align: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.menu li {
+    width: 80%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 30px;
+    background-color: rgb(253, 222, 85);
+}
+
+.title {
+    transition: 300ms;
+    color: rgb(85, 85, 85);
+    font-size: 20px;
+}
+
+.title:hover {
+    background-color: rgb(255, 135, 36);
+}
+
+.menu a * {
+    background-color: rgb(85, 124, 253);
+    color: rgb(233, 230, 230);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+.menu li::selection,
+.menu li::-moz-selection {
+    background-color: transparent;
+}
+
+dialog {
+    --w: 350px;
+    --h: 200px;
+    position: absolute;
+    left: calc(50% - var(--w) / 2);
+    top: calc(50% - var(--h));
+    width: var(--w);
+    height: var(--h);
+    padding: 15px;
+    border-radius: 20px;
+    background-image: url('../gfx/xfce4.jpeg');
+    background-position-x: 50%;
+}
+
+dialog p {
+    width: 90%;
+    margin: 15px 0;
+    padding-left: 5px;
+    color: white;
+}
+
+dialog form {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+dialog form * {
+    margin: 5px;
+}
+
+dialog form input {
+    width: 100%;
+}
+
+.element img {
+    width: 40px;
+}
+
+.element {
+    margin: 10px;
+    padding: 10px;
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 15px;
+}
+
+.element .upper-part {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.element .upper-part * {
+    padding: 5px;
+}
+
+.element a {
+    color: white;
+    text-align: center;
+    transition: 400ms;
+    font-weight: 600;
+}
+
+.element a:hover {
+    color: lightsalmon
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.file {
+    background-image: url("../gfx/kde.jpg");
+    background-position-y: 70%;
+    background-position-x: 21%;
+}
+
+.folder {
+    background-image: url("../gfx/kde.jpg");
+    background-position-y: 75%;
+    background-position-x: 70%;
+}
+
+.dirName {
+    margin: 5px 10px;
+}
+
+.textEditor {
+    width: 100%;
+    height: 80%;
+    display: flex;
+}
+
+.textEditor ul {
+    min-width: 30px;
+    padding: 1px;
+    text-align: center;
+    color: purple;
+}
+
+.textEditor textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-left: 4px solid yellowgreen;
+    padding-left: 5px;
+    resize: none;
+}
+
+.textEditorHeader {
+    padding: 5px;
+    background-color: gray;
+    color: whitesmoke;
+}

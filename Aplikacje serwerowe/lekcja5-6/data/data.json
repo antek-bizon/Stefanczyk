@@ -1,0 +1,7 @@
+"subject": "ćwiczenie 3 - dane z tablicy obiektów",
+"books": [
+    { "title": "Lalka", "author": "B Prus", "lang": "PL" },
+    { "title": "Hamlet", "author": "W Szekspir", "lang": "ENG" },
+    { "title": "Pan Wołodyjowski", "author": "H Sienkiewicz", "lang": "PL" },
+    { "title": "Dwór mgieł i furii", "author": "S.J. Maas", "lang": "CZ" }
+]

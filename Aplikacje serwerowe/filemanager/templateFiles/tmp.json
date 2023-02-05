@@ -1,0 +1,13 @@
+{
+    "name": "Default json template",
+    "wrapper": "abcdef",
+    "sections": {
+      "main": {
+        "type": "product"
+      }
+    },
+    "order": [
+      "main"
+    ]
+}
+  

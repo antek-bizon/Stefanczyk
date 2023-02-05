@@ -1,0 +1,36 @@
+<div class="main">
+    {{> nav}}
+
+    <div class="content">
+        <ul class="menu">
+            <li>
+                <div class="title">font -</div>
+                <div class="title">kolory</div>
+                <div class="title">font +</div>
+            </li>
+            <li class="title" onclick="saveFile()">nowy plik tekstowy</li>
+            <li class="title" onclick="changeFileName('{{currentDir}}, {{name}}')">zmiana nazwy katalogu</li>
+            <a href="/showFile?filename={{currentDir}}/{{name}}">
+                <li class="title">podgląd pliku</li>
+            </a>
+        </ul>
+        <dialog id="dialog">
+            <p></p>
+            <form action="" method="get">
+                <input type="hidden" name="currentDir" value="{{currentDir}}">
+                <input type="text" name="name">
+                <button type="submit">OK</button>
+                <button type="reset" onclick="hideDialog()">cancel</button>
+            </form>
+        </dialog>
+        <div style="width: 100%;">
+            <p class="textEditorHeader">{{currentDir}}/{{name}}</p>
+            <div class="textEditor">
+                <ul id="editor-rows"></ul>
+                <textarea name="{{name}}" cols="30" rows="10">{{buffer}}</textarea>
+                <script src="./js/textarea.js"></script>
+            </div>
+            <button type="button" class="title" onclick="saveFile('{{currentDir}}/{{name}}')">Zapisz</button>
+        </div>
+    </div>
+</div>

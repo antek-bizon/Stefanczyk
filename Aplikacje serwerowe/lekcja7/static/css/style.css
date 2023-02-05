@@ -1,0 +1,21 @@
+table td {
+    padding: 10px;
+    min-width: 10px;
+    border: 1px solid black;
+    color: blue;
+    text-align: center;
+}
+
+h3 {
+    text-decoration: underline;
+    color: gray;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+}
+
+.second {
+    margin-left: 30px;
+}

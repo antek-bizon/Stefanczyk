@@ -1,0 +1,28 @@
+<div class="form">
+    <form action="/handle" method="post">
+        {{#each stars}}
+        <label>{{this}} <input type="radio" name="stars" value="{{this}}"></label>
+        {{/each}}
+
+        <select name="kategoria" id="kategoria">
+            {{#each arr}}
+            <option>{{this}}</option>
+            {{/each}}
+        </select>
+
+        <input type="submit" value="Filtruj">
+    </form>
+</div>
+<table>
+    <tr>
+        <th>Nazwa</th>
+        <th>Kategoria</th>
+        <th>Cena</th>
+        <th>Ocena</th>
+    </tr>
+    {{#each items}}
+    <tr>
+        {{> item}}
+    </tr>
+    {{/each}}
+</table>

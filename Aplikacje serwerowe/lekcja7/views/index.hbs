@@ -1,0 +1,42 @@
+<div class="main">
+    <div>
+        <form action="/add" method="POST">
+            <h3>Dane pojazdu</h3>
+            <table>
+                {{#each types}}
+                <tr>
+                    <td>{{this}}</td>
+                    <td><input type="checkbox" name="{{this}}"></td>
+                </tr>
+                {{/each}}
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Dodaj do bazy">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="second">
+        <h3>Wszystkie pojazdy</h3>
+        <table>
+            <tr>
+                <td></td>
+                {{#each types}}
+                <td>{{this}}</td>
+                {{/each}}
+                <td></td>
+                <td></td>
+            </tr>
+            {{#each docs}}
+            <tr>
+                <td>{{@index}}</td>
+                <td>{{ubezpieczony}}</td>
+                <td>{{benzyna}}</td>
+                <td>{{uszkodzony}}</td>
+                <td>{{'napęd_4x4'}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+</div>

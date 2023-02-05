@@ -1,0 +1,8 @@
+{
+    "subject": "ćwiczenie 8 - if...else",
+    "books": [
+      { "title": "Lalka","lang": "PL", "author": "B Prus" },
+      { "title": "Hamlet", "lang": "ENG", "author": "W Szekspir" },
+      { "title": "Pan Wołodyjowski", "lang": "PL" }
+    ]
+  }

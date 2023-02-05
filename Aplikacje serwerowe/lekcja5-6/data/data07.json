@@ -1,0 +1,16 @@
+{
+    "subject": "ćwiczenie 7 - render tablic, obiektów, tablic obiektów",
+    "countries": [ "Russia", "India", "USA" ],
+    "langs": [ "polski", "angielski", "japoński" ],
+    "digits": [[1,2],[3,4],[5,6]],
+    "user": {
+      "login": "aaa",
+      "password": "bbb",
+      "age": 16
+    },
+    "books": [
+      { "title": "Lalka" },
+      { "title": "Proces" },
+      { "title": "Pan Wołodyjowski" }
+    ]
+}

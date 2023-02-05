@@ -1,0 +1,14 @@
+<h1 class="subject">{{subject}}</h1>
+
+<h3>Wyświetlenie całej tablicy jedno lub dwu-wymiarowej:</h3>
+<div class="container">
+    <h3 class="title">{{langs}}</h3>
+    <h3 class="title">{{digits}}</h3>
+</div>
+
+<h3>Iteracja przez tablicę obiektów:</h3>
+<div class="container">
+    {{#each books}}
+    <h3 class="title">{{@index}} - {{title}}</h3>
+    {{/each}}
+</div>

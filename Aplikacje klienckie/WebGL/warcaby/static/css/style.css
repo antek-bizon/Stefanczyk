@@ -1,0 +1,76 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.root canvas {
+    z-index: 1;
+}
+
+.dialog-bg,
+.waiting-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.waiting-screen {
+    background-image: url('../gfx/waiting.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+dialog {
+    position: absolute;
+    --w: 300px;
+    --h: 150px;
+    width: var(--w);
+    height: var(--h);
+    border-radius: 25px;
+    border: 2px solid greenyellow;
+    bottom: 50%;
+    left: calc(50% - var(--w) / 2);
+    background-color: transparent;
+}
+
+dialog div button {
+    padding: 5px 10px;
+    background-color: greenyellow;
+    border-color: greenyellow;
+    text-transform: uppercase;
+}
+
+dialog div button:hover {
+    background-color: rgb(218, 255, 162);
+}
+
+dialog div input {
+    color: white;
+    text-align: center;
+    background-color: transparent;
+    border-color: greenyellow;
+}
+
+dialog div input:focus {
+    color: black;
+    background-color: white;
+}
+
+.flex * {
+    font-size: 20px;
+    border-radius: 20px;
+    margin: 5px 0;
+    z-index: 3;
+}
+
+.flex {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: 0 auto;
+}

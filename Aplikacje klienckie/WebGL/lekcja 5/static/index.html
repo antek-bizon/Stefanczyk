@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js" defer></script>
+</head>
+
+<body>
+    <div class="root">
+        <div class="menu">
+            <select name="" id="hex-rows">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+            <button id="saveBtn" onclick = saveData()>ZAPISZ NA SERWERZE</button>
+            <button id="loadBtn" onclick = loadData()>WCZYTAJ Z SERWERA</button>
+            <a href="/" class="btn">GO TO HEX!</a>
+            <a href="/game" class="btn">GO TO GAME!</a>
+        </div>
+        <pre id="json"></pre>
+        <div id="grid"></div>
+    </div>
+    
+</body>
+
+</html>

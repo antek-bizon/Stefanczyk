@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .submit {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+</head>
+<body>
+    <input type="number" id="a" name="a">
+    <input type="number" id="b" name="b">
+    <div id="d1" class="submit">klik</div>
+    <script>
+        $("#d1").on("click", function () {
+            $.ajax({
+                url: "/post",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    a: $("#a").val(),
+                    b: $("#b").val()
+                }),
+                type: "POST",
+                success: function (data) {
+                    //czytamy odesłane z serwera dane
+                    console.log(data)
+                    //ew parsujemy na obiekt
+                    var obj = JSON.parse(data)
+
+                    window.alert(`Iloczyn: ${obj.iloczyn}\nSuma: ${obj.suma}`)
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error.message);
+                },
+            });
+        })
+    </script>
+</body>
+</html>

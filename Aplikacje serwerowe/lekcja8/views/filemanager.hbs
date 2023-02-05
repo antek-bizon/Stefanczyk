@@ -1,0 +1,26 @@
+<div class="main">
+    {{> nav}}
+
+    <div class="content">
+        <ul class="menu">
+            <li class="title">filemanager</li>
+            <li><a href="/deleteAll">USUŃ DANE O PLIKACH Z TABLICY</a></li>
+        </ul>
+        <table class="filemanager">
+            <tr>
+                <th>id</th>
+                <th>obraz</th>
+                <th>name</th>
+                <th>size</th>
+                <th>type</th>
+                <th>-</th>
+                <th>-</th>
+                <th>-</th>
+                <th>-</th>
+            </tr>
+            {{#each filesArr}}
+            {{> file}}
+            {{/each}}
+        </table>
+    </div>
+</div>

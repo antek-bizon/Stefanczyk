@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../lib/jq.js"></script>
+    <script>
+        $(document).ready(function () {
+            const lps = ["lp", "cena", "produkt"]
+            const ceny = ["5,60", "3,23", "7,45", "10,00", "3,20"]
+            const produkty = ["chleb,", "mąka", "masło", "kefir", "dżem"]
+            
+            let tr0 = $("<tr>")
+            for (let i = 0; i < lps.length; i++) {
+                let td = $("<td class='main'>")
+                td.text(lps[i])
+                tr0.append(td)
+            }
+            $("#tab_main").append(tr0)
+
+            for (let i = 0; i < produkty.length; i++) {
+                let tr = $("<tr>")
+                for (let j = 0; j < lps.length; j++) {
+                    let td = $("<td>")
+                        switch (j) {
+                        case 0:
+                            td.text((i + 1))
+                            break
+                        case 1:
+                            td.text(ceny[i])
+                            break
+                        case 2:
+                            td.text(produkty[i])
+                            break
+                        }
+                    
+                    tr.append(td)
+                }
+                $("#tab_main").append(tr)
+            }
+
+            tr0 = $("<tr>")
+            let td = $("<td>")
+            td.text("suma")
+            tr0.append(td)
+            td = $("<td class='sum' colspan='2'>")
+            let sum = 0
+            let cenyCpy = ceny
+            cenyCpy.forEach(e => {
+                sum += parseFloat(e.replace(",", "."))
+            })
+            sumstr = sum.toString()
+            td.text(sumstr.replace(".", ","))
+            tr0.append(td)
+            $("#tab_main").append(tr0)
+        })
+    </script>
+    <style>
+        table {
+            border: 2px solid gray
+        }
+        table tr td {
+            border: 1px solid lightslategray;
+            min-width: 30px;
+            min-height: 30px;
+            text-align: center;
+        }
+
+        .main {
+            color: blue;
+        }
+
+        .sum {
+            color: red;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <table id="tab_main"></table>
+</body>
+</html>

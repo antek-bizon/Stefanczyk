@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+
+</head>
+<body>
+    <input type="range" name="client" id="client" min="0" max="100">
+    <input type="range" name="server" id="server" min="0" max="500">
+    <script>
+        $("#client").on("mousedown", function () {
+            $.ajax({
+                url: "/post",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    val: $("#client").val()
+                }),
+                type: "POST",
+                success: function (data) {
+                    //czytamy odesłane z serwera dane
+                    console.log(data)
+                    //ew parsujemy na obiek
+
+                    $("#server").val(data.val)
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error.message);
+                },
+            });
+        })
+        
+    </script>
+</body>
+</html>

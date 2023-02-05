@@ -1,0 +1,100 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* overflow: hidden; */
+}
+
+input {
+    position: fixed;
+}
+
+.root {
+    display: flex;
+}
+
+#grid {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    --s: 100px;
+}
+
+
+.container {
+    font-size: 0;
+}
+
+.container div {
+    width: var(--s);
+    height: var(--s);
+    margin-right: calc(var(--s) * 0.56);
+    margin-bottom: calc(var(--s) * -0.47);
+    display: inline-block;
+    font-size: initial;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background-color: lightblue;
+    position: relative;
+    z-index: 1;
+}
+
+.container div p {
+    --fs: 15px;
+    font-size: var(--fs);
+    position: absolute;
+    z-index: 2;
+    color: black;
+    left: calc(50% - var(--fs) * 0.40);
+    top: calc(50% - var(--fs) * 0.40);
+}
+
+.container div p::selection, .container div p::-moz-selection {
+    background-color: transparent;
+}
+
+.container.even::before {
+    content: "";
+    width: calc(var(--s) - var(--s) / 4.5);
+    float: left;
+    height: calc(var(--s) / 2); 
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    width: 130px;
+    margin: 5px;
+}
+
+.menu > * {
+    margin: 5px;
+}
+
+button {
+    padding: 5px;
+}
+
+.btn {
+    color: red;
+    background-color: rgb(236, 236, 236);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    padding: 5px;
+    font-size: 10pt;
+    border: 1px solid gray;
+    border-radius: 4px;
+}
+
+.btn:hover {
+    background-color: rgb(206, 206, 206);
+}
+
+select {
+    text-align: center;
+}
+
+#json {
+    margin-right: 30px;
+}

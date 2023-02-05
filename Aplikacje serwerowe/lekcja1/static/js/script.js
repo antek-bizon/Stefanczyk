@@ -1,0 +1,1 @@
+console.log("Skrypt z pliku script.js")

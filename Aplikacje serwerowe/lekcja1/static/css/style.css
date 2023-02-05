@@ -1,0 +1,22 @@
+body {
+    color: red;
+}
+
+img {
+    width: 200px;
+}
+
+.auta {
+    color: blue;
+    background-color: white;
+}
+
+.koty {
+    background-color: aqua;
+    color: black;
+}
+
+.drzewa {
+    color: brown;
+    background-color: yellow;
+}

@@ -1,0 +1,48 @@
+.login {
+    background-color: lightblue;
+    text-decoration: underline;
+    width: 150px;
+    height: 220px;
+    display: block;
+    text-align: center;
+}
+
+.subject {
+    font-size: 20pt;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+.content {
+    margin: 0 auto;
+    width: 40%;
+    height: 30%;
+    display: block;
+    text-align: center;
+    background-color: lightblue;
+}
+
+.footer {
+    background-color: gray;
+    width: 100%;
+}
+
+.flex {
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.title {
+    width: 90vw;
+    height: 50px;
+    border-radius: 20px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    color: blue;
+    background-color: lightgray;
+    margin-bottom: 10px;
+}

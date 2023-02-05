@@ -1,0 +1,13 @@
+<div class="main">
+    {{> nav}}
+
+    <div class="content">
+        <ul class="menu">
+            <li class="title">multiupload</li>
+        </ul>
+        <form enctype="multipart/form-data" action="/add" class="actions" method="POST">
+            <input type="file" name="files" id="files" multiple>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+</div>

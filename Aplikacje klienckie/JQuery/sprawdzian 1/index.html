@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../lib/jq.js"></script>
+    <script defer>
+        $(document).ready(function () {
+            const columns = ["produkt", "cena / szt", "ile", "wartość"]
+
+            const products = [
+            {price:"2.22", product:"kurtka"},
+            {price:"3.34", product:"szalik"},
+            {price:"4.44", product:"rękawiczki"},
+            {price:"5.55", product:"buty"},
+            {price:"6.66", product:"bluza"},
+            {price:"7.77", product:"coś na wieczór"},
+            {price:"7.77", product:"coś na wieczór"}
+            ]
+
+            let td
+            let tr = $("<tr>")
+
+            for (let i = 0; i < columns.length; i++) {
+                let name = (columns[i] == "ile") ? "liczba" : columns[i]
+                td = $("<td>")
+                    .addClass("columns")
+                    .text(name)
+                tr.append(td)
+            }
+
+            $("#table").append(tr)
+
+
+            for (let i = 0; i < products.length; i++) {
+                tr = $("<tr>")
+                td = $("<td>")
+                    .text(products[i].price)
+                    .css("background-color", "red")
+
+                tr.append(td)
+
+                td = $("<td>")
+                    .text(products[i].product)
+                    .css("background-color", "lightgreen")
+
+                tr.append(td)
+
+                td = $("<td>")
+                    .css("background-color", "lightyellow")
+                let range = $(`<input id='r${i}' type='range' min='0' max='5' step='1' value='0'>`)
+                range.on("click", function () {
+                    let td = $(`#wart${i}`)
+                    let result = (parseInt(range.val()) * parseFloat(products[i].price)).toFixed(2)
+                    td.text(result)
+
+                    let sum = $("#sum")
+                    let valSum = 0
+                    for (let j = 0; j < products.length; j++) {
+                        let wart = $(`#r${j}`)
+                        valSum += parseInt(wart.val())
+                    }
+                    sum.text(valSum)
+
+                    sum = $("#wart-sum")
+                    valSum = 0
+                    for (let j = 0; j < products.length; j++) {
+                        let wart = $(`#wart${j}`)
+                        valSum += parseFloat(wart.text())
+                    }
+                    sum.text(valSum)
+                })
+                td.append(range)
+                tr.append(td)
+
+                td = $(`<td id='wart${i}'>`)
+                    .text(0)
+                    .css("background-color", "lightpink")
+                tr.append(td)
+
+                $("#table").append(tr)
+            }
+
+            tr = $("<tr>")
+            for (let j = 0; j < 2; j++) {
+                td = $("<td>")
+                tr.append(td)
+            }
+
+            td = $("<td id='sum'>")
+                .text(0)
+                .css("background-color", "lightskyblue")
+            tr.append(td)
+            td = $("<td id='wart-sum'>")
+                .text(0)
+                .css("background-color", "lightskyblue")
+            tr.append(td)
+            $("#table").append(tr)
+        })
+    </script>
+    <style>
+        table td {
+            padding: 5px;
+            text-align: center;
+        }
+
+        .columns {
+            background-color: lightskyblue;
+        }
+    </style>
+</head>
+<body>
+    <table id="table"></table>
+</body>
+</html>

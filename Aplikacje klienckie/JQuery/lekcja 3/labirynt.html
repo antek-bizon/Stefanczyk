@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../lib/jq.js"></script>
+    <script>
+        $(document).ready(function () {
+            const numDivs = 5
+            let labFields = []
+
+            function generate () {
+                $("#btn2").prop("disabled", true)
+                $("#btn3").prop("disabled", true)
+
+                for (let i = 0; i < numDivs; i++) {
+                    for (let j = 0; j < numDivs; j++) {
+                        let div = $("<div>")
+                        div.addClass("lab")
+                        div.css("position" ,"absolute")
+                        div.css("top", `${i * 50}px`)
+                        div.css("left", `${j * 50}px`)
+
+                        div.on("click", function () {
+                            $(this).css("background-color", "yellow")
+                            labFields.push({x: j, y: i})
+                            
+                        })
+
+                        $("#main").append(div)
+                    }
+                }
+
+                for (let i = 0; i < 2; i++) {
+                    let div = $(`<div id="player${i}">`) 
+                    
+                    div.addClass("player")
+                    div.css("position" ,"absolute")
+                    div.css("top", `300px`)
+                    div.css("left", `${i * 60}px`)
+                    if (i === 0) {
+                        div.css("background-color", "blue")
+                    } else {
+                        div.css("background-color", "green")
+                    }
+                    $("#main").append(div)
+                }
+            }
+            generate()
+
+            let pos0 = 0
+            let pos1 = 0
+            let move = 0
+
+            $("#btn1").on("click", function () {
+                pos0 = 0
+                pos1 = labFields.length - 1
+                if (labFields.length < 3) {
+                    window.alert("Za mała ilość zaznaczonych pól!")
+                    return
+                }
+                
+                $("#player0").css("top", `${labFields[pos0].y * 50}px`)
+                $("#player0").css("left", `${labFields[pos0].x * 50}px`)
+                
+                $("#player1").css("top", `${labFields[pos1].y * 50}px`)
+                $("#player1").css("left", `${labFields[pos1].x * 50}px`)
+
+                $("#btn2").prop("disabled", false)
+                $("#btn3").prop("disabled", false)
+
+                let kostka = $(`<div id="kostka">`)
+                kostka.css("position" ,"absolute")
+                kostka.css("top", `${numDivs * 25}px`)
+                kostka.css("left", `${numDivs * 50 + 100}px`)
+                kostka.text(1)
+                $("#main").append(kostka)
+            })
+
+            $("#btn2").on("click", function () {
+                if (move <= 0) {
+                    window.alert("Rzuć kostką")
+                    return
+                }
+                if (++pos0 < labFields.length) {
+                    $("#player0").css("top", `${labFields[pos0].y * 50}px`)
+                    $("#player0").css("left", `${labFields[pos0].x * 50}px`)
+                }
+                if (--pos1 >= 0) {
+                    $("#player1").css("top", `${labFields[pos1].y * 50}px`)
+                    $("#player1").css("left", `${labFields[pos1].x * 50}px`)
+                }
+                move = 0
+            })
+
+            $("#btn3").on("click", function () {
+                labFields = []
+                pos0 = 0
+                pos1 = 0
+                generate()
+            })
+
+            $("#kostka").on("click", function () {
+                move = Math.ceil(Math.random() * 6)
+                $(this).text(move)
+            })
+        })
+    </script>
+    <style>
+        h2 {
+            color: blue;
+        }
+        button {
+            font-weight: 600;
+        }
+
+        #main {
+            position: relative;
+        }
+
+        .lab {
+            width: 50px;
+            height: 50px;
+            border: 1px solid black;
+            background-color: white;
+        }
+
+        .player {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        #kostka {
+            background-color: gainsboro;
+            border: 1px solid black;
+            font-size: 30pt;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h2>T: Labirynt - tablice obiektów</h2>
+    <button id="btn1">START GAME</button>
+    <button id="btn2">NEXT MOVE</button>
+    <button id="btn3">RESET GAME</button>
+    <br>
+    <div id="main"></div>
+</body>
+</html>
