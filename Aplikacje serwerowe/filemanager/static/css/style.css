@@ -11,7 +11,7 @@ a {
 
 body {
     height: 100vh;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 .main {
@@ -191,28 +191,56 @@ dialog form input {
 
 .textEditor {
     width: 100%;
-    height: 80%;
-    display: flex;
-}
-
-.textEditor ul {
-    min-width: 30px;
-    padding: 1px;
-    text-align: center;
-    color: purple;
+    display: inline-flex;
+    gap: 5px;
+    font-family: monospace;
+    line-height: calc(var(--font-size) + 4px);
+    font-size: var(--font-size);
+    padding-left: 10px;
+    background-color: var(--bg-color);
 }
 
 .textEditor textarea {
     width: 100%;
-    height: 100%;
+    min-height: 400px;
     border: none;
     border-left: 4px solid yellowgreen;
     padding-left: 5px;
+    overflow-y: hidden;
     resize: none;
+    line-height: calc(var(--font-size) + 4px);
+    font-size: var(--font-size);
+    color: var(--color);
+    background-color: var(--bg-color);
+}
+
+.line-numbers {
+    width: calc(var(--font-size) + 4px);
+    text-align: right;
+}
+
+.line-numbers span {
+    counter-increment: linenumber;
+}
+
+.line-numbers span::before {
+    content: counter(linenumber);
+    display: block;
+    color: #506882;
 }
 
 .textEditorHeader {
     padding: 5px;
     background-color: gray;
     color: whitesmoke;
+}
+
+.saveBtn {
+    margin: 10px 40px;
+    padding: 10px;
+    height: 40px;
+    line-height: 21px;
+    background-color: rgb(253, 222, 85);
+    border: none;
+    border-radius: 30px;
 }
