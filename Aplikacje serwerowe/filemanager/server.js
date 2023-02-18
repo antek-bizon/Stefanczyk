@@ -33,6 +33,19 @@ app.engine('hbs', hbs({
     },
     currentDir: function () {
       return dir.dirName.join('/')
+    },
+    editorType: function (filename) {
+      const ext = getExtension(filename)
+      switch (ext) {
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'bmp':
+        case 'gif':
+          return 'imageeditor'
+        default:
+          return 'texteditor'
+      }
     }
   }
 }))
@@ -59,7 +72,7 @@ function getFileIcon (filename) {
     case 'jpeg':
       return './gfx/jpg.png'
     case 'pdf':
-      return './gfx/other.png'
+      return './gfx/pdf.png'
     case 'png':
       return './gfx/png.png'
     case 'txt':
@@ -287,6 +300,7 @@ app.get('/renameFile', function (req, res) {
       console.log('Nazwa jest zajeta')
     }
   }
+
   res.redirect(`/?dirName=${req.query.currentDir}`)
 })
 
@@ -371,7 +385,34 @@ app.get('/showfile', function (req, res) {
   }
 })
 
+app.get('/imageeditor', function (req, res) {
+  if (!req.query.name) {
+    res.redirect('/')
+    return
+  }
+
+  const context = {
+    name: req.query.name,
+    image_path: '',
+    dirName: '',
+    buffer: '',
+    filter: [
+      'grayscale',
+      'invert',
+      'sepia'
+    ]
+  }
+
+  if (req.query.dirName && req.query.dirName !== '') {
+    context.dirName = req.query.dirName
+    context.image_path = `.${req.query.dirName}/${req.query.name}`
+  }
+
+  res.render('imageeditor.hbs', context)
+})
+
 app.use(express.static('static'))
+app.use(express.static('pliki'))
 
 // Nasłuchiwanie
 app.listen(PORT, function () {

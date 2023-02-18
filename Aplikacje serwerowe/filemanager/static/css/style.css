@@ -229,13 +229,13 @@ dialog form input {
     color: #506882;
 }
 
-.textEditorHeader {
+.editorHeader {
     padding: 5px;
     background-color: gray;
     color: whitesmoke;
 }
 
-.saveBtn {
+.btn {
     margin: 10px 40px;
     padding: 10px;
     height: 40px;
@@ -243,4 +243,47 @@ dialog form input {
     background-color: rgb(253, 222, 85);
     border: none;
     border-radius: 30px;
+}
+
+.imageEditor {
+    width: 100%;
+    display: inline-flex;
+    padding: 10px;
+}
+
+.imageEditor li {
+    margin: 10px 5px;
+}
+
+.imageEditor button {
+    margin: auto;
+}
+
+.imageEditor div {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.imageEditor p {
+    text-align: center;
+}
+
+.filters {
+    height: 100px;
+}
+
+.mainImage {
+    width: 700px;
+    height: 400px;
+    margin: 0 auto;
+}
+
+#filtersMenu {
+    transition: 1s;
+    overflow: hidden;
+}
+
+#filtersMenu * {
+    width: 100%;
 }

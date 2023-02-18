@@ -1,13 +1,13 @@
 const textarea = document.querySelector('textarea')
 
-function updateLines (textarea) {
+function updateLines(textarea) {
   const numOfLines = textarea.value.split('\n').length
   document.querySelector('.line-numbers')
     .innerHTML = Array(numOfLines)
       .fill('<span></span>')
       .join('')
 
-  textarea.style.height = `${numOfLines * 21}px`
+  textarea.style.height = `${numOfLines * 24}px`
 }
 
 textarea.onkeyup = (e) => {
@@ -27,7 +27,7 @@ textarea.onkeydown = function (e) {
 
 updateLines(textarea)
 
-function saveFile (filename) {
+function saveFile(filename) {
   const data = document.querySelector('textarea').value
   const body = JSON.stringify({ filename, data })
   const headers = { 'Content-Type': 'application/json' }
@@ -43,7 +43,7 @@ function saveFile (filename) {
     })
 }
 
-function changeFont (detla) {
+function changeFont(detla) {
   const r = document.querySelector(':root')
   const style = getComputedStyle(r)
   const newSize = parseInt(style.getPropertyValue('--font-size')) + detla
@@ -51,7 +51,7 @@ function changeFont (detla) {
   console.log(style.getPropertyValue('--font-size'))
 }
 
-function changeColor () {
+function changeColor() {
   const r = document.querySelector(':root')
   const style = getComputedStyle(r)
   if (style.getPropertyValue('--bg-color') === 'black') {
@@ -63,7 +63,7 @@ function changeColor () {
   }
 }
 
-function saveConfig () {
+function saveConfig() {
   const r = document.querySelector(':root')
   const style = getComputedStyle(r)
   const body = JSON.stringify({

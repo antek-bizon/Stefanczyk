@@ -25,7 +25,7 @@
             </form>
         </dialog>
         <div style="width: 100%;">
-            <p class="textEditorHeader">{{currentDir}}/{{name}}</p>
+            <p class="editorHeader">{{currentDir}}/{{name}}</p>
             <div class="textEditor">
                 <div class="line-numbers">
                     <span></span>
@@ -33,7 +33,7 @@
                 <textarea name="{{name}}" cols="30">{{buffer}}</textarea>
                 <script src="./js/textarea.js"></script>
             </div>
-            <button type="button" class="title saveBtn" onclick="saveFile('{{currentDir}}/{{name}}')">Zapisz</button>
+            <button type="button" class="title btn" onclick="saveFile('{{currentDir}}/{{name}}')">Zapisz</button>
         </div>
     </div>
 </div>
