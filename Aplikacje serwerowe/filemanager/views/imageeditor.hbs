@@ -7,7 +7,7 @@
             <a href="/showFile?filename={{currentDir}}/{{name}}">
                 <li class="title">podgląd pliku</li>
             </a>
-            <li class="title saveBtn" onclick="saveFile('{{currentDir}}/{{name}}')">Zapisz</li>
+            <li class="title saveBtn" onclick="saveImage('{{currentDir}}', '{{name}}')">Zapisz</li>
 
         </ul>
         <dialog id="dialog">
@@ -41,8 +41,9 @@
                         </li>
                     </ul>
                 </div>
-
-                <div class="mainImage" style="background-image: url('{{image_path}}');"></div>
+                <div class="mainImage" style="background-image: url('{{image_path}}');
+                {{#with dimensions}}width: {{width}}px; height: {{height}}px;{{/with}}"></div>
+                <canvas></canvas>
             </div>
         </div>
     </div>

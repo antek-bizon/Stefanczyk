@@ -6,6 +6,7 @@ const hbs = require('express-handlebars')
 const formidable = require('formidable')
 const fs = require('fs')
 const fsPromises = require('fs/promises')
+const sizeOf = require('buffer-image-size')
 
 let dir = {}
 
@@ -406,9 +407,55 @@ app.get('/imageeditor', function (req, res) {
   if (req.query.dirName && req.query.dirName !== '') {
     context.dirName = req.query.dirName
     context.image_path = `.${req.query.dirName}/${req.query.name}`
+
+    const imagePath = path.join(__dirname, 'pliki', req.query.dirName, req.query.name)
+    const image = fs.readFileSync(imagePath)
+    context.dimensions = sizeOf(image)
+  } else {
+    context.image_path = `./${req.query.name}`
+    const imagePath = path.join(__dirname, 'pliki', req.query.dirName, req.query.name)
+    const image = fs.readFileSync(imagePath)
+    context.dimensions = sizeOf(image)
   }
 
   res.render('imageeditor.hbs', context)
+})
+
+app.post('/saveImage', function (req, res) {
+  console.log('Uploading')
+  const form = formidable({})
+
+  form.keepExtensions = true
+  form.multiples = true
+
+  let filename = ''
+  let dirName = ''
+
+  form.on('field', function (field, value) {
+    // console.log(field, value)
+    if (field === 'src') {
+      form.uploadDir = path.join(__dirname, 'pliki' + value)
+      form.on('fileBegin', function (name, file) {
+        file.path = form.uploadDir
+      })
+    } else if (field === 'dir') {
+      dirName = value
+    } else if (field === 'name') {
+      filename = value
+    }
+  })
+
+  form.parse(req, function (err, fields, files) {
+    // console.log(fields, files)
+    console.log(dirName, filename)
+    if (err) {
+      console.error(err)
+      res.send(JSON.stringify({ err: true }))
+    } else {
+      console.log('Success')
+      res.send(JSON.stringify({ err: false }))
+    }
+  })
 })
 
 app.use(express.static('static'))

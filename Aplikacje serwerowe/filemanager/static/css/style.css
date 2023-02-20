@@ -252,7 +252,7 @@ dialog form input {
 }
 
 .imageEditor li {
-    margin: 10px 5px;
+    padding: 10px 5px;
 }
 
 .imageEditor button {
@@ -271,11 +271,12 @@ dialog form input {
 
 .filters {
     height: 100px;
+    width: 100px;
 }
 
 .mainImage {
-    width: 700px;
-    height: 400px;
+    max-width: 700px;
+    max-height: 400px;
     margin: 0 auto;
 }
 
@@ -286,4 +287,8 @@ dialog form input {
 
 #filtersMenu * {
     width: 100%;
+}
+
+.imageEditor canvas {
+    display: none;
 }
