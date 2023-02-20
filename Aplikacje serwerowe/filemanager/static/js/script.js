@@ -1,10 +1,18 @@
-function showDialog (text, dest) {
+function showDialog (text, dest, option) {
   const dialog = document.getElementById('dialog')
   const p = dialog.querySelector('p')
   p.innerText = text
 
   const form = dialog.querySelector('form')
   form.action = dest
+
+  if (option) {
+    const input = document.createElement('input')
+    input.type = 'hidden'
+    input.value = option
+    input.name = 'option'
+    form.append(input)
+  }
 
   dialog.show()
 }
@@ -39,8 +47,8 @@ function hideDialogSelect () {
   document.getElementById('dialog-select').close()
 }
 
-function changeFileName (name) {
+function changeFileName (name, option) {
   const text = 'Zmiana nazwy pliku: ' + name
   const dest = '/renameFile'
-  showDialog(text, dest)
+  showDialog(text, dest, option)
 }

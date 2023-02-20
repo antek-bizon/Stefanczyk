@@ -295,7 +295,11 @@ app.get('/renameFile', function (req, res) {
     console.log(newName)
     if (!fs.existsSync(newName)) {
       fs.renameSync(oldName, newName)
-      res.redirect(`/texteditor?dirName=${currentDir}&name=${req.query.name}`)
+      if (req.query.option) {
+        res.redirect(`/${req.query.option}?dirName=${currentDir}&name=${req.query.name}`)
+      } else {
+        res.redirect(`/texteditor?dirName=${currentDir}&name=${req.query.name}`)
+      }
       return
     } else {
       console.log('Nazwa jest zajeta')
