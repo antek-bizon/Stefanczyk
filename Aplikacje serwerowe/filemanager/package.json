@@ -10,8 +10,10 @@
   "license": "ISC",
   "dependencies": {
     "buffer-image-size": "^0.6.4",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-handlebars": "^5.3.5",
-    "formidable": "^1.2.2"
+    "formidable": "^1.2.2",
+    "nocache": "^3.0.4"
   }
 }

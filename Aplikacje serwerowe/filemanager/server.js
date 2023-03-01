@@ -7,8 +7,15 @@ const formidable = require('formidable')
 const fs = require('fs')
 const fsPromises = require('fs/promises')
 const sizeOf = require('buffer-image-size')
+const cookieparser = require('cookie-parser')
+const nocache = require('nocache')
+
+app.use(cookieparser())
+app.use(nocache())
 
 let dir = {}
+
+const users = []
 
 app.set('views', path.join(__dirname, 'views'))
 app.engine('hbs', hbs({
@@ -222,7 +229,6 @@ app.post('/upload', function (req, res) {
   form.keepExtensions = true
   form.multiples = true
   form.on('field', function (field, value) {
-    console.log(field, value)
     form.uploadDir = path.join(__dirname, 'pliki' + value)
     form.on('fileBegin', function (name, file) {
       file.path = form.uploadDir + '/' + file.name
@@ -460,6 +466,82 @@ app.post('/saveImage', function (req, res) {
       res.send(JSON.stringify({ err: false }))
     }
   })
+})
+
+app.get('/index', function (req, res) {
+  console.log(req.cookies)
+  if (!req.cookies.login) {
+    res.redirect('loginPage')
+  } else {
+    const user = JSON.parse(req.cookies.login)
+    const context = { name: user.name }
+    res.render('index2.hbs', context)
+  }
+})
+
+app.get('/registerPage', function (req, res) {
+  res.render('register.hbs')
+})
+
+app.get('/register', function (req, res) {
+  if (!req.query.name || req.query.name.length < 3) {
+    const context = { msg: 'min username lenght = 3' }
+    res.render('error.hbs', context)
+    return
+  }
+
+  if (req.query.pass !== req.query.confirm) {
+    const context = { msg: 'Passwords are not identical' }
+    res.render('error.hbs', context)
+    return
+  }
+
+  users.push({ name: req.query.name, pass: req.query.pass })
+
+  res.redirect('/loginPage')
+})
+
+app.get('/loginPage', function (req, res) {
+  if (req.cookies.login) {
+    res.redirect('/index')
+  } else {
+    res.render('login.hbs')
+  }
+})
+
+app.get('/login', function (req, res) {
+  if (!req.query.name || req.query.name.length < 3) {
+    const context = { msg: 'min username lenght = 3' }
+    res.render('error.hbs', context)
+    return
+  }
+
+  let found = false
+  const date = Date.now()
+
+  for (let i = 0; i < users.length; i++) {
+    if (req.query.name === users[i].name &&
+      req.query.pass === users[i].pass) {
+      found = true
+    }
+
+    if (found && Date.now() - date > 1000) {
+      break
+    }
+  }
+
+  if (found) {
+    res.cookie('login', JSON.stringify({ name: req.query.name }), { httpOnly: true, maxAge: 60 * 1000 })
+    res.redirect('/index')
+  } else {
+    const context = { msg: 'Login or password is incorrect' }
+    res.render('error.hbs', context)
+  }
+})
+
+app.get('/logout', function (req, res) {
+  res.clearCookie('login')
+  res.redirect('/loginPage')
 })
 
 app.use(express.static('static'))

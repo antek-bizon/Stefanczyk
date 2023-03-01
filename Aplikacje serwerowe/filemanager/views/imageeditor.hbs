@@ -14,7 +14,7 @@
             <p></p>
             <form action="" method="get">
                 <input type="hidden" name="currentDir" value="{{currentDir}}/{{name}}">
-                <input type="text" name="name">
+                <input type="text" name="name" required>
                 <button type="submit">OK</button>
                 <button type="reset" onclick="hideDialog()">cancel</button>
             </form>
@@ -27,12 +27,12 @@
                     <button class="title btn" type="button" onclick="toggleFiltersMenu()">Filters</button>
                     <ul id="filtersMenu" style="height: 0px;">
                         {{#each filter}}
-                            <li>
-                                <div class="filters"
-                                    style="background-image: url('{{../image_path}}'); filter: {{this}}(100%);"
-                                    onclick="setFilter('{{this}}')"></div>
-                                <p>{{this}}</p>
-                            </li>
+                        <li>
+                            <div class="filters"
+                                style="background-image: url('{{../image_path}}'); filter: {{this}}(100%);"
+                                onclick="setFilter('{{this}}')"></div>
+                            <p>{{this}}</p>
+                        </li>
                         {{/each}}
                         <li>
                             <div class="filters" style="background-image: url('{{image_path}}');" onclick="setFilter()">
