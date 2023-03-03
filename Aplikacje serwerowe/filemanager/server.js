@@ -159,6 +159,11 @@ async function getDirectory (dirName) {
 // }
 
 app.get('/', async function (req, res) {
+  if (!req.cookies.login) {
+    res.redirect('loginPage')
+    return
+  }
+
   const dirName = req.query.dirName
   dir = await getDirectory(dirName)
   // console.log(dir)
@@ -316,6 +321,11 @@ app.get('/renameFile', function (req, res) {
 })
 
 app.get('/texteditor', function (req, res) {
+  if (!req.cookies.login) {
+    res.redirect('loginPage')
+    return
+  }
+
   if (!req.query.name) {
     res.redirect('/')
     return
@@ -397,6 +407,11 @@ app.get('/showfile', function (req, res) {
 })
 
 app.get('/imageeditor', function (req, res) {
+  if (!req.cookies.login) {
+    res.redirect('loginPage')
+    return
+  }
+
   if (!req.query.name) {
     res.redirect('/')
     return
@@ -472,11 +487,11 @@ app.get('/index', function (req, res) {
   console.log(req.cookies)
   if (!req.cookies.login) {
     res.redirect('loginPage')
-  } else {
-    const user = JSON.parse(req.cookies.login)
-    const context = { name: user.name }
-    res.render('index2.hbs', context)
+    return
   }
+  const user = JSON.parse(req.cookies.login)
+  const context = { name: user.name }
+  res.render('index2.hbs', context)
 })
 
 app.get('/registerPage', function (req, res) {
