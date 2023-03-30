@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: url("../gfx/kde.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.colorDiv {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}

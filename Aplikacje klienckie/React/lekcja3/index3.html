@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .MyCheckBox {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background-color: lightcoral;
+            transition: 500ms;
+        }
+
+        .checkedClass {
+            background-color: lightcyan;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="react-app"></div>
+    <script type="text/babel">
+        class MyRadio extends React.Component {
+            constructor() {
+                super()
+                this.state = {
+                    isChecked: false,
+                    checkedClass: ''
+                }
+            }
+
+            onChangeRadio = (e) => {
+            }
+
+            render() {
+                return <label className={`MyCheckBox ${this.state.checkedClass}`}>
+                    <input
+                        type="radio"
+                        value={this.props.value}
+                        checked={this.state.selected == this.props.value}
+                        onChange={this.onChangeRadio}
+                    />
+                    <div>{this.props.value} $</div>
+                    <div>MyRadio</div>
+                </label>
+            }
+        }
+
+        class MyForm extends React.Component {
+            constructor() {
+                super()
+                this.state = {
+                    array: [
+                        { checked: false, value: 1 },
+                        { checked: false, value: 2 },
+                        { checked: false, value: 3 },
+                        { checked: false, value: 10 },
+                        { checked: false, value: 20 },
+                    ],
+                    sum: 0
+                }
+            }
+
+            handleCheckbox = (value) => {
+                const sum = parseInt(this.state.sum) + parseInt(value)
+                this.setState({ sum: sum })
+            }
+
+            handleSubmit = (e) => {
+                e.preventDefault()
+            }
+
+            render() {
+                const checkboxes = this.state.array.map((e, i) => {
+                    return <MyRadio key={i} checked={e.checked} value={e.value} handle={this.handleCheckbox} />
+                })
+
+                return <>
+                    <form onSubmit={this.handleSubmit}>
+                        {checkboxes}
+                        <button type="submit">Wyślij</button>
+                    </form>
+                    <p>suma = {this.state.sum}</p>
+                </>
+            }
+        }
+
+
+
+        ReactDOM.render(
+            <MyForm />,
+            document.getElementById('react-app')
+        );
+
+    </script>
+
+</body>
+
+</html>

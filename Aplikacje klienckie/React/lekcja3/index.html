@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .MySelect {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            background-color: lightcoral;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="react-app"></div>
+    <script type="text/babel">
+        class MySelect extends React.Component {
+            constructor() {
+                super()
+                this.state = { selected: '' }
+            }
+
+            handleChange = (e) => {
+                this.setState({ selected: e.target.value })
+                this.props.handleSelect(e.target.value)
+            }
+
+            render() {
+                const options = this.props.options.map((e, i) => {
+                    return <option key={i} value={e.name} >{e.name}</option>
+                })
+                console.log(options)
+
+                return <div className='MySelect'>
+                    <h3>komponent MySelect</h3>
+                    <select onChange={this.handleChange}>
+                        {options}
+                    </select>
+                    <p>{this.state.selected}</p>
+                </div>
+            }
+        }
+
+        class MyForm extends React.Component {
+            constructor() {
+                super()
+                this.state = {
+                    array: [
+                        { id: 0, name: "hamlet" },
+                        { id: 1, name: "krzyzacy" },
+                        { id: 2, name: "lalka" }
+                    ],
+                    array2: [
+                        { id: 0, name: "Kraków" },
+                        { id: 1, name: "Warszawa" },
+                        { id: 2, name: "Gdańsk" },
+                        { id: 3, name: "Toruń" }
+                    ],
+                    values: [],
+                    text: []
+                }
+            }
+
+            onHandleSelect = (value) => {
+                console.log(value)
+                this.state.values.push(value)
+                this.setState({ text: this.state.values.map((e) => { return <>{e}, </> }) })
+            }
+
+            handleSubmit = (e) => {
+                e.preventDefault()
+            }
+
+            render() {
+                return <>
+                    <form onSubmit={this.handleSubmit}>
+                        <MySelect key={1} options={this.state.array} handleSelect={this.onHandleSelect} />
+                        <MySelect key={2} options={this.state.array2} handleSelect={this.onHandleSelect} />
+                        <button type="submit">Wyślij</button>
+                    </form>
+                    <p>
+                        {this.state.text}
+                    </p>
+                </>
+            }
+        }
+
+
+
+        ReactDOM.render(
+            <MyForm />,
+            document.getElementById('react-app')
+        );
+
+    </script>
+
+</body>
+
+</html>

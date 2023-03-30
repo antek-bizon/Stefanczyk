@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "colors": "^1.4.0",
+    "mime-types": "^2.1.35",
+    "nedb": "^1.8.0",
+    "socket.io": "^4.6.1",
+    "tracer": "^1.0.2"
+  }
+}
