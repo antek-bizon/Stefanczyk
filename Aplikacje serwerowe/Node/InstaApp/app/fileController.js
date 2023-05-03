@@ -6,6 +6,12 @@ const fsPromises = require('fs/promises')
 
 const uploadDir = path.join(__dirname, '../uploads')
 
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdir(uploadDir, (err) => {
+    if (err) throw err
+  })
+}
+
 module.exports = {
   saveFile: (req) => {
     const form = formidable({
