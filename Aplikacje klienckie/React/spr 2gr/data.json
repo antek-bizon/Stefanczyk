@@ -1,0 +1,24 @@
+{
+    "boards": [
+        {
+            "id": 111,
+            "title": "plansza AAA",
+            "color": "#ff0000"
+        },
+        {
+            "id": 222,
+            "title": "plansza BBB",
+            "color": "#00ff00"
+        },
+        {
+            "id": 555,
+            "title": "plansza CCC",
+            "color": "#0000ff"
+        },
+        {
+            "id": 888,
+            "title": "plansza DDD",
+            "color": "#ffff00"
+        }
+    ]
+}

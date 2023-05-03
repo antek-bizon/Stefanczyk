@@ -38,32 +38,21 @@
   }
 }
 
-.board {
-  width: 100px;
-  height: max-content;
-  border-radius: 30px;
-  border-width: 5px;
-  border-style: solid;
-  padding: 7px;
+
+.star {
+  width: 15px;
+  height: 15px;
+  border: 1px solid black;
 }
+
 
 .row {
   display: flex;
-  gap: 2px;
+  gap: 5px;
   justify-content: center;
-}
-
-.column {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 2px;
-  justify-content: center;
-  margin: 5px;
 }
 
-.tile {
-  width: 10px;
-  height: 10px;
-  border: 1px solid gray;
+.gap15 {
+  gap: 15px;
 }

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>spr gr2</title>
+    <script crossorigin src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            font-family: Consolas;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 20px;
+        }
+
+        .header {
+            color: blue;
+            margin-bottom: 20px;
+        }
+
+        .board {
+            background: #aaa;
+            border-radius: 25px;
+            padding: 25px;
+            width: max-content;
+        }
+
+        .board>* {
+            margin: 20px;
+        }
+
+        .tiles {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .tile {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            width: 200px;
+            padding: 20px;
+            background: #ddd;
+        }
+
+        .squares {
+            width: 60px;
+            display: flex;
+            flex-wrap: wrap;
+            background: white;
+        }
+
+        .square {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="header">sprawdzian - 2 gr</h1>
+    <div id="react-app"></div>
+    <script type="text/babel">
+
+        class App extends React.Component {
+            constructor() {
+                super();
+                this.state = {
+                    boards: [],
+                    selected: [],
+                    color: "",
+                    index: 0
+                }
+            }
+
+            componentDidMount = () => {
+                fetch('/data')
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((json) => {
+                        // console.log(json) // pobrane dane json
+                        this.setState({ boards: json.boards })
+                    });
+            }
+
+            handleChange = (event) => {
+                this.setState({
+                    color: event.target.value
+                })
+            }
+
+            save = (tab, props) => {
+                this.state.selected.push(
+                    <SelectedTile
+                        id={this.state.index}
+                        title={props.title}
+                        color={this.state.color}
+                        border={props.color}
+                        tab={tab}
+                        delete={this.delete}
+                    />
+                )
+                this.state.index++;
+                this.setState({ selected: this.state.selected, index: this.state.index })
+            }
+
+            delete = (i) => {
+                this.state.selected[i] = "";
+                this.setState({ selected: this.state.selected })
+            }
+
+            render() {
+                return (
+                    <div>
+                        <Board array={this.state.boards} handleChange={this.handleChange} save={this.save} color={this.state.color} />
+                        <Selected array={this.state.selected} />
+                    </div>
+                );
+            }
+        }
+
+        class Board extends React.Component {
+            constructor() {
+                super();
+            }
+
+            render() {
+                let tiles = [];
+                let radios = [];
+                this.props.array.filter((elem, i) => {
+                    radios.push(
+                        <>
+                            <input type="radio" value={elem.color} name="color" onChange={this.props.handleChange} />
+                            <label htmlFor="color" style={{ color: elem.color }}>{elem.color} </label>
+                        </>
+                    )
+                    tiles.push(
+                        <Tile
+                            key={i}
+                            id={elem.id}
+                            title={elem.title}
+                            color={this.props.color}
+                            border={elem.color}
+                            save={this.props.save}
+                        />
+                    )
+                })
+
+                return (
+                    <div className="board">
+                        <h2>boards</h2>
+
+                        <div>
+                            {radios}
+                        </div>
+
+                        <div className="tiles">
+                            {tiles}
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        class Selected extends React.Component {
+            constructor() {
+                super();
+            }
+
+            render() {
+                let tiles = this.props.array.map((elem, i) => {
+                    return (
+                        elem
+                    )
+                })
+
+                return (
+                    <div className="board">
+                        <h2>selected</h2>
+
+                        <div className="tiles">
+                            {tiles}
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        class Tile extends React.Component {
+            constructor() {
+                super();
+                this.state = {
+                    tab: []
+                }
+            }
+
+            componentDidMount = () => {
+                if (this.props.id === 111) {
+                    this.setState({
+                        tab: [
+                            1, 0, 1,
+                            1, 0, 1,
+                            1, 1, 1,
+                            0, 0, 1,
+                            0, 0, 1
+                        ]
+                    })
+                }
+                if (this.props.id === 222) {
+                    this.setState({
+                        tab: [
+                            1, 1, 1,
+                            0, 1, 0,
+                            0, 1, 0,
+                            0, 1, 0,
+                            1, 1, 1
+                        ]
+                    })
+                }
+                if (this.props.id === 555) {
+                    this.setState({
+                        tab: [
+                            1, 0, 0,
+                            1, 0, 0,
+                            1, 1, 1,
+                            1, 0, 1,
+                            1, 1, 1
+                        ]
+                    })
+                }
+                if (this.props.id === 888) {
+                    this.setState({
+                        tab: [
+                            0, 0, 1,
+                            0, 1, 1,
+                            0, 0, 1,
+                            0, 0, 1,
+                            0, 0, 1
+                        ]
+                    })
+                }
+            }
+
+            render() {
+                let squares = this.state.tab.map((elem, i) => {
+                    if (elem === 0) {
+                        return <div key={i} className="square"></div>
+                    }
+                    else {
+                        return <div key={i} className="square" style={{ background: this.props.color }}></div>
+                    }
+                })
+                return (
+                    <div className="tile" style={{ border: `10px solid ${this.props.border}` }}>
+                        <h3>{this.props.id}</h3>
+                        <h3>{this.props.title}</h3>
+                        <div className="squares">
+                            {squares}
+                        </div>
+                        <button onClick={() => this.props.save(this.state.tab, this.props)}>save</button>
+                    </div>
+                );
+            }
+        }
+
+        class SelectedTile extends React.Component {
+            constructor() {
+                super();
+            }
+
+            render() {
+                let squares = this.props.tab.map((elem, i) => {
+                    if (elem === 0) {
+                        return <div key={i} className="square"></div>
+                    }
+                    else {
+                        return <div key={i} className="square" style={{ background: this.props.color }}></div>
+                    }
+                })
+                return (
+                    <div className="tile">
+                        <div className="squares">
+                            {squares}
+                        </div>
+                        <button onClick={() => this.props.delete(this.props.id)}>delete</button>
+                    </div>
+                );
+            }
+        }
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('react-app')
+        );
+
+    </script>
+
+</body>
+
+</html>
