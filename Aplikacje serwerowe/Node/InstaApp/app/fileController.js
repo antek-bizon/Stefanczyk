@@ -19,17 +19,38 @@ module.exports = {
           if (err) {
             throw err
           }
-          const imageInfo = {
-            fields: fields,
-            files: files
+
+          const uploadName = files.file.path.replaceAll('\\', '/').split('/').pop()
+
+          const newPath = path.join(uploadDir, fields.album)
+          const fileInfo = {
+            originalName: files.file.name,
+            url: 'uploads/' + fields.album + '/' + uploadName
           }
-          resolve(imageInfo)
+
+          if (fs.existsSync(newPath)) {
+            fs.rename(files.file.path, fileInfo.url, () => {
+              if (err) throw err
+            })
+          } else {
+            fs.mkdir(newPath, (err) => {
+              if (err) throw err
+
+              fs.rename(files.file.path, fileInfo.url, () => {
+                if (err) throw err
+              })
+            })
+          }
+
+          resolve({
+            fields,
+            fileInfo
+          })
         })
       } catch (ex) {
         reject(ex)
       }
     })
-
   },
 
   readAll: async () => {
@@ -38,21 +59,22 @@ module.exports = {
     return files
   },
 
-  deleteAll: async () => {
-    fs.readdir(uploadDir, async (err, files) => {
+  deleteAll: () => {
+    fs.readdir(uploadDir, (err, files) => {
       if (err) throw err
 
-      await Promise.all(files.map(e => {
-        return fsPromises.unlink(path.join(uploadDir, e))
+      Promise.all(files.map(e => {
+        return fsPromises.rm(path.join(uploadDir, e), { recursive: true, force: true })
       }))
     })
   },
 
-  deleteOne: async (url) => {
+  deleteOne: (url) => {
     const filepath = path.join(__dirname, '../', url)
     if (fs.existsSync(filepath)) {
-      return fsPromises.unlink(filepath)
+      fsPromises.rm(filepath, { force: true })
+    } else {
+      logger.warn('File do not exist:', url)
     }
-    logger.warn('File do not exist:', url)
   }
 }

@@ -35,13 +35,13 @@ const tags = [
   '#photo'
 ]
 
-function sendError({ res, msg }) {
+function sendError ({ res, msg }) {
   res.writeHead(404, { 'Content-type': 'plain/text' })
   res.write(msg)
   res.end()
 }
 
-function sendSuccess({ res, type = 'plain/text', data = '' }) {
+function sendSuccess ({ res, type = 'plain/text', data = '' }) {
   res.writeHead(200, { 'Content-type': type })
   res.write(data)
   res.end()
@@ -49,13 +49,13 @@ function sendSuccess({ res, type = 'plain/text', data = '' }) {
 
 module.exports = {
   addImage: async ({ req, res }) => {
-    const { fields, files } = await fileController.saveFile(req)
-    logger.log(fields, files)
+    const { fields, fileInfo } = await fileController.saveFile(req)
+    logger.log(fields, fileInfo)
     imgData.push({
       id: (imgData.length === 0) ? 1 : imgData[imgData.length - 1].id + 1,
       album: fields.album,
-      originalName: files.file.name,
-      url: files.file.path.substring(files.file.path.lastIndexOf('uploads')),
+      originalName: fileInfo.originalName,
+      url: fileInfo.url,
       lastChange: 'original',
       history: [
         {
@@ -78,8 +78,13 @@ module.exports = {
   },
 
   getOneImageJSON: ({ res, query }) => {
+    const queryInt = parseInt(query)
+    if (!queryInt) {
+      return sendError({ res, msg: 'Wrong query' })
+    }
+
     for (const img of imgData) {
-      if (query == img.id) {
+      if (queryInt === img.id) {
         return sendSuccess({ res, type: 'Application/json', data: JSON.stringify(img) })
       }
     }
@@ -87,8 +92,13 @@ module.exports = {
   },
 
   deleteImage: ({ res, query }) => {
+    const queryInt = parseInt(query)
+    if (!queryInt) {
+      return sendError({ res, msg: 'Wrong query' })
+    }
+
     for (let i = 0; i < imgData.length; i++) {
-      if (query == imgData[i].id) {
+      if (queryInt === imgData[i].id) {
         sendSuccess({ res, data: 'Image deleted' })
         fileController.deleteOne(imgData[i].url)
         imgData.splice(i, 1)

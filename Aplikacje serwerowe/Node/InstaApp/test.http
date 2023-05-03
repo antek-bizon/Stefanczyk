@@ -12,20 +12,19 @@ Content-Type: image/jpeg
 Content-Disposition: form-data; name="album"
 Content-Type: text/plain
 
-nazwa_albumu
+nazwa_albumu2
 ------FormBoundary1234
 
-
-### GET
+###
 GET http://localhost:3000/api/photos
 
-### GET
+###
 GET http://localhost:3000/api/photos/1
 
-### DELETE
+###
 DELETE http://localhost:3000/api/photos/1
 
-### PATCH
+###
 PATCH  http://localhost:3000/api/photos
 Content-Type: application/json
 

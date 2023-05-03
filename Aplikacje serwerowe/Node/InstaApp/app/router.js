@@ -1,11 +1,6 @@
-const path = require('path')
-const fs = require('fs')
 const logger = require('tracer').colorConsole()
-const mime = require('mime-types')
 const controller = require('./controller')
-const { createError, createSuccesful } = require('./controller')
 const routes = setRoutes()
-const staticFolders = ['static']
 
 controller.deleteAllImages()
 
@@ -42,36 +37,36 @@ const router = (req, res) => {
 
 module.exports = router
 
-function setRoutes() {
+function setRoutes () {
   const routes = {
-    'get': getRoutes(),
-    'post': postRoutes(),
-    'patch': patchRoutes(),
-    'delete': deleteRoutes()
+    get: getRoutes(),
+    post: postRoutes(),
+    patch: patchRoutes(),
+    delete: deleteRoutes()
   }
   return routes
 }
 
-function getRoutes() {
+function getRoutes () {
   return {
     '/api/photos': controller.getAllImagesJSON,
     '/api/photos/?': controller.getOneImageJSON
   }
 }
 
-function postRoutes() {
+function postRoutes () {
   return {
     '/api/photos': controller.addImage
   }
 }
 
-function patchRoutes() {
+function patchRoutes () {
   return {
     '/api/photos': controller.updateImage
   }
 }
 
-function deleteRoutes() {
+function deleteRoutes () {
   return {
     '/api/photos/?': controller.deleteImage
   }
