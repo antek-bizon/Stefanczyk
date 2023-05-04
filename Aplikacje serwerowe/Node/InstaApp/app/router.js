@@ -50,19 +50,26 @@ function setRoutes () {
 function getRoutes () {
   return {
     '/api/photos': controller.getAllImagesJSON,
-    '/api/photos/?': controller.getOneImageJSON
+    '/api/photos/?': controller.getOneImageJSON,
+    '/api/tags/raw': controller.getAllTags,
+    '/api/tags': controller.getAllTagsObjects,
+    '/api/tags/?': controller.getOneTag,
+    '/api/photos/tags/?': controller.getImageTags
   }
 }
 
 function postRoutes () {
   return {
-    '/api/photos': controller.addImage
+    '/api/photos': controller.addImage,
+    '/api/tags': controller.addTag
   }
 }
 
 function patchRoutes () {
   return {
-    '/api/photos': controller.updateImage
+    '/api/photos': controller.updateImage,
+    '/api/photos/tags': controller.addOneTagToImage,
+    '/api/photos/tags/multi': controller.addMultiTagsToImage
   }
 }
 

@@ -1,0 +1,46 @@
+###
+GET http://localhost:3000/api/tags/raw
+
+###
+GET http://localhost:3000/api/tags
+
+###
+GET http://localhost:3000/api/tags/1
+
+###
+POST http://localhost:3000/api/tags
+Content-Type: application/json
+
+{
+    "name":"#nowytag",
+    "popularity": 1000000
+}
+
+###
+PATCH http://localhost:3000/api/photos/tags
+
+{
+    "imageId": 1,
+    "name":"#nowytag",
+    "popularity": 1000000
+}
+
+###
+PATCH http://localhost:3000/api/photos/tags/multi
+
+{
+    "imageId": 1,
+    "tags": [   
+        {
+            "name":"#nowytag1",
+            "popularity": 1000000
+        },
+        {
+            "name":"#nowytag2",
+            "popularity": 10020
+        }
+    ]
+}
+
+###
+GET http://localhost:3000/api/photos/tags/1
