@@ -1,0 +1,95 @@
+###
+GET http://localhost:3000/api/filters/metadata/1
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "tint",
+    "data": {
+        "r": 200,
+        "g": 120,
+        "b": 50
+    }
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "rotate",
+    "data": {
+        "degrees": 200
+    }
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "resize",
+    "data": {
+        "width": 200,
+        "height": 120
+    }
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "reformat",
+    "data": {
+        "format": "png"
+    }
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "crop",
+    "data": {
+        "width": 100,
+        "height": 200,
+        "x": 20,
+        "y": 50
+    }
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "grayscale"
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "flip"
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "flop"
+}
+
+###
+PATCH http://localhost:3000/api/filters
+
+{
+    "imageId": 1,
+    "filter": "negate"
+}

@@ -54,7 +54,8 @@ function getRoutes () {
     '/api/tags/raw': controller.getAllTags,
     '/api/tags': controller.getAllTagsObjects,
     '/api/tags/?': controller.getOneTag,
-    '/api/photos/tags/?': controller.getImageTags
+    '/api/photos/tags/?': controller.getImageTags,
+    '/api/filters/metadata/?': controller.getImageMetadata
   }
 }
 
@@ -69,7 +70,8 @@ function patchRoutes () {
   return {
     '/api/photos': controller.updateImage,
     '/api/photos/tags': controller.addOneTagToImage,
-    '/api/photos/tags/multi': controller.addMultiTagsToImage
+    '/api/photos/tags/multi': controller.addMultiTagsToImage,
+    '/api/filters': controller.applyFilter
   }
 }
 

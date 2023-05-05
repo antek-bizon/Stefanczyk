@@ -5,6 +5,7 @@ const imgData = []
 const sendError = require('./commonController').sendError
 const sendSuccess = require('./commonController').sendSuccess
 const tagsController = require('./tagsController')
+const filtersController = require('./filtersController')
 
 module.exports = {
   addImage: async ({ req, res }) => {
@@ -184,5 +185,38 @@ module.exports = {
       }
     }
     sendError({ res, msg: 'Image not found' })
+  },
+
+  getImageMetadata: async ({ res, query }) => {
+    const queryInt = parseInt(query)
+    if (!queryInt) {
+      return sendError({ res, msg: 'Wrong query' })
+    }
+
+    const image = imgData.find(e => e.id === queryInt)
+    if (!image) {
+      return sendError({ res, msg: 'Image not found' })
+    }
+    const metadata = await filtersController.imageMetadata(image.url)
+    sendSuccess({ res, type: 'Application/json', data: JSON.stringify(metadata) })
+  },
+
+  applyFilter: async ({ res, req }) => {
+    const filterData = JSON.parse(await reqBodyController.getRequestData(req))
+    if (!filterData || !filterData.imageId || !filterData.filter) {
+      logger.warn('Error during parsing data')
+      return sendError({ res, msg: 'Error during parsing data' })
+    }
+
+    const image = imgData.find(e => e.id === filterData.imageId)
+    if (!image) {
+      return sendError({ res, msg: 'Image not found' })
+    }
+
+    if (await filtersController.applyFilter(image.url, filterData.filter, filterData.data)) {
+      sendSuccess({ res, data: 'Filter applied' })
+    } else {
+      sendError({ res, msg: 'Filter not applied' })
+    }
   }
 }
