@@ -7,6 +7,15 @@ const sendSuccess = require('./commonController').sendSuccess
 const tagsController = require('./tagsController')
 const filtersController = require('./filtersController')
 
+const sendFile = async ({ res, url }) => {
+  const file = await fileController.getFile(url)
+  if (!file) {
+    return sendError({ res, msg: 'File not found' })
+  }
+
+  sendSuccess({ res, type: file.type, data: file.data })
+}
+
 module.exports = {
   addImage: async ({ req, res }) => {
     const { fields, fileInfo } = await fileController.saveFile(req)
@@ -213,10 +222,64 @@ module.exports = {
       return sendError({ res, msg: 'Image not found' })
     }
 
-    if (await filtersController.applyFilter(image.url, filterData.filter, filterData.data)) {
+    const newImagePath = await filtersController.applyFilter(image.url, filterData.filter, filterData.data)
+    if (newImagePath) {
       sendSuccess({ res, data: 'Filter applied' })
+      image.history.push({
+        status: filterData.filter,
+        timestamp: Date.now().toString(),
+        url: newImagePath
+      })
+      logger.log(image)
     } else {
       sendError({ res, msg: 'Filter not applied' })
     }
-  }
+  },
+
+  getImage: async ({ res, query }) => {
+    const queryInt = parseInt(query)
+    if (!queryInt) {
+      logger.warn('Wrong query')
+      return sendError({ res, msg: 'Wrong query' })
+    }
+
+    const image = imgData.find(e => e.id === queryInt)
+    if (!image) {
+      logger.warn('Image not found')
+      return sendError({ res, msg: 'Image not found' })
+    }
+    logger.log(image.url)
+
+    sendFile({ res, url: image.url })
+  },
+
+  getImageWithFilter: async ({ res, queryArr }) => {
+    if (!queryArr || queryArr.length !== 2) {
+      logger.warn('Wrong query')
+      return sendError({ res, msg: 'Wrong query' })
+    }
+
+    const imageId = parseInt(queryArr[0])
+    const filter = queryArr[1].toLowerCase()
+    if (!imageId || !filter) {
+      logger.warn('Wrong query')
+      return sendError({ res, msg: 'Wrong query' })
+    }
+
+    const image = imgData.find(e => e.id === imageId)
+    if (!image) {
+      logger.warn('Image not found')
+      return sendError({ res, msg: 'Image not found' })
+    }
+
+    const imageWithFilter = image.history.find(e => e.status === filter)
+    if (!imageWithFilter) {
+      logger.warn('Filter not found')
+      return sendError({ res, msg: 'Filter not found' })
+    }
+
+    sendFile({ res, url: imageWithFilter.url })
+  },
+
+  sendFile
 }

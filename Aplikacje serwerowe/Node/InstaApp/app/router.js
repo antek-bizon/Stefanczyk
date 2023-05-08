@@ -1,6 +1,7 @@
 const logger = require('tracer').colorConsole()
 const controller = require('./controller')
 const routes = setRoutes()
+const matchingRoutes = setMatchingRoutes()
 
 controller.deleteAllImages()
 
@@ -18,21 +19,28 @@ const router = (req, res) => {
   }
 
   const methodFunctions = routes[method]
-  if (!methodFunctions[url]) {
-    const checkMap = url.substring(0, url.lastIndexOf('/')) + '/?'
-    logger.log(checkMap)
-    if (!methodFunctions[checkMap]) {
-      logger.warn('Url not handled')
-      controller.sendError({ res })
-    } else {
-      const func = methodFunctions[checkMap]
-      const query = url.substring(url.lastIndexOf('/') + 1)
-      func({ res, req, query })
-    }
-  } else {
+  if (methodFunctions[url]) {
     const func = methodFunctions[url]
-    func({ res, req })
+    return func({ res, req })
   }
+  const checkMap = url.substring(0, url.lastIndexOf('/')) + '/?'
+  logger.log(checkMap)
+  if (methodFunctions[checkMap]) {
+    const func = methodFunctions[checkMap]
+    const query = url.substring(url.lastIndexOf('/') + 1)
+    return func({ res, req, query })
+  }
+
+  for (const route of matchingRoutes) {
+    if (route.matcher.test(url)) {
+      const queryArr = url.split('/').slice(-route.numOfParams)
+      const func = route.func
+      return func({ res, queryArr })
+    }
+  }
+
+  logger.warn('No routes founded, trying to send file')
+  return controller.sendFile({ res, url })
 }
 
 module.exports = router
@@ -55,7 +63,8 @@ function getRoutes () {
     '/api/tags': controller.getAllTagsObjects,
     '/api/tags/?': controller.getOneTag,
     '/api/photos/tags/?': controller.getImageTags,
-    '/api/filters/metadata/?': controller.getImageMetadata
+    '/api/filters/metadata/?': controller.getImageMetadata,
+    '/api/getfile/?': controller.getImage
   }
 }
 
@@ -79,4 +88,15 @@ function deleteRoutes () {
   return {
     '/api/photos/?': controller.deleteImage
   }
+}
+
+function setMatchingRoutes () {
+  return [
+    {
+      method: 'get',
+      matcher: /\/api\/getfile\/[0-9]+\/[a-zA-Z]+/,
+      numOfParams: 2,
+      func: controller.getImageWithFilter
+    }
+  ]
 }

@@ -10,7 +10,7 @@ async function rotateImage (imagePath, { degrees }) {
   await sharp(imagePath)
     .rotate(degrees)
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function resizeImage (imagePath, { width, height }) {
@@ -23,7 +23,7 @@ async function resizeImage (imagePath, { width, height }) {
   await sharp(imagePath)
     .resize(width, height)
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function reformatImage (imagePath, { format }) {
@@ -36,7 +36,7 @@ async function reformatImage (imagePath, { format }) {
   await sharp(imagePath)
     .toFormat(format)
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function cropImage (imagePath, { width, height, x, y }) {
@@ -49,7 +49,7 @@ async function cropImage (imagePath, { width, height, x, y }) {
   await sharp(imagePath)
     .extract({ width, height, left: x, top: y })
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function grayscaleImage (imagePath) {
@@ -57,7 +57,7 @@ async function grayscaleImage (imagePath) {
   await sharp(imagePath)
     .grayscale()
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function flipImage (imagePath) {
@@ -65,7 +65,7 @@ async function flipImage (imagePath) {
   await sharp(imagePath)
     .flip()
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function flopImage (imagePath) {
@@ -73,7 +73,7 @@ async function flopImage (imagePath) {
   await sharp(imagePath)
     .flop()
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function negateImage (imagePath) {
@@ -81,7 +81,7 @@ async function negateImage (imagePath) {
   await sharp(imagePath)
     .negate()
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 async function tintImage (imagePath, { r, g, b }) {
@@ -94,7 +94,7 @@ async function tintImage (imagePath, { r, g, b }) {
   await sharp(imagePath)
     .tint({ r, g, b })
     .toFile(newImagePath)
-  return true
+  return newImagePath
 }
 
 module.exports = {

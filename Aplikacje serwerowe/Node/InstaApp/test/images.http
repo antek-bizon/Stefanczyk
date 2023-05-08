@@ -31,3 +31,6 @@ Content-Type: application/json
 {
     "id": 1
 }
+
+###
+GET http://localhost:3000/api/getfile/1

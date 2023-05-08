@@ -3,6 +3,7 @@ const logger = require('tracer').colorConsole()
 const path = require('path')
 const fs = require('fs')
 const fsPromises = require('fs/promises')
+const mimeTypes = require('mime-types')
 
 const uploadDir = path.join(__dirname, '../uploads')
 
@@ -82,5 +83,17 @@ module.exports = {
     } else {
       logger.warn('File do not exist:', url)
     }
+  },
+
+  getFile: async (url) => {
+    const filepath = path.join(__dirname, '../', url)
+    if (fs.existsSync(filepath)) {
+      const data = await fsPromises.readFile(filepath)
+      const type = mimeTypes.lookup(filepath)
+      return { data, type }
+    }
+
+    logger.warn('File do not exist:', filepath)
+    return null
   }
 }

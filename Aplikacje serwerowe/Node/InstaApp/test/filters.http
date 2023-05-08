@@ -2,6 +2,9 @@
 GET http://localhost:3000/api/filters/metadata/1
 
 ###
+GET http://localhost:3000/api/getfile/1/tint
+
+###
 PATCH http://localhost:3000/api/filters
 
 {
