@@ -7,6 +7,9 @@ const sendSuccess = require('./commonController').sendSuccess
 const tagsController = require('./tagsController')
 const filtersController = require('./filtersController')
 
+const userController = require('./userController')
+require('dotenv').config()
+
 const sendFile = async ({ res, url }) => {
   const file = await fileController.getFile(url)
   if (!file) {
@@ -18,24 +21,32 @@ const sendFile = async ({ res, url }) => {
 
 module.exports = {
   addImage: async ({ req, res }) => {
-    const { fields, fileInfo } = await fileController.saveFile(req)
-    logger.log(fields, fileInfo)
-    imgData.push({
-      id: (imgData.length === 0) ? 1 : imgData[imgData.length - 1].id + 1,
-      album: fields.album,
-      originalName: fileInfo.originalName,
-      url: fileInfo.url,
-      lastChange: 'original',
-      history: [
-        {
-          status: 'original',
-          timestamp: Date.now().toString()
-        }
-      ],
-      tags: []
-    })
-    console.log(imgData)
-    sendSuccess({ res, data: 'Filed saved successfully' })
+    try {
+      const { fields, fileInfo } = await fileController.saveFile(req)
+
+      logger.log(fields, fileInfo)
+
+      imgData.push({
+        id: (imgData.length === 0) ? 1 : imgData[imgData.length - 1].id + 1,
+        album: fields.album,
+        originalName: fileInfo.originalName,
+        url: fileInfo.url,
+        lastChange: 'original',
+        history: [
+          {
+            status: 'original',
+            timestamp: Date.now().toString()
+          }
+        ],
+        tags: []
+      })
+      logger.log(imgData)
+
+      sendSuccess({ res, data: 'Filed saved successfully' })
+    } catch (err) {
+      logger.error(err)
+      return sendError({ res, msg: 'Parsing failed' })
+    }
   },
 
   sendError: ({ res }) => {
@@ -281,5 +292,8 @@ module.exports = {
     sendFile({ res, url: imageWithFilter.url })
   },
 
-  sendFile
+  sendFile,
+  registerUser: userController.registerUser,
+  confirmUser: userController.confirmUser,
+  loginUser: userController.loginUser
 }

@@ -64,14 +64,17 @@ function getRoutes () {
     '/api/tags/?': controller.getOneTag,
     '/api/photos/tags/?': controller.getImageTags,
     '/api/filters/metadata/?': controller.getImageMetadata,
-    '/api/getfile/?': controller.getImage
+    '/api/getfile/?': controller.getImage,
+    '/api/user/confirm/?': controller.confirmUser
   }
 }
 
 function postRoutes () {
   return {
     '/api/photos': controller.addImage,
-    '/api/tags': controller.addTag
+    '/api/tags': controller.addTag,
+    '/api/user/register': controller.registerUser,
+    '/api/user/login': controller.loginUser
   }
 }
 

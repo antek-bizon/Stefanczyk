@@ -23,8 +23,8 @@ module.exports = {
     return new Promise((resolve, reject) => {
       try {
         form.parse(req, function (err, fields, files) {
-          if (err) {
-            throw err
+          if (err || !files.file) {
+            return reject(err)
           }
 
           const uploadName = files.file.path.replaceAll('\\', '/').split('/').pop()

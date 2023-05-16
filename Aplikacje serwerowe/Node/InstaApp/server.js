@@ -1,8 +1,8 @@
 const http = require('http')
 const router = require("./app/router")
-const PORT = 3000
 const logger = require('tracer').colorConsole()
+require('dotenv').config()
 
 http
   .createServer((req, res) => router(req, res))
-  .listen(PORT, () => logger.info("listen on", PORT))
+  .listen(process.env.APP_PORT, () => logger.info(`listen on ${process.env.APP_PORT}`))
