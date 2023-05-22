@@ -118,10 +118,9 @@ module.exports = {
     }
   },
 
-
   getUserData: ({ res, req }) => {
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-      const token = req.headers.authorization.split(" ")[1]
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      const token = req.headers.authorization.split(' ')[1]
       try {
         const decoded = jwt.verify(token, process.env.SECRET_KEY)
         if (!decoded) {
@@ -138,7 +137,8 @@ module.exports = {
         }
 
         return sendSuccess({
-          res, data: {
+          res,
+          data: {
             name: user.name,
             lastName: user.lastName,
             email: user.email
@@ -153,8 +153,8 @@ module.exports = {
   },
 
   updateUserData: async ({ res, req }) => {
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-      const token = req.headers.authorization.split(" ")[1]
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      const token = req.headers.authorization.split(' ')[1]
       try {
         const decoded = jwt.verify(token, process.env.SECRET_KEY)
         if (!decoded) {
@@ -179,7 +179,8 @@ module.exports = {
         user.lastName = patchData.lastName
 
         return sendSuccess({
-          res, data: {
+          res,
+          data: {
             name: user.name,
             lastName: user.lastName,
             email: user.email

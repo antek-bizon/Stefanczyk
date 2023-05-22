@@ -24,7 +24,6 @@ const send = ({ res, status = 200, type = 'plain/text', data = '', otherHeaders 
   res.end()
 }
 
-
 const sendFile = async ({ res, url }) => {
   const file = await fileController.getFile(url)
   if (!file) {

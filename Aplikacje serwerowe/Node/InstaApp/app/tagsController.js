@@ -147,7 +147,7 @@ module.exports = {
         continue
       }
 
-      if (!tags.find(e => e.name = tag.name)) {
+      if (!tags.find(e => e.name === tag.name)) {
         tags.push({
           id: tags.length,
           name: tag.name,

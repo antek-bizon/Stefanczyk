@@ -187,4 +187,4 @@ module.exports = {
       return sendError({ res, status: 400, msg: 'Filter not applied' })
     }
   }
-}  
+}
