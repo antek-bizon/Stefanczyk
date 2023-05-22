@@ -16,21 +16,21 @@ nazwa_albumu2
 ------FormBoundary1234
 
 ###
-GET http://localhost:3000/api/photos
+GET http://localhost:3000/api/photos HTTP/1.1
 
 ###
-GET http://localhost:3000/api/photos/1
+GET http://localhost:3000/api/photos/1 HTTP/1.1
 
 ###
-DELETE http://localhost:3000/api/photos/1
+DELETE http://localhost:3000/api/photos/1 HTTP/1.1
 
 ###
-PATCH  http://localhost:3000/api/photos
+PATCH  http://localhost:3000/api/photos HTTP/1.1
 Content-Type: application/json
 
 {
-    "id": 1
+    "id": 2
 }
 
 ###
-GET http://localhost:3000/api/getfile/1
+GET http://localhost:3000/api/getfile/2 HTTP/1.1
