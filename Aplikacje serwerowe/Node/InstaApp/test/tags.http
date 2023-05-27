@@ -1,14 +1,14 @@
 ###
-GET http://localhost:3000/api/tags/raw HTTP/1.1
+GET http://localhost:3001/api/tags/raw HTTP/1.1
 
 ###
-GET http://localhost:3000/api/tags HTTP/1.1
+GET http://localhost:3001/api/tags HTTP/1.1
 
 ###
-GET http://localhost:3000/api/tags/1 HTTP/1.1
+GET http://localhost:3001/api/tags/1 HTTP/1.1
 
 ###
-POST http://localhost:3000/api/tags HTTP/1.1
+POST http://localhost:3001/api/tags HTTP/1.1
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/api/photos/tags HTTP/1.1
+PATCH http://localhost:3001/api/photos/tags HTTP/1.1
 
 {
     "imageId": 1,
@@ -26,7 +26,7 @@ PATCH http://localhost:3000/api/photos/tags HTTP/1.1
 }
 
 ###
-PATCH http://localhost:3000/api/photos/tags/multi HTTP/1.1
+PATCH http://localhost:3001/api/photos/tags/multi HTTP/1.1
 
 {
     "imageId": 1,
@@ -43,4 +43,4 @@ PATCH http://localhost:3000/api/photos/tags/multi HTTP/1.1
 }
 
 ###
-GET http://localhost:3000/api/photos/tags/1 HTTP/1.1
+GET http://localhost:3001/api/photos/tags/1 HTTP/1.1

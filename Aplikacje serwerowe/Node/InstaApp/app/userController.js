@@ -42,7 +42,7 @@ module.exports = {
     logger.log(users.get(regInfo.email))
     sendSuccess({
       res,
-      data: `Skopiuj poniższy link do przeglądarki: http://localhost:3000/api/user/confirm/${token}`
+      data: `Skopiuj poniższy link do przeglądarki:\n http://localhost:${process.env.APP_PORT}/api/user/confirm/${token}`
     })
   },
 

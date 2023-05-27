@@ -1,5 +1,5 @@
 ### POST - nowe dane
-POST http://localhost:3000/api/photos HTTP/1.1
+POST http://localhost:3001/api/photos HTTP/1.1
 Content-Type: multipart/form-data; boundary=----FormBoundary1234
 
 ------FormBoundary1234
@@ -16,16 +16,16 @@ nazwa_albumu2
 ------FormBoundary1234
 
 ###
-GET http://localhost:3000/api/photos HTTP/1.1
+GET http://localhost:3001/api/photos HTTP/1.1
 
 ###
-GET http://localhost:3000/api/photos/1 HTTP/1.1
+GET http://localhost:3001/api/photos/1 HTTP/1.1
 
 ###
-DELETE http://localhost:3000/api/photos/1 HTTP/1.1
+DELETE http://localhost:3001/api/photos/1 HTTP/1.1
 
 ###
-PATCH  http://localhost:3000/api/photos HTTP/1.1
+PATCH  http://localhost:3001/api/photos HTTP/1.1
 Content-Type: application/json
 
 {
@@ -33,4 +33,4 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/api/getfile/2 HTTP/1.1
+GET http://localhost:3001/api/getfile/2 HTTP/1.1
