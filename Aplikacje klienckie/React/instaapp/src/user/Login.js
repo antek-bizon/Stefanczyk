@@ -16,7 +16,8 @@ export default function Login ({ setToken }) {
         method: 'POST',
         body,
         headers: {
-          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/json'
+          'Content-Type': 'text/plain'
         }
       })
 
@@ -33,7 +34,7 @@ export default function Login ({ setToken }) {
   }
 
   return (
-    <form onSubmit={(e) => loginUser(e)} className='column'>
+    <form onSubmit={(e) => loginUser(e)} className='column equal-height'>
       <table className='user-validation-table'>
         <tbody>
           <tr>

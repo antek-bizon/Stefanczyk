@@ -2,10 +2,8 @@ import { useState } from 'react'
 import Login from './Login'
 import Register from './Register'
 
-export default function UserValidation ({ isToken, setToken }) {
+export default function UserValidation ({ setToken }) {
   const [switchState, changeSwitchState] = useState(true)
-
-  // const widget = (switchState) ? <Login setToken={setToken} /> : <Register />
 
   return (
     <div className='userValidation column'>
@@ -34,9 +32,7 @@ export default function UserValidation ({ isToken, setToken }) {
         </button>
       </div>
 
-      {(!isToken)
-        ? (switchState) ? <Login setToken={setToken} /> : <Register />
-        : 'Wyloguj'}
+      {(switchState) ? <Login setToken={setToken} /> : <Register />}
     </div>
   )
 }

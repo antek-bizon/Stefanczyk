@@ -20,7 +20,8 @@ export default function Register () {
         method: 'POST',
         body,
         headers: {
-          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/json'
+          'Content-Type': 'text/plain'
         }
       })
       console.log(response)
@@ -29,16 +30,18 @@ export default function Register () {
       console.log(result)
       if (result.err || !result.data) {
         console.error('Register failed')
+        window.alert('Register failed:\n' + result.msg)
         return
       }
-      window.confirm(result.data)
+      window.alert(result.data)
     } catch (e) {
       console.error(e)
+      window.alert(e)
     }
   }
 
   return (
-    <form onSubmit={(e) => registerUser(e)} className='column'>
+    <form onSubmit={(e) => registerUser(e)} className='column equal-height'>
       <table className='user-validation-table'>
         <tbody>
           <tr>

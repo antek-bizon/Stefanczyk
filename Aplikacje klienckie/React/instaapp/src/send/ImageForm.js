@@ -9,15 +9,16 @@ export default function ImageForm (clientToken) {
 
     const body = new FormData()
     body.append('file', selectedFile)
+    body.append('album', 'smok241')
 
     try {
       const response = await fetch('http://localhost:3001/api/photos', {
         method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + clientToken
-        }
+        body
+        // headers: {
+        //   'Content-Type': 'text/plain',
+        //   Authorization: 'Bearer ' + clientToken
+        // }
       })
 
       const result = await response.json()
