@@ -26,6 +26,7 @@ module.exports = {
           if (err || !files.file) {
             return reject(err)
           }
+          logger.log(files, fields)
 
           const uploadName = files.file.path.replaceAll('\\', '/').split('/').pop()
 

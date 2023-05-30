@@ -13,8 +13,7 @@ const router = (req, res) => {
   const url = decodeURIComponent(req.url)
 
   if (method === 'options') {
-    controller.sendSuccess({ res })
-    return
+    return controller.sendOptions({ res })
   }
 
   if (!routes[method]) {
@@ -50,7 +49,7 @@ const router = (req, res) => {
 
 module.exports = router
 
-function setRoutes() {
+function setRoutes () {
   const routes = {
     get: getRoutes(),
     post: postRoutes(),
@@ -60,7 +59,7 @@ function setRoutes() {
   return routes
 }
 
-function getRoutes() {
+function getRoutes () {
   return {
     '/api/photos': controller.getAllImagesJSON,
     '/api/photos/?': controller.getOneImageJSON,
@@ -75,7 +74,7 @@ function getRoutes() {
   }
 }
 
-function postRoutes() {
+function postRoutes () {
   return {
     '/api/photos': controller.addImage,
     '/api/tags': controller.addTag,
@@ -84,7 +83,7 @@ function postRoutes() {
   }
 }
 
-function patchRoutes() {
+function patchRoutes () {
   return {
     '/api/photos': controller.updateImage,
     '/api/photos/tags': controller.addOneTagToImage,
@@ -94,13 +93,13 @@ function patchRoutes() {
   }
 }
 
-function deleteRoutes() {
+function deleteRoutes () {
   return {
     '/api/photos/?': controller.deleteImage
   }
 }
 
-function setMatchingRoutes() {
+function setMatchingRoutes () {
   return [
     {
       method: 'get',

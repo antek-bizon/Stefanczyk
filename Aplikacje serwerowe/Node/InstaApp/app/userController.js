@@ -42,7 +42,8 @@ module.exports = {
     logger.log(users.get(regInfo.email))
     sendSuccess({
       res,
-      data: `Skopiuj poniższy link do przeglądarki:\n http://localhost:${process.env.APP_PORT}/api/user/confirm/${token}`
+      data: `http://localhost:${process.env.APP_PORT}/api/user/confirm/${token}`
+      // data: `Skopiuj poniższy link do przeglądarki:\nhttp://localhost:${process.env.APP_PORT}/api/user/confirm/${token}`
     })
   },
 
@@ -56,7 +57,7 @@ module.exports = {
     const user = users.get(loginInfo.email)
     if (!user) {
       logger.warn('User not found')
-      return sendError({ res, msg: 'User not found' })
+      return sendError({ res, status: 401, msg: 'User not found' })
     }
 
     if (!user.confirmed) {
@@ -83,7 +84,12 @@ module.exports = {
 
     sendSuccess({
       res,
-      data: token,
+      data: {
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        token
+      },
       otherHeaders: [{
         key: 'Authorization',
         value: `Bearer ${token}`
