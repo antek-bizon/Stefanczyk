@@ -55,7 +55,7 @@ export default function ImageForm ({ isOpen, onClose, token }) {
             <Box>
               <AlertTitle>Success!</AlertTitle>
               <AlertDescription>
-                Click here to confirm your account.
+                Image uploaded successfully!
               </AlertDescription>
             </Box>
             <CloseButton onClick={() => changeFetchMsg('')} />
@@ -76,10 +76,10 @@ export default function ImageForm ({ isOpen, onClose, token }) {
       <ModalContent>
         <ModalHeader>Upload Image</ModalHeader>
         <ModalCloseButton />
-        <form className='image-form' onSubmit={(e) => sendFile(e)}>
+        <form onSubmit={(e) => sendFile(e)}>
           <ModalBody>
             <FormLabel>Choose file</FormLabel>
-            <Input type='file' accept='image/*' onChange={(e) => setSelectedFile(e.target.files[0])} />
+            <Input type='file' accept='image/*' required onChange={(e) => setSelectedFile(e.target.files[0])} />
           </ModalBody>
           <ModalFooter>
             <button type='submit'>Send</button>

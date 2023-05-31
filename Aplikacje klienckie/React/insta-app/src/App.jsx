@@ -16,13 +16,18 @@ function App () {
     window.sessionStorage.setItem('sesionData', JSON.stringify(data))
   }
 
+  const logout = () => {
+    window.sessionStorage.removeItem('sesionData')
+    setClientData('')
+  }
+
   return (
     <ChakraProvider>
       <Box width='100vw' height='100vh' bgImage='url(/background.gif)' bgSize='cover' bgPosition='center' bgRepeat='no-repeat'>
         {
           !isClientToken
             ? <UserValidation setData={setData} />
-            : <MainPage clientData={clientData} />
+            : <MainPage clientData={clientData} logout={logout} />
         }
       </Box>
     </ChakraProvider>
