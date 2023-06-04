@@ -12,6 +12,20 @@ const router = (req, res) => {
   const method = req.method.toLowerCase()
   const url = decodeURIComponent(req.url)
 
+  const cookies = new Map()
+  if (req.headers.cookie) {
+    req.headers.cookie.split('; ').forEach(cookie => {
+      const [key, value] = cookie.split('=')
+      cookies.set(key, value)
+    })
+  }
+
+  if (!cookies.get('token')) {
+    logger.log('No token found')
+  }
+
+  controller.setHeaders({ res, origin: req.headers.origin })
+
   if (method === 'options') {
     return controller.sendOptions({ res })
   }

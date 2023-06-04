@@ -1,3 +1,4 @@
+import { useCookies } from 'react-cookie'
 import { useState } from 'react'
 import UserValidation from './user/UserValidation'
 import { ChakraProvider, Box } from '@chakra-ui/react'
@@ -8,16 +9,18 @@ function App () {
   if (sessionData) {
     sessionData = JSON.parse(sessionData)
   }
+  const [cookies, setCookie, removeCookie] = useCookies(['token'])
   const [clientData, setClientData] = useState(sessionData)
-  const isClientToken = clientData && clientData.token !== ''
+  const isClientToken = !!(cookies.token)
 
   const setData = (data) => {
     setClientData(data)
-    window.sessionStorage.setItem('sesionData', JSON.stringify(data))
+    setCookie('token', data.token, { maxAge: 60 })
+    setCookie('example', 'example', { maxAge: 60 })
   }
 
   const logout = () => {
-    window.sessionStorage.removeItem('sesionData')
+    removeCookie('token', '')
     setClientData('')
   }
 

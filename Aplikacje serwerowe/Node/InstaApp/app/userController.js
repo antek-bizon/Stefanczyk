@@ -1,7 +1,7 @@
 const logger = require('tracer').colorConsole()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { sendError, sendSuccess } = require('./commonController')
+const { sendError, sendSuccess, decodeCookieToken } = require('./commonController')
 const reqBodyController = require('./requestBodyController')
 const users = new Map()
 
@@ -38,6 +38,8 @@ module.exports = {
         expiresIn: '1m'
       }
     )
+
+    decodeCookieToken({ req })
 
     logger.log(users.get(regInfo.email))
     sendSuccess({
@@ -93,6 +95,10 @@ module.exports = {
       otherHeaders: [{
         key: 'Authorization',
         value: `Bearer ${token}`
+      },
+      {
+        key: 'Set-Cookie',
+        value: token
       }]
     })
   },

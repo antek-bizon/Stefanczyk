@@ -1,5 +1,5 @@
 import React from 'react'
-import { Flex, Stack, Button, useDisclosure } from '@chakra-ui/react'
+import { Flex, Stack, Button, useDisclosure, Image } from '@chakra-ui/react'
 import ImageForm from './send/ImageForm'
 import UserPage from './user/UserPage'
 import UserMenu from './user/UserMenu'
@@ -33,6 +33,7 @@ export default function MainPage ({ clientData, logout }) {
       </BrowserRouter>
       <ImageForm isOpen={newPostIsOpen && !setPicIsOpen} onClose={newPostOnClose} token={clientData} />
       <SetProfilePicture isOpen={setPicIsOpen && !newPostIsOpen} onClose={setPicOnClose} token={clientData} />
+      <Image src='http://localhost:3001/api/getfile/1' alt='test image' />
     </Flex>
 
   )

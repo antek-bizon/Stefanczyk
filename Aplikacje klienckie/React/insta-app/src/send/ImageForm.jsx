@@ -50,27 +50,29 @@ export default function ImageForm ({ isOpen, onClose, token }) {
       <ModalOverlay />
       {
         isFetchMsg
-          ? <Alert status='success' position='absolute' top='5%' left='calc(50% - 200px)' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
-            <AlertIcon />
-            <Box>
-              <AlertTitle>Success!</AlertTitle>
-              <AlertDescription>
-                Image uploaded successfully!
-              </AlertDescription>
-            </Box>
-            <CloseButton onClick={() => changeFetchMsg('')} />
-          </Alert>
-          : isError
-            ? <Alert status='error' position='absolute' top='5%' left='calc(50% - 120px)' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+          ? (
+            <Alert status='success' position='absolute' top='5%' left='calc(50% - 200px)' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
               <AlertIcon />
               <Box>
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>Success!</AlertTitle>
                 <AlertDescription>
-                  {error}
+                  Image uploaded successfully!
                 </AlertDescription>
               </Box>
-              <CloseButton onClick={() => changeError('')} />
-            </Alert>
+              <CloseButton onClick={() => changeFetchMsg('')} />
+            </Alert>)
+          : isError
+            ? (
+              <Alert status='error' position='absolute' top='5%' left='calc(50% - 120px)' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+                <AlertIcon />
+                <Box>
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>
+                    {error}
+                  </AlertDescription>
+                </Box>
+                <CloseButton onClick={() => changeError('')} />
+              </Alert>)
             : null
       }
       <ModalContent>

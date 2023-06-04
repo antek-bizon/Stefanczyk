@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, HStack, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton } from '@chakra-ui/react'
 import { useState } from 'react'
 
 export default function Login ({ setData }) {
@@ -24,7 +24,7 @@ export default function Login ({ setData }) {
           'Content-Type': 'text/plain'
         }
       })
-
+      console.log(response)
       const result = await response.json()
       if (result.err || !result.data) {
         console.error('Login failed:', result.msg)
@@ -35,24 +35,27 @@ export default function Login ({ setData }) {
       setData(result.data)
     } catch (e) {
       console.error(e)
-      changeError(e)
+      changeError(e.message)
     }
   }
 
   return (
     <Box my={4}>
-      {
-        isError && <Alert status='error' position='absolute' top='5%' left='calc(50% - 120px)' width='fit-content' zIndex='1' gap='10px'>
-          <AlertIcon />
-          <Box>
-            <AlertTitle>Login failed</AlertTitle>
-            <AlertDescription>
-              {error}
-            </AlertDescription>
-          </Box>
-          <CloseButton onClick={() => changeError('')} />
-        </Alert>
-      }
+      <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
+        {
+          isError && (
+            <Alert status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+              <AlertIcon />
+              <Box>
+                <AlertTitle>Login failed</AlertTitle>
+                <AlertDescription>
+                  {error}
+                </AlertDescription>
+              </Box>
+              <CloseButton onClick={() => changeError('')} />
+            </Alert>)
+        }
+      </HStack>
       <form onSubmit={(e) => loginUser(e)} className='column equal-height'>
         <FormControl>
           <FormLabel>E-mail</FormLabel>

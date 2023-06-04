@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, FormControl, FormLabel, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton, HStack } from '@chakra-ui/react'
 
 export default function Register () {
   const [email, changeEmail] = useState('')
@@ -20,6 +20,7 @@ export default function Register () {
       name,
       lastName
     })
+    console.log(body)
 
     try {
       const response = await fetch('http://localhost:3001/api/user/register', {
@@ -28,7 +29,8 @@ export default function Register () {
         headers: {
           // 'Content-Type': 'application/json'
           'Content-Type': 'text/plain'
-        }
+        },
+        credentials: 'include'
       })
       console.log(response)
 
@@ -42,7 +44,7 @@ export default function Register () {
       changeUrl(result.data)
     } catch (e) {
       console.error(e)
-      changeError(e)
+      changeError(e.message)
     }
   }
 
@@ -53,31 +55,35 @@ export default function Register () {
 
   return (
     <Box my={4}>
-      {
-        isUrl
-          ? <Alert status='success' position='absolute' top='5%' left='calc(50% - 200px)' width='fit-content' zIndex='1' gap='10px'>
-            <AlertIcon />
-            <Box>
-              <AlertTitle>Success!</AlertTitle>
-              <AlertDescription>
-                Click here to confirm your account.
-              </AlertDescription>
-            </Box>
-            <Button onClick={() => confirmAccount(url)}>Confirm</Button>
-          </Alert>
-          : isError
-            ? <Alert status='error' position='absolute' top='5%' left='calc(50% - 120px)' width='fit-content' zIndex='1' gap='10px'>
-              <AlertIcon />
-              <Box>
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>
-                  {error}
-                </AlertDescription>
-              </Box>
-              <CloseButton onClick={() => changeError('')} />
-            </Alert>
-            : null
-      }
+      <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
+        {
+          isUrl
+            ? (
+              <Alert status='success' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+                <AlertIcon />
+                <Box>
+                  <AlertTitle>Success!</AlertTitle>
+                  <AlertDescription>
+                    Click here to confirm your account.
+                  </AlertDescription>
+                </Box>
+                <Button onClick={() => confirmAccount(url)}>Confirm</Button>
+              </Alert>)
+            : isError
+              ? (
+                <Alert status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+                  <AlertIcon />
+                  <Box>
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>
+                      {error}
+                    </AlertDescription>
+                  </Box>
+                  <CloseButton onClick={() => changeError('')} />
+                </Alert>)
+              : null
+        }
+      </HStack>
 
       <form onSubmit={(e) => registerUser(e)} className='column equal-height'>
         <FormControl>
