@@ -1,6 +1,7 @@
 const logger = require('tracer').colorConsole()
 const controller = require('./controller')
-const routes = setRoutes()
+const validationRoutes = setRoutes()
+const noValidationRoutes = setNoValidationRoutes()
 const matchingRoutes = setMatchingRoutes()
 
 controller.deleteAllImages()
@@ -10,58 +11,71 @@ const router = (req, res) => {
   logger.log('metoda:', req.method)
 
   const method = req.method.toLowerCase()
-  const url = decodeURIComponent(req.url)
 
-  const cookies = new Map()
-  if (req.headers.cookie) {
-    req.headers.cookie.split('; ').forEach(cookie => {
-      const [key, value] = cookie.split('=')
-      cookies.set(key, value)
-    })
-  }
-
-  if (!cookies.get('token')) {
-    logger.log('No token found')
-  }
-
-  controller.setHeaders({ res, origin: req.headers.origin })
+  controller.setHeaders(res, req.headers.origin)
 
   if (method === 'options') {
     return controller.sendOptions({ res })
   }
 
+  const url = decodeURIComponent(req.url)
+  const cookies = parseCookies(req.headers.cookie)
+  const user = (cookies.has('token')) ? controller.verifyUser(cookies.get('token')) : false
+
+  const handled = handleSimpleRoutes(res, req, method, url, user)
+  if (!handled) {
+    return controller.sendError({ res, msg: 'Not found' })
+  } else if (handled && handled.noMatches) {
+    for (const route of matchingRoutes) {
+      if (route.matcher.test(url)) {
+        const queryArr = url.split('/').slice(-route.numOfParams)
+        const func = route.func
+        return func({ res, queryArr })
+      }
+    }
+
+    logger.warn('No routes founded, trying to send file')
+    return controller.sendFile({ res, url })
+  }
+}
+
+module.exports = router
+
+function handleSimpleRoutes (res, req, method, url, user) {
+  const routes = (user) ? validationRoutes : noValidationRoutes
+
   if (!routes[method]) {
     logger.warn('Method not handled')
-    controller.sendError({ res })
-    return
+    return controller.sendError({ res })
   }
 
   const methodFunctions = routes[method]
   if (methodFunctions[url]) {
     const func = methodFunctions[url]
-    return func({ res, req })
+    return func({ res, req, user })
   }
+
   const checkMap = url.substring(0, url.lastIndexOf('/')) + '/?'
   logger.log(checkMap)
   if (methodFunctions[checkMap]) {
     const func = methodFunctions[checkMap]
     const query = url.substring(url.lastIndexOf('/') + 1)
-    return func({ res, req, query })
+    return func({ res, req, query, user })
   }
 
-  for (const route of matchingRoutes) {
-    if (route.matcher.test(url)) {
-      const queryArr = url.split('/').slice(-route.numOfParams)
-      const func = route.func
-      return func({ res, queryArr })
-    }
-  }
-
-  logger.warn('No routes founded, trying to send file')
-  return controller.sendFile({ res, url })
+  return { noMatches: true }
 }
 
-module.exports = router
+function parseCookies (cookieString) {
+  const cookies = new Map()
+  if (cookieString) {
+    cookieString.split('; ').forEach(cookie => {
+      const [key, value] = cookie.split('=')
+      cookies.set(key, value)
+    })
+  }
+  return cookies
+}
 
 function setRoutes () {
   const routes = {
@@ -71,6 +85,18 @@ function setRoutes () {
     delete: deleteRoutes()
   }
   return routes
+}
+
+function setNoValidationRoutes () {
+  return {
+    get: {
+      '/api/user/confirm/?': controller.confirmUser
+    },
+    post: {
+      '/api/user/register': controller.registerUser,
+      '/api/user/login': controller.loginUser
+    }
+  }
 }
 
 function getRoutes () {
@@ -83,7 +109,6 @@ function getRoutes () {
     '/api/photos/tags/?': controller.getImageTags,
     '/api/filters/metadata/?': controller.getImageMetadata,
     '/api/getfile/?': controller.getImage,
-    '/api/user/confirm/?': controller.confirmUser,
     '/api/profile': controller.getUserData
   }
 }
@@ -91,9 +116,7 @@ function getRoutes () {
 function postRoutes () {
   return {
     '/api/photos': controller.addImage,
-    '/api/tags': controller.addTag,
-    '/api/user/register': controller.registerUser,
-    '/api/user/login': controller.loginUser
+    '/api/tags': controller.addTag
   }
 }
 

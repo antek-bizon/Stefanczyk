@@ -39,17 +39,9 @@ const sendOptions = ({ res }) => {
   res.end()
 }
 
-const setHeaders = ({ res, origin = '*' }) => {
+const setHeaders = (res, origin = '*') => {
   res.setHeader('Access-Control-Allow-Origin', origin)
   res.setHeader('Access-Control-Allow-Credentials', true)
-}
-
-const decodeCookieToken = ({ req }) => {
-  try {
-    console.log(JSON.parse(req.headers.cookie))
-  } catch (e) {
-    console.error(e)
-  }
 }
 
 module.exports = {
@@ -58,6 +50,5 @@ module.exports = {
   send,
   sendFile,
   sendOptions,
-  setHeaders,
-  decodeCookieToken
+  setHeaders
 }

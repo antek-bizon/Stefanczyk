@@ -1,106 +1,105 @@
 const logger = require('tracer').colorConsole()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { sendError, sendSuccess, decodeCookieToken } = require('./commonController')
+const { sendError, sendSuccess } = require('./commonController')
 const reqBodyController = require('./requestBodyController')
 const users = new Map()
 
 module.exports = {
   registerUser: async ({ res, req }) => {
-    const regInfo = JSON.parse(await reqBodyController.getRequestData(req))
-    if (!regInfo || !regInfo.name || !regInfo.lastName || !regInfo.email || !regInfo.password) {
-      logger.warn('Incorrect request data')
-      return sendError({ res, status: 400, msg: 'Incorrect request data' })
-    }
-
-    if (users.has(regInfo.email)) {
-      logger.warn('User already exists')
-      return sendError({ res, status: 400, msg: 'User already exists' })
-    }
-
-    const hashPass = await bcrypt.hash(regInfo.password, 1)
-
-    users.set(regInfo.email, {
-      name: regInfo.name,
-      lastName: regInfo.lastName,
-      email: regInfo.email,
-      confirmed: false,
-      password: hashPass
-    })
-
-    const token = jwt.sign(
-      {
-        email: regInfo.email,
-        anyData: Date.now().toString()
-      },
-      process.env.SECRET_KEY,
-      {
-        expiresIn: '1m'
+    try {
+      const regInfo = JSON.parse(await reqBodyController.getRequestData(req))
+      if (!regInfo || !regInfo.name || !regInfo.lastName || !regInfo.email || !regInfo.password) {
+        logger.warn('Incorrect request data')
+        return sendError({ res, status: 400, msg: 'Incorrect request data' })
       }
-    )
 
-    decodeCookieToken({ req })
+      if (users.has(regInfo.email)) {
+        logger.warn('User already exists')
+        return sendError({ res, status: 400, msg: 'User already exists' })
+      }
 
-    logger.log(users.get(regInfo.email))
-    sendSuccess({
-      res,
-      data: `http://localhost:${process.env.APP_PORT}/api/user/confirm/${token}`
-      // data: `Skopiuj poniższy link do przeglądarki:\nhttp://localhost:${process.env.APP_PORT}/api/user/confirm/${token}`
-    })
+      const hashPass = await bcrypt.hash(regInfo.password, 1)
+
+      users.set(regInfo.email, {
+        name: regInfo.name,
+        lastName: regInfo.lastName,
+        email: regInfo.email,
+        confirmed: false,
+        password: hashPass
+      })
+
+      const token = jwt.sign(
+        {
+          email: regInfo.email,
+          anyData: Date.now().toString()
+        },
+        process.env.SECRET_KEY,
+        {
+          expiresIn: '1m'
+        }
+      )
+
+      logger.log(users.get(regInfo.email))
+      return sendSuccess({
+        res,
+        data: `http://localhost:${process.env.APP_PORT}/api/user/confirm/${token}`
+      })
+    } catch (e) {
+      logger.error(e)
+      return sendError({ res, status: 400, msg: 'JSON parse error' })
+    }
   },
 
   loginUser: async ({ res, req }) => {
-    const loginInfo = JSON.parse(await reqBodyController.getRequestData(req))
-    if (!loginInfo || !loginInfo.email || !loginInfo.password) {
-      logger.warn('Incorrect request data')
-      return sendError({ res, status: 400, msg: 'Incorrect request data' })
-    }
-
-    const user = users.get(loginInfo.email)
-    if (!user) {
-      logger.warn('User not found')
-      return sendError({ res, status: 401, msg: 'User not found' })
-    }
-
-    if (!user.confirmed) {
-      logger.warn('User not confirmed')
-      return sendError({ res, status: 401, msg: 'User not confirmed' })
-    }
-
-    const isPassCorrect = await bcrypt.compare(loginInfo.password, user.password)
-    if (!isPassCorrect) {
-      logger.warn('Wrong password')
-      return sendError({ res, status: 400, msg: 'Wrong password' })
-    }
-
-    const token = jwt.sign(
-      {
-        email: loginInfo.email,
-        anyData: Date.now().toString()
-      },
-      process.env.SECRET_KEY,
-      {
-        expiresIn: '1h'
+    try {
+      const loginInfo = JSON.parse(await reqBodyController.getRequestData(req))
+      if (!loginInfo || !loginInfo.email || !loginInfo.password) {
+        logger.warn('Incorrect request data')
+        return sendError({ res, status: 400, msg: 'Incorrect request data' })
       }
-    )
 
-    sendSuccess({
-      res,
-      data: {
-        name: user.name,
-        lastName: user.lastName,
-        email: user.email,
-        token
-      },
-      otherHeaders: [{
-        key: 'Authorization',
-        value: `Bearer ${token}`
-      },
-      {
-        key: 'Set-Cookie',
-        value: token
-      }]
-    })
+      const user = users.get(loginInfo.email)
+      if (!user) {
+        logger.warn('User not found')
+        return sendError({ res, status: 401, msg: 'User not found' })
+      }
+
+      if (!user.confirmed) {
+        logger.warn('User not confirmed')
+        return sendError({ res, status: 401, msg: 'User not confirmed' })
+      }
+
+      const isPassCorrect = await bcrypt.compare(loginInfo.password, user.password)
+      if (!isPassCorrect) {
+        logger.warn('Wrong password')
+        return sendError({ res, status: 400, msg: 'Wrong password' })
+      }
+
+      const token = jwt.sign(
+        {
+          email: loginInfo.email,
+          anyData: Date.now().toString()
+        },
+        process.env.SECRET_KEY,
+        {
+          expiresIn: '1h'
+        }
+      )
+
+      sendSuccess({
+        res,
+        data: {
+          name: user.name,
+          lastName: user.lastName,
+          email: user.email,
+          token
+        }
+      })
+    } catch (e) {
+      logger.error(e)
+      return sendError({ res, status: 400, msg: 'JSON parse error' })
+    }
   },
 
   confirmUser: async ({ res, query }) => {
@@ -130,79 +129,55 @@ module.exports = {
     }
   },
 
-  getUserData: ({ res, req }) => {
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      const token = req.headers.authorization.split(' ')[1]
-      try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY)
-        if (!decoded) {
-          return sendError({ res, status: 400, msg: 'Wrong token' })
-        }
-
-        const user = users.get(decoded.email)
-        if (!user) {
-          return sendError({ res, msg: 'User not found' })
-        }
-
-        if (!user.confirmed) {
-          return sendError({ res, status: 401, msg: 'User not confirmed' })
-        }
-
-        return sendSuccess({
-          res,
-          data: {
-            name: user.name,
-            lastName: user.lastName,
-            email: user.email
-          }
-        })
-      } catch (e) {
-        return sendError({ res, status: 401, msg: 'Token expired' })
+  getUserData: ({ res, user }) => {
+    return sendSuccess({
+      res,
+      data: {
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email
       }
-    }
-
-    return sendError({ res, status: 401, msg: 'No token' })
+    })
   },
 
-  updateUserData: async ({ res, req }) => {
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      const token = req.headers.authorization.split(' ')[1]
-      try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY)
-        if (!decoded) {
-          return sendError({ res, status: 400, msg: 'Wrong token' })
-        }
-
-        const user = users.get(decoded.email)
-        if (!user) {
-          return sendError({ res, msg: 'User not found' })
-        }
-
-        if (!user.confirmed) {
-          return sendError({ res, status: 401, msg: 'User not confirmed' })
-        }
-
-        const patchData = JSON.parse(await reqBodyController.getRequestData(req))
-        logger.log(patchData)
-        if (!patchData || !patchData.name || !patchData.lastName) {
-          return sendError({ res, status: 400, msg: 'Wrong query' })
-        }
-        user.name = patchData.name
-        user.lastName = patchData.lastName
-
-        return sendSuccess({
-          res,
-          data: {
-            name: user.name,
-            lastName: user.lastName,
-            email: user.email
-          }
-        })
-      } catch (e) {
-        return sendError({ res, status: 401, msg: 'Token expired' })
+  updateUserData: async ({ res, req, user }) => {
+    try {
+      const patchData = JSON.parse(await reqBodyController.getRequestData(req))
+      logger.log(patchData)
+      if (!patchData || !patchData.name || !patchData.lastName) {
+        return sendError({ res, status: 400, msg: 'Wrong query' })
       }
-    }
+      user.name = patchData.name
+      user.lastName = patchData.lastName
 
-    return sendError({ res, status: 401, msg: 'No token' })
+      return sendSuccess({
+        res,
+        data: {
+          name: user.name,
+          lastName: user.lastName,
+          email: user.email
+        }
+      })
+    } catch (e) {
+      logger.error(e)
+      return sendError({ res, status: 400, msg: 'JSON parse error' })
+    }
+  },
+
+  verifyUser: (token) => {
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET_KEY)
+      if (!decoded) {
+        return false
+      }
+      const user = users.get(decoded.email)
+      if (!user || !user.confirmed) {
+        return false
+      }
+
+      return user
+    } catch (error) {
+      return false
+    }
   }
 }
