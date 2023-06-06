@@ -1,38 +1,51 @@
 import { useCookies } from 'react-cookie'
-import { useState } from 'react'
 import UserValidation from './user/UserValidation'
-import { ChakraProvider, Box } from '@chakra-ui/react'
-import MainPage from './MainPage'
+import { ChakraProvider, Box, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, HStack, Flex } from '@chakra-ui/react'
+import MainPage from './mainPages/MainPage'
+import { useState } from 'react'
 
 function App () {
-  let sessionData = window.sessionStorage.getItem('sesionData')
-  if (sessionData) {
-    sessionData = JSON.parse(sessionData)
-  }
   const [cookies, setCookie, removeCookie] = useCookies(['token'])
-  const [clientData, setClientData] = useState(sessionData)
+  const [cookiesExpired, setCookiesExpired] = useState(false)
   const isClientToken = !!(cookies.token)
 
   const setData = (data) => {
-    setClientData(data)
-    setCookie('token', data.token, { maxAge: 60 })
-    setCookie('example', 'example', { maxAge: 60 })
+    const maxAge = 60
+    setCookie('token', data.token, { maxAge })
+    setTimeout(() => {
+      logout()
+      setCookiesExpired(true)
+    }, maxAge * 1000)
   }
 
   const logout = () => {
     removeCookie('token', '')
-    setClientData('')
   }
 
   return (
     <ChakraProvider>
-      <Box width='100vw' height='100vh' bgImage='url(/background.gif)' bgSize='cover' bgPosition='center' bgRepeat='no-repeat'>
+      <Flex width='100vw' height='max-content' minH='100vh' bgImage='url(/background.gif)' bgAttachment='fixed' bgSize='cover' bgPosition='center' bgRepeat='no-repeat'>
+        {
+          cookiesExpired &&
+          (
+            <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
+              <Alert status='warning' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+                <AlertIcon />
+                <Box>
+                  <AlertTitle>Token expired</AlertTitle>
+                  <AlertDescription>Please login again.</AlertDescription>
+                </Box>
+                <CloseButton onClick={() => setCookiesExpired('')} />
+              </Alert>)
+            </HStack>
+          )
+        }
         {
           !isClientToken
             ? <UserValidation setData={setData} />
-            : <MainPage clientData={clientData} logout={logout} />
+            : <MainPage cookies={cookies} logout={logout} />
         }
-      </Box>
+      </Flex>
     </ChakraProvider>
   )
 }

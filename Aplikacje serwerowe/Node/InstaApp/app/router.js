@@ -20,22 +20,23 @@ const router = (req, res) => {
 
   const url = decodeURIComponent(req.url)
   const cookies = parseCookies(req.headers.cookie)
+  logger.info(req.headers)
   const user = (cookies.has('token')) ? controller.verifyUser(cookies.get('token')) : false
 
   const handled = handleSimpleRoutes(res, req, method, url, user)
-  if (!handled) {
-    return controller.sendError({ res, msg: 'Not found' })
-  } else if (handled && handled.noMatches) {
-    for (const route of matchingRoutes) {
-      if (route.matcher.test(url)) {
-        const queryArr = url.split('/').slice(-route.numOfParams)
-        const func = route.func
-        return func({ res, queryArr })
+  if (handled === null) {
+    if (user) {
+      for (const route of matchingRoutes) {
+        if (route.matcher.test(url)) {
+          const queryArr = url.split('/').slice(-route.numOfParams)
+          const func = route.func
+          return func({ res, queryArr })
+        }
       }
+      logger.warn('No routes founded, trying to send file')
+      return controller.sendFile({ res, url })
     }
-
-    logger.warn('No routes founded, trying to send file')
-    return controller.sendFile({ res, url })
+    return controller.sendError({ res })
   }
 }
 
@@ -63,7 +64,7 @@ function handleSimpleRoutes (res, req, method, url, user) {
     return func({ res, req, query, user })
   }
 
-  return { noMatches: true }
+  return null
 }
 
 function parseCookies (cookieString) {

@@ -1,7 +1,7 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, CloseButton, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react'
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, CloseButton, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react'
 import { useState } from 'react'
 
-export default function ImageForm ({ isOpen, onClose, token }) {
+export default function ImageForm ({ isOpen, onClose, updateImages }) {
   const [selectedFile, setSelectedFile] = useState(null)
   const [error, changeError] = useState('')
   const [fetchMsg, changeFetchMsg] = useState('')
@@ -19,11 +19,8 @@ export default function ImageForm ({ isOpen, onClose, token }) {
     try {
       const response = await fetch('http://localhost:3001/api/photos', {
         method: 'POST',
-        body
-        // headers: {
-        //   'Content-Type': 'text/plain',
-        //   Authorization: 'Bearer ' + clientToken
-        // }
+        body,
+        credentials: 'include'
       })
 
       const result = await response.json()
@@ -33,6 +30,7 @@ export default function ImageForm ({ isOpen, onClose, token }) {
         return
       }
       changeFetchMsg(result.data)
+      updateImages()
     } catch (e) {
       console.error(e)
       changeError(e)
@@ -48,33 +46,36 @@ export default function ImageForm ({ isOpen, onClose, token }) {
   return (
     <Modal isOpen={isOpen} onClose={closeModal}>
       <ModalOverlay />
-      {
-        isFetchMsg
-          ? (
-            <Alert status='success' position='absolute' top='5%' left='calc(50% - 200px)' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
-              <AlertIcon />
-              <Box>
-                <AlertTitle>Success!</AlertTitle>
-                <AlertDescription>
-                  Image uploaded successfully!
-                </AlertDescription>
-              </Box>
-              <CloseButton onClick={() => changeFetchMsg('')} />
-            </Alert>)
-          : isError
+      <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
+        {
+          isFetchMsg
             ? (
-              <Alert status='error' position='absolute' top='5%' left='calc(50% - 120px)' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+              <Alert status='success' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
                 <AlertIcon />
                 <Box>
-                  <AlertTitle>Error</AlertTitle>
+                  <AlertTitle>Success!</AlertTitle>
                   <AlertDescription>
-                    {error}
+                    Image uploaded successfully!
                   </AlertDescription>
                 </Box>
-                <CloseButton onClick={() => changeError('')} />
+                <CloseButton onClick={() => changeFetchMsg('')} />
               </Alert>)
-            : null
-      }
+            : isError
+              ? (
+                <Alert status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+                  <AlertIcon />
+                  <Box>
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>
+                      {error}
+                    </AlertDescription>
+                  </Box>
+                  <CloseButton onClick={() => changeError('')} />
+                </Alert>)
+              : null
+        }
+      </HStack>
+
       <ModalContent>
         <ModalHeader>Upload Image</ModalHeader>
         <ModalCloseButton />

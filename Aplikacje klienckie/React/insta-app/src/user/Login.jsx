@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, HStack, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton } from '@chakra-ui/react'
+import { Button, FormControl, HStack, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton } from '@chakra-ui/react'
 import { useState } from 'react'
 
 export default function Login ({ setData }) {
@@ -41,9 +41,9 @@ export default function Login ({ setData }) {
 
   return (
     <Box my={4}>
-      <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
-        {
-          isError && (
+      {
+        isError && (
+          <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
             <Alert status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
               <AlertIcon />
               <Box>
@@ -53,16 +53,15 @@ export default function Login ({ setData }) {
                 </AlertDescription>
               </Box>
               <CloseButton onClick={() => changeError('')} />
-            </Alert>)
-        }
-      </HStack>
+            </Alert>
+          </HStack>
+        )
+      }
       <form onSubmit={(e) => loginUser(e)} className='column equal-height'>
         <FormControl>
-          <FormLabel>E-mail</FormLabel>
           <Input type='text' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
         </FormControl>
         <FormControl>
-          <FormLabel>Password</FormLabel>
           <Input type='password' placeholder='Password' required onChange={(e) => changePassword(e.target.value)} />
         </FormControl>
         <Button type='submit' mt={4} colorScheme='teal' variant='solid' size='md'>Login</Button>

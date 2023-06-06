@@ -1,11 +1,11 @@
 // import { useState } from 'react'
 import Login from './Login'
 import Register from './Register'
-import { Flex, Box, Tabs, Tab, TabList, TabPanel, TabPanels } from '@chakra-ui/react'
+import { Box, Tabs, Tab, TabList, TabPanel, TabPanels, VStack } from '@chakra-ui/react'
 
 export default function UserValidation ({ setData }) {
   return (
-    <Flex m='0 auto' width='90%' height='100%' align='center' justify='center' direction='column'>
+    <VStack alignSelf='center' m='0 auto' width='90%' paddingBottom='10%' align='center' justify='center'>
       <Box borderRadius='25px' bgColor='white' minH='510px' p='30px' boxShadow='lg'>
         <Tabs isFitted variant='enclosed'>
           <TabList>
@@ -23,6 +23,6 @@ export default function UserValidation ({ setData }) {
           </TabPanels>
         </Tabs>
       </Box>
-    </Flex>
+    </VStack>
   )
 }

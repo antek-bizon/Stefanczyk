@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, FormControl, FormLabel, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton, HStack } from '@chakra-ui/react'
+import { Button, FormControl, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton, HStack } from '@chakra-ui/react'
 
 export default function Register () {
   const [email, changeEmail] = useState('')
@@ -32,7 +32,6 @@ export default function Register () {
         },
         credentials: 'include'
       })
-      console.log(response)
 
       const result = await response.json()
       if (result.err || !result.data) {
@@ -40,7 +39,6 @@ export default function Register () {
         changeError(result.msg)
         return
       }
-      // window.alert(result.data)
       changeUrl(result.data)
     } catch (e) {
       console.error(e)
@@ -87,19 +85,15 @@ export default function Register () {
 
       <form onSubmit={(e) => registerUser(e)} className='column equal-height'>
         <FormControl>
-          <FormLabel>E-mail</FormLabel>
           <Input type='text' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
         </FormControl>
         <FormControl>
-          <FormLabel>Password</FormLabel>
           <Input type='password' placeholder='Password' required onChange={(e) => changePassword(e.target.value)} />
         </FormControl>
         <FormControl>
-          <FormLabel>First name</FormLabel>
           <Input type='text' placeholder='First name' required onChange={(e) => changeFirstName(e.target.value)} />
         </FormControl>
         <FormControl>
-          <FormLabel>Last name</FormLabel>
           <Input type='text' placeholder='Last name' required onChange={(e) => changeLastName(e.target.value)} />
         </FormControl>
         <Button type='submit' mt={4} colorScheme='teal' variant='solid' size='md'>Register</Button>

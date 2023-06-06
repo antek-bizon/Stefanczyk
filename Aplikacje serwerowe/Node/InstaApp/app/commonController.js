@@ -35,7 +35,7 @@ const sendFile = async ({ res, url }) => {
 
 const sendOptions = ({ res }) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PATCH, DELETE')
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization')
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type')
   res.end()
 }
 
