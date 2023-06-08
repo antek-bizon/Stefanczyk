@@ -22,11 +22,9 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3001/api/profile HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZham55Lm1haWxAc3Bva28ucGwiLCJhbnlEYXRhIjoiMTY4NDQ3NzAzODI2NyIsImlhdCI6MTY4NDQ3NzAzOCwiZXhwIjoxNjg0NDgwNjM4fQ.t7Ri_LEXaXmybWXOppsQod05XrnYBKZ8CdWdDpWSm3Y
 
 ###
 PATCH  http://localhost:3001/api/profile HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZham55Lm1haWxAc3Bva28ucGwiLCJhbnlEYXRhIjoiMTY4NDQ3NzAzODI2NyIsImlhdCI6MTY4NDQ3NzAzOCwiZXhwIjoxNjg0NDgwNjM4fQ.t7Ri_LEXaXmybWXOppsQod05XrnYBKZ8CdWdDpWSm3Y
 
 {
     "name": "Arnold",

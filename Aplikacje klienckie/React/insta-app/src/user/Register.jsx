@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, FormControl, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton, HStack } from '@chakra-ui/react'
+import { Button, FormControl, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton, HStack, VStack } from '@chakra-ui/react'
 
 export default function Register () {
   const [email, changeEmail] = useState('')
@@ -84,18 +84,20 @@ export default function Register () {
       </HStack>
 
       <form onSubmit={(e) => registerUser(e)} className='column equal-height'>
-        <FormControl>
-          <Input type='text' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
-        </FormControl>
-        <FormControl>
-          <Input type='password' placeholder='Password' required onChange={(e) => changePassword(e.target.value)} />
-        </FormControl>
-        <FormControl>
-          <Input type='text' placeholder='First name' required onChange={(e) => changeFirstName(e.target.value)} />
-        </FormControl>
-        <FormControl>
-          <Input type='text' placeholder='Last name' required onChange={(e) => changeLastName(e.target.value)} />
-        </FormControl>
+        <VStack gap='5px'>
+          <FormControl>
+            <Input type='text' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <Input type='password' placeholder='Password' required onChange={(e) => changePassword(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <Input type='text' placeholder='First name' required onChange={(e) => changeFirstName(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <Input type='text' placeholder='Last name' required onChange={(e) => changeLastName(e.target.value)} />
+          </FormControl>
+        </VStack>
         <Button type='submit' mt={4} colorScheme='teal' variant='solid' size='md'>Register</Button>
       </form>
     </Box>

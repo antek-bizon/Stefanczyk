@@ -10,7 +10,7 @@ function App () {
   const isClientToken = !!(cookies.token)
 
   const setData = (data) => {
-    const maxAge = 60
+    const maxAge = 60 * 60
     setCookie('token', data.token, { maxAge })
     setTimeout(() => {
       logout()

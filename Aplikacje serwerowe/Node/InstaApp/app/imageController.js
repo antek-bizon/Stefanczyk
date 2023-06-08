@@ -14,15 +14,15 @@ module.exports = {
     return imgData
   },
 
-  addImage: async ({ req, res }) => {
+  addImage: async ({ req, res, user }) => {
     try {
-      const { fields, fileInfo } = await fileController.saveFile(req)
+      const fileInfo = await fileController.saveFile(req, user.email)
 
-      logger.log(fields, fileInfo)
+      logger.log(fileInfo)
 
       imgData.push({
         id: (imgData.length === 0) ? 1 : imgData[imgData.length - 1].id + 1,
-        album: fields.album,
+        album: user.email,
         originalName: fileInfo.originalName,
         url: fileInfo.url,
         lastChange: 'original',
@@ -59,6 +59,15 @@ module.exports = {
       }
     }
     return sendError({ res, msg: 'Image not found' })
+  },
+
+  getImagesFromAlbumJSON: ({ res, user }) => {
+    const images = imgData.filter(e => e.album === user.email)
+    if (images.length === 0) {
+      return sendError({ res, status: 404, msg: 'Album not found' })
+    }
+
+    return sendSuccess({ res, data: images })
   },
 
   deleteImage: ({ res, query }) => {

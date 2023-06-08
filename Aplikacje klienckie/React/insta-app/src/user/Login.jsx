@@ -1,4 +1,4 @@
-import { Button, FormControl, HStack, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton } from '@chakra-ui/react'
+import { Button, FormControl, HStack, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton, VStack } from '@chakra-ui/react'
 import { useState } from 'react'
 
 export default function Login ({ setData }) {
@@ -58,12 +58,14 @@ export default function Login ({ setData }) {
         )
       }
       <form onSubmit={(e) => loginUser(e)} className='column equal-height'>
-        <FormControl>
-          <Input type='text' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
-        </FormControl>
-        <FormControl>
-          <Input type='password' placeholder='Password' required onChange={(e) => changePassword(e.target.value)} />
-        </FormControl>
+        <VStack gap='5px'>
+          <FormControl>
+            <Input type='text' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <Input type='password' placeholder='Password' required onChange={(e) => changePassword(e.target.value)} />
+          </FormControl>
+        </VStack>
         <Button type='submit' mt={4} colorScheme='teal' variant='solid' size='md'>Login</Button>
       </form>
     </Box>

@@ -109,8 +109,10 @@ function getRoutes () {
     '/api/tags/?': controller.getOneTag,
     '/api/photos/tags/?': controller.getImageTags,
     '/api/filters/metadata/?': controller.getImageMetadata,
+    '/api/filters': controller.getFilters,
     '/api/getfile/?': controller.getImage,
-    '/api/profile': controller.getUserData
+    '/api/profile': controller.getUserData,
+    '/api/photos/album': controller.getImagesFromAlbumJSON
   }
 }
 

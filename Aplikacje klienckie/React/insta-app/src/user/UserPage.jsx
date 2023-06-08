@@ -2,24 +2,6 @@ import React from 'react'
 import { Avatar, Box, Heading, Stack, Table, Tbody, Tr, Td, Divider } from '@chakra-ui/react'
 
 export default function UserPage ({ clientData }) {
-  // useEffect(() => {
-  //   async function fetchData () {
-  //     try {
-  //       const response = await fetch('http://localhost:3001/api/profile', {
-  //         method: 'GET',
-  //         headers: {
-  //           Authorization: 'Bearer ' + token
-  //         }
-  //       })
-
-  //       const result = await response.json()
-  //       console.log(result)
-  //     } catch (e) {
-  //       console.error(e)
-  //     }
-  //   }
-  //   fetchData()
-  // })
   const tableData = Object.entries(clientData).map(([key, value], i) => {
     if (key === 'token') return null
     key = key.split(/(?=[A-Z])/).join(' ')

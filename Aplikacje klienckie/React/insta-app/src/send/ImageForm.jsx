@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, CloseButton, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react'
 import { useState } from 'react'
 
-export default function ImageForm ({ isOpen, onClose, updateImages }) {
+export default function ImageForm ({ isOpen, onClose, updateImages, refreshValue }) {
   const [selectedFile, setSelectedFile] = useState(null)
   const [error, changeError] = useState('')
   const [fetchMsg, changeFetchMsg] = useState('')
@@ -14,7 +14,6 @@ export default function ImageForm ({ isOpen, onClose, updateImages }) {
 
     const body = new FormData()
     body.append('file', selectedFile)
-    body.append('album', 'smok241')
 
     try {
       const response = await fetch('http://localhost:3001/api/photos', {
@@ -30,7 +29,7 @@ export default function ImageForm ({ isOpen, onClose, updateImages }) {
         return
       }
       changeFetchMsg(result.data)
-      updateImages()
+      updateImages(!refreshValue)
     } catch (e) {
       console.error(e)
       changeError(e)

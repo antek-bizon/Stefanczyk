@@ -1,4 +1,5 @@
 const sharp = require('sharp')
+const { sendSuccess } = require('./commonController')
 const logger = require('tracer').colorConsole()
 
 async function rotateImage (imagePath, { degrees }) {
@@ -97,6 +98,18 @@ async function tintImage (imagePath, { r, g, b }) {
   return newImagePath
 }
 
+const filters = {
+  rotate: rotateImage,
+  resize: resizeImage,
+  reformat: reformatImage,
+  crop: cropImage,
+  grayscale: grayscaleImage,
+  flip: flipImage,
+  flop: flopImage,
+  negate: negateImage,
+  tint: tintImage
+}
+
 module.exports = {
   imageMetadata: async (imagePath) => {
     const meta = await sharp(imagePath).metadata()
@@ -104,17 +117,6 @@ module.exports = {
   },
 
   applyFilter: async (imagePath, filter, data) => {
-    const filters = {
-      rotate: rotateImage,
-      resize: resizeImage,
-      reformat: reformatImage,
-      crop: cropImage,
-      grayscale: grayscaleImage,
-      flip: flipImage,
-      flop: flopImage,
-      negate: negateImage,
-      tint: tintImage
-    }
     const filterFunction = filters[filter.toLowerCase()]
 
     if (filterFunction) {
@@ -123,5 +125,10 @@ module.exports = {
 
     logger.warn(`Filter ${filter} not found`)
     return false
+  },
+
+  getFilters: ({ res }) => {
+    const filterNames = Object.keys(filters)
+    return sendSuccess({ res, data: filterNames })
   }
 }

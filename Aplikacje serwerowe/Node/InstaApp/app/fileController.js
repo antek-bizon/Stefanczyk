@@ -14,7 +14,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 module.exports = {
-  saveFile: (req) => {
+  saveFile: (req, album) => {
     const form = formidable({
       uploadDir,
       keepExtensions: true
@@ -22,18 +22,17 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       try {
-        form.parse(req, function (err, fields, files) {
+        form.parse(req, function (err, _, files) {
           if (err || !files.file) {
             return reject(err)
           }
-          logger.log(files, fields)
 
           const uploadName = files.file.path.replaceAll('\\', '/').split('/').pop()
 
-          const newPath = path.join(uploadDir, fields.album)
+          const newPath = path.join(uploadDir, album)
           const fileInfo = {
             originalName: files.file.name,
-            url: 'uploads/' + fields.album + '/' + uploadName
+            url: 'uploads/' + album + '/' + uploadName
           }
 
           if (fs.existsSync(newPath)) {
@@ -50,10 +49,7 @@ module.exports = {
             })
           }
 
-          resolve({
-            fields,
-            fileInfo
-          })
+          resolve(fileInfo)
         })
       } catch (ex) {
         reject(ex)
