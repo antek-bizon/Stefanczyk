@@ -12,8 +12,7 @@ POST http://localhost:3001/api/tags HTTP/1.1
 Content-Type: application/json
 
 {
-    "name":"#nowytag",
-    "popularity": 1000000
+    "name":"#nowytag"
 }
 
 ###
@@ -21,8 +20,7 @@ PATCH http://localhost:3001/api/photos/tags HTTP/1.1
 
 {
     "imageId": 1,
-    "name":"#nowytag",
-    "popularity": 1000000
+    "name":"#nowytag"
 }
 
 ###
@@ -30,16 +28,7 @@ PATCH http://localhost:3001/api/photos/tags/multi HTTP/1.1
 
 {
     "imageId": 1,
-    "tags": [   
-        {
-            "name":"#nowytag1",
-            "popularity": 1000000
-        },
-        {
-            "name":"#nowytag2",
-            "popularity": 10020
-        }
-    ]
+    "tags": ["#nowytag1", "#nowytag2"]
 }
 
 ###

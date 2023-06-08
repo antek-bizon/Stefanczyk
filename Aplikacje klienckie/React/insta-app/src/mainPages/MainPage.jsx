@@ -14,7 +14,7 @@ export default function MainPage ({ cookies, logout }) {
 
   const clientData = {}
 
-  const [refresh, runRefresh] = useState(false)
+  const [refreshValue, runRefresh] = useState(false)
 
   return (
     <Flex m='0 auto' width='90%' height='100%' align='center' direction='column'>
@@ -26,18 +26,18 @@ export default function MainPage ({ cookies, logout }) {
           <Button onClick={newPostOnOpen}>New post</Button>
           <UserMenu profilePic='' logout={logout} onOpen={setPicOnOpen} />
         </Stack>
-        <Stack width='100%' height='100%' bgColor='#fefefe' p='2' direction='column'>
+        <Stack width='100%' minH='80vh' height='100%' bgColor='#fefefe' p='2' direction='column'>
           <Routes>
-            <Route path='/my-posts' element={<MyPostPage refresh={refresh} />} />
+            <Route path='/my-posts' element={<MyPostPage refresh={runRefresh} refreshValue={refreshValue} />} />
             <Route
               path='/profile' element={<UserPage clientData={clientData} />}
             />
-            <Route path='/' element={<ExplorePage refresh={refresh} />} />
+            <Route path='/' element={<ExplorePage refresh={refreshValue} />} />
             <Route path='*' element={<h1>404</h1>} />
           </Routes>
         </Stack>
       </BrowserRouter>
-      <ImageForm isOpen={newPostIsOpen && !setPicIsOpen} onClose={newPostOnClose} updateImages={runRefresh} refreshValue={refresh} />
+      <ImageForm isOpen={newPostIsOpen && !setPicIsOpen} onClose={newPostOnClose} refresh={runRefresh} refreshValue={refreshValue} />
       <SetProfilePicture isOpen={setPicIsOpen && !newPostIsOpen} onClose={setPicOnClose} token={clientData} />
     </Flex>
 

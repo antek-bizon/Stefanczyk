@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, CloseButton, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react'
 import { useState } from 'react'
 
-export default function ImageForm ({ isOpen, onClose, updateImages, refreshValue }) {
+export default function ImageForm ({ isOpen, onClose, refresh, refreshValue }) {
   const [selectedFile, setSelectedFile] = useState(null)
   const [error, changeError] = useState('')
   const [fetchMsg, changeFetchMsg] = useState('')
@@ -29,7 +29,7 @@ export default function ImageForm ({ isOpen, onClose, updateImages, refreshValue
         return
       }
       changeFetchMsg(result.data)
-      updateImages(!refreshValue)
+      refresh(!refreshValue)
     } catch (e) {
       console.error(e)
       changeError(e)

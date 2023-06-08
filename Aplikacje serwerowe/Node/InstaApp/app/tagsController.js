@@ -66,14 +66,9 @@ module.exports = {
   addTag: async ({ res, req }) => {
     const tagData = JSON.parse(await reqBodyController.getRequestData(req))
     logger.log(tagData)
-    if (!tagData || !tagData.name || !tagData.popularity) {
+    if (!tagData || !tagData.name) {
       logger.warn('Error during parsing data')
       return sendError({ res, status: 400, msg: 'Error during parsing data' })
-    }
-
-    const popularity = parseInt(tagData.popularity)
-    if (isNaN(popularity)) {
-      return sendError({ res, status: 400, msg: 'Wrong popularity' })
     }
 
     if (tags.find(e => e.name === tagData.name)) {
@@ -83,14 +78,14 @@ module.exports = {
     tags.push({
       id: tags.length,
       name: tagData.name,
-      popularity
+      popularity: 1
     })
     sendSuccess({ res, status: 201, data: 'Tag added' })
   },
 
   addOneTagToImage: async ({ res, req }) => {
     const tagData = JSON.parse(await reqBodyController.getRequestData(req))
-    if (!tagData || !tagData.imageId || !tagData.name || !tagData.popularity) {
+    if (!tagData || !tagData.imageId || !tagData.name) {
       logger.warn('Error during parsing data')
       return sendError({ res, status: 400, msg: 'Error during parsing data' })
     }
@@ -100,18 +95,13 @@ module.exports = {
       return sendError({ res, msg: 'Image not found' })
     }
 
-    const popularity = parseInt(tagData.popularity)
-    if (isNaN(popularity)) {
-      return sendError({ res, status: 400, msg: 'Wrong popularity' })
-    }
-
     if (image.tags.find(e => e.name === tagData.name)) {
       return sendError({ res, status: 409, msg: 'Tag already exists' })
     }
 
     image.tags.push({
       name: tagData.name,
-      popularity
+      popularity: 1
     })
     sendSuccess({ res, status: 201, data: 'Tag added' })
   },
@@ -130,40 +120,32 @@ module.exports = {
       return sendError({ res, msg: 'Image not found' })
     }
 
-    const failed = []
     for (const tag of tagsData.tags) {
-      if (!tag.name || !tag.popularity) {
-        failed.push(tag)
-        continue
-      }
-      const popularity = parseInt(tag.popularity)
-      if (isNaN(popularity)) {
-        failed.push(tag)
-        continue
-      }
-
-      if (image.tags.find(e => e.name === tag.name)) {
-        failed.push(tag)
-        continue
-      }
-
-      if (!tags.find(e => e.name === tag.name)) {
-        tags.push({
-          id: tags.length,
-          name: tag.name,
-          popularity
+      const imageTag = image.tags.find(e => e.name === tag)
+      if (imageTag) {
+        imageTag.popularity++
+      } else {
+        image.tags.push({
+          name: tag,
+          popularity: 1
         })
       }
 
-      image.tags.push({
-        name: tag.name,
-        popularity
-      })
+      const checkInAllTags = tags.find(e => e.name === tag)
+      if (checkInAllTags) {
+        checkInAllTags.popularity++
+      } else {
+        tags.push({
+          id: tags.length,
+          name: tag,
+          popularity: 1
+        })
+      }
     }
     sendSuccess({
       res,
       status: 201,
-      data: 'Tag added, failed ' + failed.length + ': ' + JSON.stringify(failed)
+      data: 'Tags added'
     })
   },
 

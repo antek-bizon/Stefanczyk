@@ -4,7 +4,7 @@ import { Box, IconButton, Wrap, WrapItem, useDisclosure } from '@chakra-ui/react
 import { RepeatIcon } from '@chakra-ui/icons'
 import EditablePost from '../send/EditablePost'
 
-export default function MyPostPage ({ refresh }) {
+export default function MyPostPage ({ refresh, refreshValue }) {
   const [images, setImages] = useState([])
   const [filters, setFilters] = useState([])
   const [tags, setTags] = useState([])
@@ -78,7 +78,7 @@ export default function MyPostPage ({ refresh }) {
     getAlbumImages()
     getFilters()
     getTags()
-  }, [refresh])
+  }, [refreshValue])
 
   return (
     <Box pos='relative'>
@@ -101,6 +101,8 @@ export default function MyPostPage ({ refresh }) {
           filters={filters}
           onClose={deselectImage}
           isOpen={isOpen}
+          refresh={refresh}
+          refreshValue={refreshValue}
         />
       )}
     </Box>

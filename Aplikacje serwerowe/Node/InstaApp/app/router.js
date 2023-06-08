@@ -20,7 +20,6 @@ const router = (req, res) => {
 
   const url = decodeURIComponent(req.url)
   const cookies = parseCookies(req.headers.cookie)
-  logger.info(req.headers)
   const user = (cookies.has('token')) ? controller.verifyUser(cookies.get('token')) : false
 
   const handled = handleSimpleRoutes(res, req, method, url, user)
