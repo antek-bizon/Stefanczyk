@@ -7,7 +7,7 @@ async function rotateImage (imagePath, { degrees }) {
     logger.warn('No degrees specified')
     return false
   }
-  const newImagePath = imagePath.replace(/\.\w+$/, '_rotate$&')
+  const newImagePath = imagePath.replace(/\.\w+$/, `_rotate_${degrees}$&`)
   await sharp(imagePath)
     .rotate(degrees)
     .toFile(newImagePath)
@@ -46,7 +46,7 @@ async function cropImage (imagePath, { width, height, x, y }) {
     return false
   }
 
-  const newImagePath = imagePath.replace(/\.\w+$/, '_crop$&')
+  const newImagePath = imagePath.replace(/\.\w+$/, `_crop_${width}_${height}_${x}_${y}$&`)
   await sharp(imagePath)
     .extract({ width, height, left: x, top: y })
     .toFile(newImagePath)
@@ -91,7 +91,7 @@ async function tintImage (imagePath, { r, g, b }) {
     return false
   }
 
-  const newImagePath = imagePath.replace(/\.\w+$/, '_tint$&')
+  const newImagePath = imagePath.replace(/\.\w+$/, `_tint_${r}_${g}_${b}$&`)
   await sharp(imagePath)
     .tint({ r, g, b })
     .toFile(newImagePath)
@@ -117,14 +117,19 @@ module.exports = {
   },
 
   applyFilter: async (imagePath, filter, data) => {
-    const filterFunction = filters[filter.toLowerCase()]
+    try {
+      logger.log(filter)
+      const filterFunction = filters[filter.toLowerCase()]
 
-    if (filterFunction) {
-      return await filterFunction(imagePath, data)
+      if (filterFunction) {
+        return await filterFunction(imagePath, data)
+      }
+      logger.warn(`Filter ${filter} not found`)
+      return false
+    } catch (e) {
+      logger.error(e)
+      return false
     }
-
-    logger.warn(`Filter ${filter} not found`)
-    return false
   },
 
   getFilters: ({ res }) => {

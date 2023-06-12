@@ -1,10 +1,7 @@
 const logger = require('tracer').colorConsole()
 const controller = require('./controller')
-const validationRoutes = setRoutes()
-const noValidationRoutes = setNoValidationRoutes()
+const routes = setRoutes()
 const matchingRoutes = setMatchingRoutes()
-
-controller.deleteAllImages()
 
 const router = (req, res) => {
   logger.log('żądany przez przeglądarkę adres:', req.url)
@@ -22,49 +19,60 @@ const router = (req, res) => {
   const cookies = parseCookies(req.headers.cookie)
   const user = (cookies.has('token')) ? controller.verifyUser(cookies.get('token')) : false
 
-  const handled = handleSimpleRoutes(res, req, method, url, user)
-  if (handled === null) {
-    if (user) {
-      for (const route of matchingRoutes) {
-        if (route.matcher.test(url)) {
-          const queryArr = url.split('/').slice(-route.numOfParams)
-          const func = route.func
-          return func({ res, queryArr })
-        }
-      }
-      logger.warn('No routes founded, trying to send file')
-      return controller.sendFile({ res, url })
-    }
-    return controller.sendError({ res })
-  }
-}
-
-module.exports = router
-
-function handleSimpleRoutes (res, req, method, url, user) {
-  const routes = (user) ? validationRoutes : noValidationRoutes
-
-  if (!routes[method]) {
+  const methodFunctions = routes[method]
+  if (!methodFunctions) {
     logger.warn('Method not handled')
     return controller.sendError({ res })
   }
 
-  const methodFunctions = routes[method]
   if (methodFunctions[url]) {
-    const func = methodFunctions[url]
-    return func({ res, req, user })
+    if (methodFunctions[url].noValidation) {
+      return methodFunctions[url].func({ res, req, user })
+    }
+    if (user) {
+      const func = methodFunctions[url]
+      return func({ res, req, user })
+    }
+    return controller.sendError({ res, status: 401 })
   }
 
   const checkMap = url.substring(0, url.lastIndexOf('/')) + '/?'
-  logger.log(checkMap)
   if (methodFunctions[checkMap]) {
-    const func = methodFunctions[checkMap]
     const query = url.substring(url.lastIndexOf('/') + 1)
-    return func({ res, req, query, user })
+
+    if (methodFunctions[checkMap].noValidation) {
+      return methodFunctions[checkMap].func({ res, req, query, user })
+    }
+
+    if (user) {
+      const func = methodFunctions[checkMap]
+      return func({ res, req, query, user })
+    }
+
+    return controller.sendError({ res, status: 401 })
   }
 
-  return null
+  for (const route of matchingRoutes) {
+    if (route.matcher.test(url)) {
+      if (user) {
+        const queryArr = url.split('/').slice(-route.numOfParams)
+        const func = route.func
+        return func({ res, queryArr })
+      } else {
+        return controller.sendError({ res, status: 401 })
+      }
+    }
+  }
+
+  if (user) {
+    logger.warn('No routes founded, trying to send file')
+    return controller.sendFile({ res, url })
+  } else {
+    return controller.sendError({ res, status: 401 })
+  }
 }
+
+module.exports = router
 
 function parseCookies (cookieString) {
   const cookies = new Map()
@@ -87,18 +95,6 @@ function setRoutes () {
   return routes
 }
 
-function setNoValidationRoutes () {
-  return {
-    get: {
-      '/api/user/confirm/?': controller.confirmUser
-    },
-    post: {
-      '/api/user/register': controller.registerUser,
-      '/api/user/login': controller.loginUser
-    }
-  }
-}
-
 function getRoutes () {
   return {
     '/api/photos': controller.getAllImagesJSON,
@@ -111,14 +107,18 @@ function getRoutes () {
     '/api/filters': controller.getFilters,
     '/api/getfile/?': controller.getImage,
     '/api/profile': controller.getUserData,
-    '/api/photos/album': controller.getImagesFromAlbumJSON
+    '/api/photos/album': controller.getImagesFromAlbumJSON,
+    '/api/user/confirm/?': { func: controller.confirmUser, noValidation: true }
   }
 }
 
 function postRoutes () {
   return {
     '/api/photos': controller.addImage,
-    '/api/tags': controller.addTag
+    '/api/tags': controller.addTag,
+    '/api/author': controller.getAuthorData,
+    '/api/user/register': { func: controller.registerUser, noValidation: true },
+    '/api/user/login': { func: controller.loginUser, noValidation: true }
   }
 }
 
@@ -128,7 +128,8 @@ function patchRoutes () {
     '/api/photos/tags': controller.addOneTagToImage,
     '/api/photos/tags/multi': controller.addMultiTagsToImage,
     '/api/filters': controller.applyFilter,
-    '/api/profile': controller.updateUserData
+    '/api/profile': controller.updateUserData,
+    '/api/profile/picture': controller.setProfilePicture
   }
 }
 

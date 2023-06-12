@@ -5,16 +5,38 @@ const fs = require('fs')
 const fsPromises = require('fs/promises')
 const mimeTypes = require('mime-types')
 
-const uploadDir = path.join(__dirname, '../uploads')
+const uploadPath = path.join(__dirname, '../uploads')
+const profilePath = path.join(__dirname, '../profiles')
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdir(uploadDir, (err) => {
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdir(uploadPath, (err) => {
     if (err) throw err
   })
 }
 
+if (!fs.existsSync(profilePath)) {
+  fs.mkdir(profilePath, (err) => {
+    if (err) throw err
+  })
+}
+
+const deleteAll = (profile = false) => {
+  const dir = profile ? profilePath : uploadPath
+  fs.readdir(dir, (err, files) => {
+    if (err) throw err
+
+    Promise.all(files.map(e => {
+      return fsPromises.rm(path.join(dir, e), { recursive: true, force: true })
+    }))
+  })
+}
+
+deleteAll()
+deleteAll(true)
+
 module.exports = {
-  saveFile: (req, album) => {
+  saveFile: (req, album, profil = false) => {
+    const uploadDir = profil ? profilePath : uploadPath
     const form = formidable({
       uploadDir,
       keepExtensions: true
@@ -32,7 +54,7 @@ module.exports = {
           const newPath = path.join(uploadDir, album)
           const fileInfo = {
             originalName: files.file.name,
-            url: 'uploads/' + album + '/' + uploadName
+            url: profil ? 'profiles/' + album + '/' + uploadName : 'uploads/' + album + '/' + uploadName
           }
 
           if (fs.existsSync(newPath)) {
@@ -61,16 +83,6 @@ module.exports = {
     const files = await fsPromises.readdir(path.join(__dirname, '../uploads'))
     logger.log(files)
     return files
-  },
-
-  deleteAll: () => {
-    fs.readdir(uploadDir, (err, files) => {
-      if (err) throw err
-
-      Promise.all(files.map(e => {
-        return fsPromises.rm(path.join(uploadDir, e), { recursive: true, force: true })
-      }))
-    })
   },
 
   deleteOne: (url) => {

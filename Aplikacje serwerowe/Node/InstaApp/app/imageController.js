@@ -87,10 +87,6 @@ module.exports = {
     return sendError({ res, msg: 'Image not found' })
   },
 
-  deleteAllImages: () => {
-    return fileController.deleteAll()
-  },
-
   updateImage: async ({ res, req }) => {
     const patchData = JSON.parse(await reqBodyController.getRequestData(req))
     logger.log(patchData)
@@ -173,6 +169,7 @@ module.exports = {
 
   applyFilter: async ({ res, req }) => {
     const filterData = JSON.parse(await reqBodyController.getRequestData(req))
+    logger.log(filterData)
     if (!filterData || !filterData.imageId || !filterData.filter) {
       logger.warn('Error during parsing data')
       return sendError({ res, status: 400, msg: 'Error during parsing data' })

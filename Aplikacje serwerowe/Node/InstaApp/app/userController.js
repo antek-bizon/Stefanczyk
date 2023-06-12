@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { sendError, sendSuccess } = require('./commonController')
 const reqBodyController = require('./requestBodyController')
+const fileController = require('./fileController')
 const users = new Map()
 
 module.exports = {
@@ -26,7 +27,8 @@ module.exports = {
         lastName: regInfo.lastName,
         email: regInfo.email,
         confirmed: false,
-        password: hashPass
+        password: hashPass,
+        picture: ''
       })
 
       const token = jwt.sign(
@@ -36,7 +38,7 @@ module.exports = {
         },
         process.env.SECRET_KEY,
         {
-          expiresIn: '1m'
+          expiresIn: '5m'
         }
       )
 
@@ -135,7 +137,32 @@ module.exports = {
       data: {
         name: user.name,
         lastName: user.lastName,
-        email: user.email
+        email: user.email,
+        picture: user.picture
+      }
+    })
+  },
+
+  getAuthorData: async ({ res, req }) => {
+    const authorInfo = JSON.parse(await reqBodyController.getRequestData(req))
+    if (!authorInfo || !authorInfo.email) {
+      logger.warn('Wrong query')
+      return sendError({ res, status: 400, msg: 'Wrong query' })
+    }
+
+    const author = users.get(authorInfo.email)
+    if (!author) {
+      logger.warn('Author not found')
+      return sendError({ res, status: 400, msg: 'Author not found' })
+    }
+
+    return sendSuccess({
+      res,
+      data: {
+        name: author.name,
+        lastName: author.lastName,
+        email: author.email,
+        picture: author.picture
       }
     })
   },
@@ -161,6 +188,27 @@ module.exports = {
     } catch (e) {
       logger.error(e)
       return sendError({ res, status: 400, msg: 'JSON parse error' })
+    }
+  },
+
+  setProfilePicture: async ({ res, req, user }) => {
+    try {
+      const userToUpdate = users.get(user.email)
+
+      if (!userToUpdate) {
+        return sendError({ res, status: 400, msg: 'Wrong query' })
+      }
+
+      const fileInfo = await fileController.saveFile(req, user.email, true)
+      if (!fileInfo || !fileInfo.url) {
+        return sendError({ res, status: 400, msg: 'Wrong query' })
+      }
+
+      userToUpdate.picture = fileInfo.url
+      return sendSuccess({ res, data: fileInfo.url })
+    } catch (error) {
+      console.error(error)
+      return sendError({ res, status: 400, msg: 'Wrong query' })
     }
   },
 

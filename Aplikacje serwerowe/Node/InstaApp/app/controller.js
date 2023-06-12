@@ -9,5 +9,5 @@ module.exports = {
   ...tagsController,
   ...userController,
   ...commonController,
-  ...filtersController
+  getFilters: filtersController.getFilters
 }
