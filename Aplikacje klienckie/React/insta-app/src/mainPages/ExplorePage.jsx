@@ -1,4 +1,4 @@
-import { VStack, Box } from '@chakra-ui/react'
+import { VStack, Box, Text } from '@chakra-ui/react'
 import Post from '../elements/Post'
 import { useEffect, useState } from 'react'
 import RefreshComp from '../elements/RefreshComp'
@@ -36,13 +36,15 @@ export default function ExplorePage ({ refresh, refreshValue, logout }) {
     <Box pos='relative'>
       <RefreshComp refresh={refresh} refreshValue={refreshValue} />
       <VStack gap='20px'>
-        {images.map((e, i) => {
-          return (
-            <Box w='70%' key={i}>
-              <Post image={e} refreshValue={refreshValue} />
-            </Box>
-          )
-        })}
+        {images || images.length === 0
+          ? <Text>No images :(</Text>
+          : images.map((e, i) => {
+            return (
+              <Box w='70%' key={i}>
+                <Post image={e} refreshValue={refreshValue} />
+              </Box>
+            )
+          })}
       </VStack>
     </Box>
 

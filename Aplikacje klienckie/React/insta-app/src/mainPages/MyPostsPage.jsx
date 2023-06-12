@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import SmallPost from '../elements/SmallPost'
-import { Box, Wrap, WrapItem, useDisclosure } from '@chakra-ui/react'
+import { Box, Text, Wrap, WrapItem, useDisclosure } from '@chakra-ui/react'
 import EditablePost from '../send/EditablePost'
 import RefreshComp from '../elements/RefreshComp'
 
@@ -97,13 +97,15 @@ export default function MyPostPage ({ refresh, refreshValue, logout }) {
       <RefreshComp refresh={refresh} refreshValue={refreshValue} />
       <Wrap mx='40px' w='max-content' maxW='90%' spacing='20px' p='20px'>
         {
-          images && images.map((image, i) => {
-            return (
-              <WrapItem key={i}>
-                <SmallPost selectImage={selectImage} id={image.id} />
-              </WrapItem>
-            )
-          })
+          images || images.length === 0
+            ? <Text textAlign='center'>Please upload some images first.</Text>
+            : images.map((image, i) => {
+              return (
+                <WrapItem key={i}>
+                  <SmallPost selectImage={selectImage} id={image.id} />
+                </WrapItem>
+              )
+            })
         }
       </Wrap>
       {selectedImage && (

@@ -50,7 +50,7 @@ export default function MainPage ({ logout }) {
           <Link to='/'><Button colorScheme='teal' leftIcon={<SearchIcon />}>Explore</Button></Link>
           <Link to='/my-posts'><Button colorScheme='green' leftIcon={<EditIcon />}>My posts</Button></Link>
           <Box>
-            <Heading>InstaApp</Heading>
+            <Heading size='2xl' fontFamily='Brush Script MT, cursive'>InstaApp</Heading>
           </Box>
           <Button colorScheme='pink' leftIcon={<PlusSquareIcon />} onClick={newPostOnOpen}>New post</Button>
           <UserMenu profilePic={clientData?.picture} logout={logout} onOpen={setPicOnOpen} />

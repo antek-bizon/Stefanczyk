@@ -15,7 +15,7 @@ export default function SendImagePreview ({ inputFile }) {
 
   return (
     <Box mb='3'>
-      <Image src={src} />
+      <Image w='100%' src={src} />
     </Box>
   )
 }

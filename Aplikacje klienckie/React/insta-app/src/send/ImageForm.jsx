@@ -69,7 +69,6 @@ export default function ImageForm ({ isOpen, onClose, refresh, refreshValue, log
         <ModalCloseButton />
         <form onSubmit={(e) => sendFile(e)}>
           <ModalBody>
-
             {selectedFile
               ? <SendImagePreview inputFile={selectedFile} />
               : <FormLabel>Choose file</FormLabel>}

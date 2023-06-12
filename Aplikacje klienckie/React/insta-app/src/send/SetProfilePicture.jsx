@@ -27,10 +27,11 @@ export default function SetProfilePicture ({ isOpen, onClose, refresh, refreshVa
       }
       toast({
         title: 'Success',
-        description: result.data,
+        description: 'Profile picture updated',
         status: 'success',
         duration: 4000,
-        isClosable: true
+        isClosable: true,
+        position: 'top'
       })
       refresh(!refreshValue)
     } catch (e) {
@@ -45,7 +46,8 @@ export default function SetProfilePicture ({ isOpen, onClose, refresh, refreshVa
       description: msg,
       status: 'error',
       duration: 9000,
-      isClosable: true
+      isClosable: true,
+      position: 'top'
     })
   }
 

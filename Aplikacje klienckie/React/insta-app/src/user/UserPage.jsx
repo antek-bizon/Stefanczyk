@@ -56,7 +56,7 @@ export default function UserPage ({ clientData, refreshValue, refresh, logout })
         </Stack>
         <Divider my={4} />
         <Stack direction='column' spacing={4} align='center'>
-          <Table w='60%'>
+          <Table variant='striped' w='60%'>
             <Tbody>
               {(clientData)
                 ? Object.entries(clientData).map(([key, value], i) => {
@@ -69,6 +69,7 @@ export default function UserPage ({ clientData, refreshValue, refresh, logout })
                       <Td>{modify
                         ? (
                           <Input
+                            border='2px solid #5B5B5B'
                             type='text'
                             required
                             isDisabled={key === 'email'}
@@ -87,18 +88,18 @@ export default function UserPage ({ clientData, refreshValue, refresh, logout })
           {modify
             ? (
               <ButtonGroup>
-                <Button type='submit'>Save</Button>
-                <Button onClick={() => {
-                  setModify(false)
-                  setModifyData(clientData)
-                }}
+                <Button colorScheme='blue' type='submit'>Save</Button>
+                <Button
+                  colorScheme='red' onClick={() => {
+                    setModify(false)
+                    setModifyData(clientData)
+                  }}
                 >Cancel
                 </Button>
               </ButtonGroup>)
-            : <Button onClick={() => setModify(true)}>Modify user data</Button>}
+            : <Button colorScheme='blue' onClick={() => setModify(true)}>Modify user data</Button>}
         </Stack>
       </form>
     </Box>
-
   )
 }

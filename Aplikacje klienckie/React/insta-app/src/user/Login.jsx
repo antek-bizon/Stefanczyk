@@ -1,12 +1,21 @@
-import { Button, FormControl, HStack, Input, Box, Alert, AlertIcon, AlertDescription, AlertTitle, CloseButton, VStack } from '@chakra-ui/react'
+import { Button, FormControl, Input, Box, VStack, useToast } from '@chakra-ui/react'
 import { useState } from 'react'
 
 export default function Login ({ setData }) {
   const [email, changeEmail] = useState('')
   const [password, changePassword] = useState('')
-  const [error, changeError] = useState('')
+  const toast = useToast()
 
-  const isError = error !== ''
+  const toastError = (msg) => {
+    toast({
+      title: 'Login failed',
+      description: msg,
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+      position: 'top'
+    })
+  }
 
   const loginUser = async (e) => {
     e.preventDefault()
@@ -28,35 +37,19 @@ export default function Login ({ setData }) {
       const result = await response.json()
       if (result.err || !result.data) {
         console.error('Login failed:', result.msg)
-        changeError(result.msg)
+        toastError(result.msg)
         return
       }
 
       setData(result.data)
     } catch (e) {
       console.error(e)
-      changeError(e.message)
+      toastError(e.message)
     }
   }
 
   return (
     <Box my={4}>
-      {
-        isError && (
-          <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
-            <Alert status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
-              <AlertIcon />
-              <Box>
-                <AlertTitle>Login failed</AlertTitle>
-                <AlertDescription>
-                  {error}
-                </AlertDescription>
-              </Box>
-              <CloseButton onClick={() => changeError('')} />
-            </Alert>
-          </HStack>
-        )
-      }
       <form onSubmit={(e) => loginUser(e)} className='column equal-height'>
         <VStack gap='5px'>
           <FormControl>

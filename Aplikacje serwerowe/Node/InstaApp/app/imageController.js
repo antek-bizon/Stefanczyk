@@ -36,7 +36,7 @@ module.exports = {
       })
       logger.log(imgData)
 
-      return sendSuccess({ res, status: 201, data: 'Filed saved successfully' })
+      return sendSuccess({ res, status: 201, data: 'File saved successfully' })
     } catch (err) {
       logger.error(err)
       return sendError({ res, status: 400, msg: 'Parsing failed' })

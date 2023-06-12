@@ -5,14 +5,13 @@ import MainPage from './mainPages/MainPage'
 
 function App () {
   const [cookies, setCookie, removeCookie] = useCookies(['token'])
-  const cookiesExpiredToast = useToast()
   const isClientToken = !!(cookies.token)
-  const cookieToast = useToast()
+  const toast = useToast()
 
   const setData = (data) => {
     const maxAge = 60 * 60
     setCookie('token', data.token, { maxAge, sameSite: 'strict' })
-    cookieToast({
+    toast({
       title: 'This website is using cookies.',
       description: 'We use cookies to improve your experience. By continuing to browse the site, you agree to our use of cookies.',
       status: 'info',
@@ -27,7 +26,8 @@ function App () {
   const logout = (tokenExpired = false) => {
     removeCookie('token', '')
     if (tokenExpired) {
-      cookiesExpiredToast({
+      toast.closeAll()
+      toast({
         title: 'Token expired',
         description: 'Your token has expired. Please login again.',
         status: 'warning',

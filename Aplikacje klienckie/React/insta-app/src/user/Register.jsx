@@ -57,7 +57,7 @@ export default function Register () {
         {
           isUrl
             ? (
-              <Alert borderRadius='30px' status='success' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='13px'>
+              <Alert borderRadius='25px' status='success' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='13px'>
                 <AlertIcon />
                 <Box>
                   <AlertTitle>Success!</AlertTitle>
@@ -69,7 +69,7 @@ export default function Register () {
               </Alert>)
             : isError
               ? (
-                <Alert borderRadius='30px' status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+                <Alert borderRadius='25px' status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
                   <AlertIcon />
                   <Box>
                     <AlertTitle>Error</AlertTitle>
