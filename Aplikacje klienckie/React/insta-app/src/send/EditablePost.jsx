@@ -13,13 +13,48 @@ import {
   VStack,
   InputLeftAddon,
   InputRightAddon,
-  Divider
+  Divider,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  useToast
 } from '@chakra-ui/react'
-import Post from '../mainPages/Post'
+import Post from '../elements/Post'
 import { useState } from 'react'
 
-export default function EditablePost ({ image, isOpen, onClose, filters, tags, refresh, refreshValue }) {
+function populateAddicionalData (filter) {
+  switch (filter) {
+    case 'rotate':
+      return { degrees: 'number' }
+    case 'resize':
+      return { width: 'number', height: 'number' }
+    case 'reformat':
+      return { format: 'imageFormat' }
+    case 'crop':
+      return {
+        width: 'number',
+        height: 'number',
+        x: 'number',
+        y: 'number'
+      }
+    case 'tint':
+      return {
+        r: 'number',
+        g: 'number',
+        b: 'number'
+      }
+    default:
+      return {}
+  }
+}
+
+export default function EditablePost ({ image, isOpen, onClose, filters, tags, refresh, refreshValue, logout }) {
   const [userTags, setUserTags] = useState('')
+  const [filter, setFilter] = useState('rotate')
+  const addicionalData = populateAddicionalData(filter)
+  const toast = useToast()
 
   async function addTags (e) {
     e.preventDefault()
@@ -54,18 +89,103 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
       const result = await response.json()
       console.log(result)
       if (result.err) {
-        console.error(result.msg)
+        if (response.states === 401) {
+          logout(true)
+        } else {
+          console.error(result.msg)
+          toastError(result.msg)
+        }
       } else {
         refresh(!refreshValue)
         setUserTags('')
+        toast({
+          title: 'Tags added',
+          description: 'Tags added to the image',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        })
       }
     } catch (e) {
       console.error(e)
+      toastError(e)
     }
   }
 
+  async function applyFilter (e) {
+    e.preventDefault()
+    const data = {}
+    for (let i = 1; i < e.target.elements.length - 1; i++) {
+      if (e.target.elements[i].inputMode === 'decimal') {
+        data[e.target.elements[i].name] = parseInt(e.target.elements[i].value)
+      } else {
+        data[e.target.elements[i].name] = e.target.elements[i].value
+      }
+    }
+
+    const body = JSON.stringify({
+      imageId: image.id,
+      filter,
+      data
+    })
+
+    console.log(body)
+    try {
+      const response = await fetch('http://localhost:3001/api/filters', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body,
+        credentials: 'include'
+      })
+      const result = await response.json()
+      console.log(result)
+      if (result.err) {
+        if (response.states === 401) {
+          logout(true)
+        } else {
+          console.error(result.msg)
+          toastError(result.msg)
+        }
+      } else {
+        refresh(!refreshValue)
+        toast({
+          title: 'Filter applied',
+          description: 'Filter applied to the image',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        })
+      }
+    } catch (e) {
+      console.error(e)
+      toastError(e)
+    }
+  }
+
+  const toastError = (msg) => {
+    toast({
+      title: 'Error',
+      description: msg,
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+      position: 'top'
+    })
+  }
+
+  const closeModal = () => {
+    onClose()
+    toast.closeAll()
+  }
+
+  const onlyTagNames = image.tags.map(t => t.name)
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={closeModal}>
       <ModalOverlay />
       <ModalContent my='auto'>
         <ModalHeader pb='10px'>
@@ -89,7 +209,7 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
                       }}
                     >
                       {tags.map((tag, i) => {
-                        if (image.tags.includes(tag) || userTags.includes(tag.name)) {
+                        if (onlyTagNames.includes(tag.name) || userTags.includes(tag.name)) {
                           return null
                         }
                         return <option key={i} value={tag.name}>{tag.name}</option>
@@ -108,18 +228,41 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
               </InputGroup>
             </form>
             <Divider />
-            <InputGroup>
-              <Select>
-                {filters.map((filter, i) => {
-                  return <option key={i} value={filter}>{filter}</option>
-                })}
-              </Select>
-              <InputRightAddon p='0px'>
+            <form onSubmit={applyFilter}>
+              <VStack>
+                <Select onChange={e => setFilter(e.target.value)}>
+                  {filters.map((filter, i) => {
+                    return <option key={i} value={filter}>{filter}</option>
+                  })}
+                </Select>
+                {addicionalData &&
+                  Object.entries(addicionalData).map(([key, value], i) => {
+                    if (value === 'imageFormat') {
+                      return (
+                        <Select name={key} required key={i} placeholder={key}>
+                          <option value='jpg'>jpg</option>
+                          <option value='png'>png</option>
+                          <option value='webp'>webp</option>
+                        </Select>
+                      )
+                    } else if (value === 'number') {
+                      return (
+                        <NumberInput name={key} min={0} required key={i}>
+                          <NumberInputField placeholder={key} />
+                          <NumberInputStepper>
+                            <NumberIncrementStepper />
+                            <NumberDecrementStepper />
+                          </NumberInputStepper>
+                        </NumberInput>
+                      )
+                    }
+                    return null
+                  })}
                 <Button type='submit'>Create copy with filter</Button>
-              </InputRightAddon>
-            </InputGroup>
-          </VStack>
 
+              </VStack>
+            </form>
+          </VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

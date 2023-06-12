@@ -1,9 +1,9 @@
-import { VStack, Box, IconButton } from '@chakra-ui/react'
-import { RepeatIcon } from '@chakra-ui/icons'
-import Post from './Post'
+import { VStack, Box } from '@chakra-ui/react'
+import Post from '../elements/Post'
 import { useEffect, useState } from 'react'
+import RefreshComp from '../elements/RefreshComp'
 
-export default function ExplorePage ({ logout, refresh }) {
+export default function ExplorePage ({ refresh, refreshValue, logout }) {
   const [images, setImages] = useState([])
 
   async function getImagesData () {
@@ -15,10 +15,11 @@ export default function ExplorePage ({ logout, refresh }) {
       const json = await response.json()
       console.log(json)
       if (json.err) {
-        console.error(json.msg)
-        // if (!cookies.token) {
-        //   logout()
-        // }
+        if (response.status === 401) {
+          logout(true)
+        } else {
+          console.error(json.msg)
+        }
       } else {
         setImages(json.data)
       }
@@ -29,14 +30,18 @@ export default function ExplorePage ({ logout, refresh }) {
 
   useEffect(() => {
     getImagesData()
-  }, [refresh])
+  }, [refreshValue])
 
   return (
     <Box pos='relative'>
-      <IconButton icon={<RepeatIcon />} pos='sticky' top='20px' left='0' onClick={getImagesData} />
+      <RefreshComp refresh={refresh} refreshValue={refreshValue} />
       <VStack gap='20px'>
         {images.map((e, i) => {
-          return <Post key={i} image={e} />
+          return (
+            <Box w='70%' key={i}>
+              <Post image={e} refreshValue={refreshValue} />
+            </Box>
+          )
         })}
       </VStack>
     </Box>

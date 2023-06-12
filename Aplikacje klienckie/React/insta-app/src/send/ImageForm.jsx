@@ -1,13 +1,10 @@
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Box, CloseButton, FormLabel, HStack, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from '@chakra-ui/react'
+import { Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useToast } from '@chakra-ui/react'
 import { useState } from 'react'
+import SendImagePreview from '../elements/SendImagePreview'
 
-export default function ImageForm ({ isOpen, onClose, refresh, refreshValue }) {
+export default function ImageForm ({ isOpen, onClose, refresh, refreshValue, logout }) {
   const [selectedFile, setSelectedFile] = useState(null)
-  const [error, changeError] = useState('')
-  const [fetchMsg, changeFetchMsg] = useState('')
-
-  const isError = error !== ''
-  const isFetchMsg = fetchMsg !== ''
+  const toast = useToast()
 
   const sendFile = async (e) => {
     e.preventDefault()
@@ -24,67 +21,62 @@ export default function ImageForm ({ isOpen, onClose, refresh, refreshValue }) {
 
       const result = await response.json()
       if (result.err) {
-        console.error('Sending file went wrong')
-        changeError(result.msg)
-        return
+        if (response.status === 401) {
+          logout(true)
+        } else {
+          console.error('Sending file went wrong:', result.msg)
+          toastError(result.msg)
+        }
+      } else {
+        toast({
+          title: 'Success',
+          description: result.data,
+          duration: 4000,
+          isClosable: true,
+          status: 'success',
+          position: 'top'
+        })
+        refresh(!refreshValue)
       }
-      changeFetchMsg(result.data)
-      refresh(!refreshValue)
     } catch (e) {
       console.error(e)
-      changeError(e)
+      toastError(e)
     }
   }
 
+  const toastError = (msg) => {
+    toast({
+      title: 'Error',
+      description: msg,
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+      position: 'top'
+    })
+  }
+
   const closeModal = () => {
-    changeError('')
-    changeFetchMsg('')
+    toast.closeAll()
+    setSelectedFile(null)
     onClose()
   }
 
   return (
     <Modal isOpen={isOpen} onClose={closeModal}>
       <ModalOverlay />
-      <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
-        {
-          isFetchMsg
-            ? (
-              <Alert status='success' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
-                <AlertIcon />
-                <Box>
-                  <AlertTitle>Success!</AlertTitle>
-                  <AlertDescription>
-                    Image uploaded successfully!
-                  </AlertDescription>
-                </Box>
-                <CloseButton onClick={() => changeFetchMsg('')} />
-              </Alert>)
-            : isError
-              ? (
-                <Alert status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
-                  <AlertIcon />
-                  <Box>
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>
-                      {error}
-                    </AlertDescription>
-                  </Box>
-                  <CloseButton onClick={() => changeError('')} />
-                </Alert>)
-              : null
-        }
-      </HStack>
-
       <ModalContent>
         <ModalHeader>Upload Image</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={(e) => sendFile(e)}>
           <ModalBody>
-            <FormLabel>Choose file</FormLabel>
+
+            {selectedFile
+              ? <SendImagePreview inputFile={selectedFile} />
+              : <FormLabel>Choose file</FormLabel>}
             <Input type='file' accept='image/*' required onChange={(e) => setSelectedFile(e.target.files[0])} />
           </ModalBody>
           <ModalFooter>
-            <button type='submit'>Send</button>
+            <Button colorScheme='blue' type='submit'>Send</Button>
           </ModalFooter>
         </form>
       </ModalContent>

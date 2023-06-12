@@ -57,7 +57,7 @@ export default function Register () {
         {
           isUrl
             ? (
-              <Alert status='success' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+              <Alert borderRadius='30px' status='success' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='13px'>
                 <AlertIcon />
                 <Box>
                   <AlertTitle>Success!</AlertTitle>
@@ -65,11 +65,11 @@ export default function Register () {
                     Click here to confirm your account.
                   </AlertDescription>
                 </Box>
-                <Button onClick={() => confirmAccount(url)}>Confirm</Button>
+                <Button colorScheme='blue' onClick={() => confirmAccount(url)}>Confirm</Button>
               </Alert>)
             : isError
               ? (
-                <Alert status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
+                <Alert borderRadius='30px' status='error' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
                   <AlertIcon />
                   <Box>
                     <AlertTitle>Error</AlertTitle>
@@ -86,7 +86,7 @@ export default function Register () {
       <form onSubmit={(e) => registerUser(e)} className='column equal-height'>
         <VStack gap='5px'>
           <FormControl>
-            <Input type='text' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
+            <Input type='email' placeholder='E-mail' required onChange={(e) => changeEmail(e.target.value)} />
           </FormControl>
           <FormControl>
             <Input type='password' placeholder='Password' required onChange={(e) => changePassword(e.target.value)} />

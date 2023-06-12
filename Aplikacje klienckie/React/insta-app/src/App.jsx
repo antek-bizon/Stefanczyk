@@ -1,45 +1,45 @@
 import { useCookies } from 'react-cookie'
 import UserValidation from './user/UserValidation'
-import { ChakraProvider, Box, Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, HStack, Flex } from '@chakra-ui/react'
+import { ChakraProvider, Flex, useToast } from '@chakra-ui/react'
 import MainPage from './mainPages/MainPage'
-import { useState } from 'react'
 
 function App () {
   const [cookies, setCookie, removeCookie] = useCookies(['token'])
-  const [cookiesExpired, setCookiesExpired] = useState(false)
+  const cookiesExpiredToast = useToast()
   const isClientToken = !!(cookies.token)
+  const cookieToast = useToast()
 
   const setData = (data) => {
     const maxAge = 60 * 60
-    setCookie('token', data.token, { maxAge })
+    setCookie('token', data.token, { maxAge, sameSite: 'strict' })
+    cookieToast({
+      title: 'This website is using cookies.',
+      description: 'We use cookies to improve your experience. By continuing to browse the site, you agree to our use of cookies.',
+      status: 'info',
+      duration: 4000,
+      isClosable: true
+    })
     setTimeout(() => {
-      logout()
-      setCookiesExpired(true)
+      logout(true)
     }, maxAge * 1000)
   }
 
-  const logout = () => {
+  const logout = (tokenExpired = false) => {
     removeCookie('token', '')
+    if (tokenExpired) {
+      cookiesExpiredToast({
+        title: 'Token expired',
+        description: 'Your token has expired. Please login again.',
+        status: 'warning',
+        duration: 6000,
+        isClosable: true
+      })
+    }
   }
 
   return (
     <ChakraProvider>
       <Flex width='100vw' height='max-content' minH='100vh' bgImage='url(/background.gif)' bgAttachment='fixed' bgSize='cover' bgPosition='center' bgRepeat='no-repeat'>
-        {
-          cookiesExpired &&
-          (
-            <HStack w='100%' position='absolute' top='5%' left='0%' justify='center'>
-              <Alert status='warning' width='fit-content' zIndex='calc(var(--chakra-zIndices-modal) + 1)' gap='10px'>
-                <AlertIcon />
-                <Box>
-                  <AlertTitle>Token expired</AlertTitle>
-                  <AlertDescription>Please login again.</AlertDescription>
-                </Box>
-                <CloseButton onClick={() => setCookiesExpired('')} />
-              </Alert>)
-            </HStack>
-          )
-        }
         {
           !isClientToken
             ? <UserValidation setData={setData} />

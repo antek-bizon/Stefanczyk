@@ -5,7 +5,7 @@ import { Box, Tabs, Tab, TabList, TabPanel, TabPanels, VStack } from '@chakra-ui
 
 export default function UserValidation ({ setData }) {
   return (
-    <VStack alignSelf='center' m='0 auto' width='90%' paddingBottom='10%' align='center' justify='center'>
+    <VStack alignSelf='center' m='0 auto' width='90%' align='center' pb='8vh' justify='center'>
       <Box borderRadius='25px' bgColor='white' minH='420px' p='30px' boxShadow='lg'>
         <Tabs isFitted variant='enclosed'>
           <TabList>

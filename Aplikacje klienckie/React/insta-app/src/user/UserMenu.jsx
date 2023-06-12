@@ -6,12 +6,14 @@ export default function UserMenu ({ profilePic, logout, onOpen }) {
   return (
     <Menu>
       <MenuButton>
-        <Avatar src={profilePic} />
+        {profilePic
+          ? <Avatar size='md' src={`http://localhost:3001/${profilePic}`} />
+          : <Avatar size='md' />}
       </MenuButton>
       <MenuList>
         <Link to='/profile'><MenuItem>Profile settings</MenuItem></Link>
         <MenuItem onClick={onOpen}>Set profile picture</MenuItem>
-        <MenuItem onClick={logout}>Logout</MenuItem>
+        <MenuItem onClick={() => logout()}>Logout</MenuItem>
       </MenuList>
     </Menu>
   )

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import SmallPost from './SmallPost'
-import { Box, IconButton, Wrap, WrapItem, useDisclosure } from '@chakra-ui/react'
-import { RepeatIcon } from '@chakra-ui/icons'
+import SmallPost from '../elements/SmallPost'
+import { Box, Wrap, WrapItem, useDisclosure } from '@chakra-ui/react'
 import EditablePost from '../send/EditablePost'
+import RefreshComp from '../elements/RefreshComp'
 
-export default function MyPostPage ({ refresh, refreshValue }) {
+export default function MyPostPage ({ refresh, refreshValue, logout }) {
   const [images, setImages] = useState([])
   const [filters, setFilters] = useState([])
   const [tags, setTags] = useState([])
@@ -31,7 +31,11 @@ export default function MyPostPage ({ refresh, refreshValue }) {
       const result = await response.json()
       console.log(result)
       if (result.err) {
-        console.error(result.msg)
+        if (response.status === 401) {
+          logout(true)
+        } else {
+          console.error(result.msg)
+        }
       } else {
         setImages(result.data)
       }
@@ -48,7 +52,11 @@ export default function MyPostPage ({ refresh, refreshValue }) {
       })
       const result = await response.json()
       if (result.err) {
-        console.error(result.msg)
+        if (response.status === 401) {
+          logout(true)
+        } else {
+          console.error(result.msg)
+        }
       } else {
         setFilters(result.data)
       }
@@ -65,7 +73,11 @@ export default function MyPostPage ({ refresh, refreshValue }) {
       })
       const result = await response.json()
       if (result.err) {
-        console.error(result.msg)
+        if (response.status === 401) {
+          logout(true)
+        } else {
+          console.error(result.msg)
+        }
       } else {
         setTags(result.data)
       }
@@ -82,8 +94,8 @@ export default function MyPostPage ({ refresh, refreshValue }) {
 
   return (
     <Box pos='relative'>
-      <IconButton icon={<RepeatIcon />} pos='sticky' top='20px' left='0' onClick={getAlbumImages} />
-      <Wrap m='auto' w='max-content' maxW='80%' spacing='20px' p='20px'>
+      <RefreshComp refresh={refresh} refreshValue={refreshValue} />
+      <Wrap mx='40px' w='max-content' maxW='90%' spacing='20px' p='20px'>
         {
           images && images.map((image, i) => {
             return (
@@ -103,6 +115,7 @@ export default function MyPostPage ({ refresh, refreshValue }) {
           isOpen={isOpen}
           refresh={refresh}
           refreshValue={refreshValue}
+          logout={logout}
         />
       )}
     </Box>
