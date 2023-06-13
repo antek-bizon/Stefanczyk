@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Box, Heading, Stack, Table, Tbody, Tr, Td, Divider, Button, ButtonGroup, Input } from '@chakra-ui/react'
 
-export default function UserPage ({ clientData, refreshValue, refresh, logout }) {
+export default function ProfilePage ({ clientData, refreshValue, refresh, logout }) {
   const [modify, setModify] = useState(false)
   const [modifyData, setModifyData] = useState(clientData)
 

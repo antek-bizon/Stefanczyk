@@ -36,15 +36,17 @@ export default function ExplorePage ({ refresh, refreshValue, logout }) {
     <Box pos='relative'>
       <RefreshComp refresh={refresh} refreshValue={refreshValue} />
       <VStack gap='20px'>
-        {images || images.length === 0
-          ? <Text>No images :(</Text>
-          : images.map((e, i) => {
-            return (
-              <Box w='70%' key={i}>
-                <Post image={e} refreshValue={refreshValue} />
-              </Box>
-            )
-          })}
+        {
+          !images || images.length === 0
+            ? <Text>No images :(</Text>
+            : images.map((e, i) => {
+              return (
+                <Box w='70%' key={i}>
+                  <Post image={e} refreshValue={refreshValue} />
+                </Box>
+              )
+            })
+        }
       </VStack>
     </Box>
 

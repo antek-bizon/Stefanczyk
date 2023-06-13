@@ -95,19 +95,21 @@ export default function MyPostPage ({ refresh, refreshValue, logout }) {
   return (
     <Box pos='relative'>
       <RefreshComp refresh={refresh} refreshValue={refreshValue} />
-      <Wrap mx='40px' w='max-content' maxW='90%' spacing='20px' p='20px'>
-        {
-          images || images.length === 0
-            ? <Text textAlign='center'>Please upload some images first.</Text>
-            : images.map((image, i) => {
-              return (
-                <WrapItem key={i}>
-                  <SmallPost selectImage={selectImage} id={image.id} />
-                </WrapItem>
-              )
-            })
-        }
-      </Wrap>
+      {
+        !images || images.length === 0
+          ? <Text textAlign='center'>No images.<br />Please upload some images first.</Text>
+          : (
+            <Wrap mx='40px' w='max-content' maxW='90%' spacing='20px' p='20px'>
+              {images.map((image, i) => {
+                return (
+                  <WrapItem key={i}>
+                    <SmallPost selectImage={selectImage} id={image.id} />
+                  </WrapItem>
+                )
+              })}
+            </Wrap>)
+      }
+
       {selectedImage && (
         <EditablePost
           image={images.find(image => image.id === selectedImage)}

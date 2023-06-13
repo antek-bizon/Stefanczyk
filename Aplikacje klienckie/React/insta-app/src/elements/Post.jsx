@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Avatar, HStack, Box, Card, CardBody, CardFooter, CardHeader, Divider, Tab, TabList, TabPanel, TabPanels, Tabs, Tag, Text, Wrap } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
 
 export default function Post ({ image, refreshValue, logout }) {
   const [authorData, setAuthorData] = useState({})
@@ -46,14 +47,18 @@ export default function Post ({ image, refreshValue, logout }) {
   return (
     <Card overflow='hidden' w='100%'>
       <CardHeader pb='10px' display='flex' alignItems='center' justifyContent='space-between'>
-        <HStack spacing='15px'>
-          {authorData.picture
-            ? <Avatar size='sm' src={`http://localhost:3001/${authorData.picture}`} />
-            : <Avatar size='sm' />}
-          {(authorData.name && authorData.lastName)
-            ? <Text>{authorData.name} {authorData.lastName}</Text>
-            : <Text>Anonymous</Text>}
-        </HStack>
+        {authorData.email && (
+          <Link to={`/user/${authorData.email}`}>
+            <HStack spacing='15px'>
+              {authorData.picture
+                ? <Avatar size='sm' src={`http://localhost:3001/${authorData.picture}`} />
+                : <Avatar size='sm' />}
+              {(authorData.name && authorData.lastName)
+                ? <Text>{authorData.name} {authorData.lastName}</Text>
+                : <Text>Anonymous</Text>}
+            </HStack>
+          </Link>
+        )}
         <Text>{date}</Text>
       </CardHeader>
       <Divider />
