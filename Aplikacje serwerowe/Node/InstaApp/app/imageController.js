@@ -6,6 +6,7 @@ const sendFile = require('./commonController').sendFile
 const fileController = require('./fileController')
 const reqBodyController = require('./requestBodyController')
 const filtersController = require('./filtersController')
+const users = require('./userController').users
 
 const imgData = []
 
@@ -61,13 +62,33 @@ module.exports = {
     return sendError({ res, msg: 'Image not found' })
   },
 
-  getImagesFromAlbumJSON: ({ res, user }) => {
+  getImagesFromAlbumCookie: ({ res, user }) => {
     const images = imgData.filter(e => e.album === user.email)
     if (images.length === 0) {
       return sendError({ res, status: 404, msg: 'Album not found' })
     }
 
     return sendSuccess({ res, data: images })
+  },
+
+  getImagesFromAlbumJSON: async ({ res, req }) => {
+    try {
+      const userData = JSON.parse(await reqBodyController.getRequestData(req))
+      if (!userData || !userData.email) {
+        return sendError({ res, status: 400, msg: 'Wrong query' })
+      }
+
+      const user = users.get(userData.email)
+      if (!user) {
+        return sendError({ res, status: 404, msg: 'User not found' })
+      }
+
+      const images = imgData.filter(e => e.album === user.email)
+      return sendSuccess({ res, data: images })
+    } catch (e) {
+      logger.error(e)
+      return sendError({ res, status: 400, msg: 'JSON parse error' })
+    }
   },
 
   deleteImage: ({ res, query }) => {

@@ -106,8 +106,8 @@ function getRoutes () {
     '/api/filters/metadata/?': controller.getImageMetadata,
     '/api/filters': controller.getFilters,
     '/api/getfile/?': controller.getImage,
-    '/api/profile': controller.getUserData,
-    '/api/photos/album': controller.getImagesFromAlbumJSON,
+    '/api/profile': controller.getUserDataCookie,
+    '/api/photos/album': controller.getImagesFromAlbumCookie,
     '/api/user/confirm/?': { func: controller.confirmUser, noValidation: true }
   }
 }
@@ -117,6 +117,7 @@ function postRoutes () {
     '/api/photos': controller.addImage,
     '/api/tags': controller.addTag,
     '/api/author': controller.getAuthorData,
+    '/api/photos/album': controller.getImagesFromAlbumJSON,
     '/api/user/register': { func: controller.registerUser, noValidation: true },
     '/api/user/login': { func: controller.loginUser, noValidation: true }
   }

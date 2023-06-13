@@ -7,6 +7,7 @@ const fileController = require('./fileController')
 const users = new Map()
 
 module.exports = {
+  users,
   registerUser: async ({ res, req }) => {
     try {
       const regInfo = JSON.parse(await reqBodyController.getRequestData(req))
@@ -131,7 +132,7 @@ module.exports = {
     }
   },
 
-  getUserData: ({ res, user }) => {
+  getUserDataCookie: ({ res, user }) => {
     return sendSuccess({
       res,
       data: {
@@ -144,27 +145,32 @@ module.exports = {
   },
 
   getAuthorData: async ({ res, req }) => {
-    const authorInfo = JSON.parse(await reqBodyController.getRequestData(req))
-    if (!authorInfo || !authorInfo.email) {
-      logger.warn('Wrong query')
-      return sendError({ res, status: 400, msg: 'Wrong query' })
-    }
-
-    const author = users.get(authorInfo.email)
-    if (!author) {
-      logger.warn('Author not found')
-      return sendError({ res, status: 400, msg: 'Author not found' })
-    }
-
-    return sendSuccess({
-      res,
-      data: {
-        name: author.name,
-        lastName: author.lastName,
-        email: author.email,
-        picture: author.picture
+    try {
+      const authorInfo = JSON.parse(await reqBodyController.getRequestData(req))
+      if (!authorInfo || !authorInfo.email) {
+        logger.warn('Wrong query')
+        return sendError({ res, status: 400, msg: 'Wrong query' })
       }
-    })
+
+      const author = users.get(authorInfo.email)
+      if (!author) {
+        logger.warn('Author not found')
+        return sendError({ res, status: 400, msg: 'Author not found' })
+      }
+
+      return sendSuccess({
+        res,
+        data: {
+          name: author.name,
+          lastName: author.lastName,
+          email: author.email,
+          picture: author.picture
+        }
+      })
+    } catch (e) {
+      logger.error(e)
+      return sendError({ res, status: 400, msg: 'JSON parse error' })
+    }
   },
 
   updateUserData: async ({ res, req, user }) => {
