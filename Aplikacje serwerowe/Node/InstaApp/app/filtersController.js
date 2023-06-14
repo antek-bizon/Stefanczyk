@@ -2,8 +2,8 @@ const sharp = require('sharp')
 const { sendSuccess } = require('./commonController')
 const logger = require('tracer').colorConsole()
 
-async function rotateImage (imagePath, { degrees }) {
-  if (!degrees) {
+async function rotateImage(imagePath, { degrees }) {
+  if (typeof degrees !== 'number') {
     logger.warn('No degrees specified')
     return false
   }
@@ -14,8 +14,8 @@ async function rotateImage (imagePath, { degrees }) {
   return newImagePath
 }
 
-async function resizeImage (imagePath, { width, height }) {
-  if (!width || !height) {
+async function resizeImage(imagePath, { width, height }) {
+  if (typeof width !== 'number' || typeof height !== 'number') {
     logger.warn('No width or height specified')
     return false
   }
@@ -27,7 +27,7 @@ async function resizeImage (imagePath, { width, height }) {
   return newImagePath
 }
 
-async function reformatImage (imagePath, { format }) {
+async function reformatImage(imagePath, { format }) {
   if (!format) {
     logger.warn('No format specified')
     return false
@@ -40,8 +40,8 @@ async function reformatImage (imagePath, { format }) {
   return newImagePath
 }
 
-async function cropImage (imagePath, { width, height, x, y }) {
-  if (!width || !height || !x || !y) {
+async function cropImage(imagePath, { width, height, x, y }) {
+  if (typeof width !== 'number' || typeof height !== 'number' || typeof x !== 'number' || typeof y !== 'number') {
     logger.warn('No width, height, x or y specified')
     return false
   }
@@ -53,7 +53,7 @@ async function cropImage (imagePath, { width, height, x, y }) {
   return newImagePath
 }
 
-async function grayscaleImage (imagePath) {
+async function grayscaleImage(imagePath) {
   const newImagePath = imagePath.replace(/\.\w+$/, '_grayscale$&')
   await sharp(imagePath)
     .grayscale()
@@ -61,7 +61,7 @@ async function grayscaleImage (imagePath) {
   return newImagePath
 }
 
-async function flipImage (imagePath) {
+async function flipImage(imagePath) {
   const newImagePath = imagePath.replace(/\.\w+$/, '_flip$&')
   await sharp(imagePath)
     .flip()
@@ -69,7 +69,7 @@ async function flipImage (imagePath) {
   return newImagePath
 }
 
-async function flopImage (imagePath) {
+async function flopImage(imagePath) {
   const newImagePath = imagePath.replace(/\.\w+$/, '_flop$&')
   await sharp(imagePath)
     .flop()
@@ -77,7 +77,7 @@ async function flopImage (imagePath) {
   return newImagePath
 }
 
-async function negateImage (imagePath) {
+async function negateImage(imagePath) {
   const newImagePath = imagePath.replace(/\.\w+$/, '_negate$&')
   await sharp(imagePath)
     .negate()
@@ -85,8 +85,8 @@ async function negateImage (imagePath) {
   return newImagePath
 }
 
-async function tintImage (imagePath, { r, g, b }) {
-  if (!r || !g || !b) {
+async function tintImage(imagePath, { r, g, b }) {
+  if (typeof r !== 'number' || typeof g !== 'number' || typeof b !== 'number') {
     logger.warn('No r, g or b specified')
     return false
   }

@@ -24,7 +24,7 @@ import {
 import Post from '../elements/Post'
 import { useState } from 'react'
 
-function populateAddicionalData (filter) {
+function populateAddicionalData(filter) {
   switch (filter) {
     case 'rotate':
       return { degrees: 'number' }
@@ -50,13 +50,13 @@ function populateAddicionalData (filter) {
   }
 }
 
-export default function EditablePost ({ image, isOpen, onClose, filters, tags, refresh, refreshValue, logout }) {
+export default function EditablePost({ image, isOpen, onClose, filters, tags, refresh, refreshValue, logout }) {
   const [userTags, setUserTags] = useState('')
   const [filter, setFilter] = useState('rotate')
   const addicionalData = populateAddicionalData(filter)
   const toast = useToast()
 
-  async function addTags (e) {
+  async function addTags(e) {
     e.preventDefault()
     const tagsToAdd = userTags.toLocaleLowerCase().trim().split(' ').map(t => {
       const formated = t.trim()
@@ -96,8 +96,6 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
           toastError(result.msg)
         }
       } else {
-        refresh(!refreshValue)
-        setUserTags('')
         toast({
           title: 'Tags added',
           description: 'Tags added to the image',
@@ -106,6 +104,7 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
           isClosable: true,
           position: 'top'
         })
+        refresh(!refreshValue)
       }
     } catch (e) {
       console.error(e)
@@ -113,7 +112,7 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
     }
   }
 
-  async function applyFilter (e) {
+  async function applyFilter(e) {
     e.preventDefault()
     const data = {}
     for (let i = 1; i < e.target.elements.length - 1; i++) {
@@ -166,12 +165,45 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
     }
   }
 
+  async function deleteImage() {
+    try {
+      const response = await fetch(`http://localhost:3001/api/photos/${image.id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      const result = await response.json()
+      console.log(result)
+      if (result.err) {
+        if (response.states === 401) {
+          logout(true)
+        } else {
+          console.error(result.msg)
+          toastError(result.msg)
+        }
+      } else {
+        onClose()
+        refresh(!refreshValue)
+        toast({
+          title: 'Image deleted',
+          description: 'Image was successfully deleted',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top'
+        })
+      }
+    } catch (e) {
+      console.error(e)
+      toastError(e)
+    }
+  }
+
   const toastError = (msg) => {
     toast({
       title: 'Error',
       description: msg,
       status: 'error',
-      duration: 9000,
+      duration: 5000,
       isClosable: true,
       position: 'top'
     })
@@ -185,7 +217,7 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
   const onlyTagNames = image.tags.map(t => t.name)
 
   return (
-    <Modal isOpen={isOpen} onClose={closeModal}>
+    <Modal isOpen={isOpen} onClose={closeModal} size='lg'>
       <ModalOverlay />
       <ModalContent my='auto'>
         <ModalHeader pb='10px'>
@@ -223,7 +255,7 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
                   required
                 />
                 <InputRightAddon p='0px'>
-                  <Button type='submit'>Add</Button>
+                  <Button colorScheme='blue' type='submit'>Add</Button>
                 </InputRightAddon>
               </InputGroup>
             </form>
@@ -258,8 +290,9 @@ export default function EditablePost ({ image, isOpen, onClose, filters, tags, r
                     }
                     return null
                   })}
-                <Button type='submit'>Create copy with filter</Button>
+                <Button colorScheme='cyan' type='submit'>Create copy with filter</Button>
 
+                <Button onClick={deleteImage} colorScheme='red' type='reset'>Delete image and copies</Button>
               </VStack>
             </form>
           </VStack>

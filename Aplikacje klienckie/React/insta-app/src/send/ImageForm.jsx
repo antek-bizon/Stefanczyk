@@ -2,45 +2,50 @@ import { Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalCont
 import { useState } from 'react'
 import SendImagePreview from '../elements/SendImagePreview'
 
-export default function ImageForm ({ isOpen, onClose, refresh, refreshValue, logout }) {
+export default function ImageForm({ isOpen, onClose, refresh, refreshValue, logout }) {
   const [selectedFile, setSelectedFile] = useState(null)
   const toast = useToast()
 
   const sendFile = async (e) => {
     e.preventDefault()
 
-    const body = new FormData()
-    body.append('file', selectedFile)
+    const mimeType = selectedFile.type.split('/').shift()
+    if (mimeType === 'image') {
+      const body = new FormData()
+      body.append('file', selectedFile)
 
-    try {
-      const response = await fetch('http://localhost:3001/api/photos', {
-        method: 'POST',
-        body,
-        credentials: 'include'
-      })
-
-      const result = await response.json()
-      if (result.err) {
-        if (response.status === 401) {
-          logout(true)
-        } else {
-          console.error('Sending file went wrong:', result.msg)
-          toastError(result.msg)
-        }
-      } else {
-        toast({
-          title: 'Success',
-          description: result.data,
-          duration: 4000,
-          isClosable: true,
-          status: 'success',
-          position: 'top'
+      try {
+        const response = await fetch('http://localhost:3001/api/photos', {
+          method: 'POST',
+          body,
+          credentials: 'include'
         })
-        refresh(!refreshValue)
+
+        const result = await response.json()
+        if (result.err) {
+          if (response.status === 401) {
+            logout(true)
+          } else {
+            console.error('Sending file went wrong:', result.msg)
+            toastError(result.msg)
+          }
+        } else {
+          toast({
+            title: 'Success',
+            description: result.data,
+            duration: 4000,
+            isClosable: true,
+            status: 'success',
+            position: 'top'
+          })
+          refresh(!refreshValue)
+        }
+      } catch (e) {
+        console.error(e)
+        toastError(e)
       }
-    } catch (e) {
-      console.error(e)
-      toastError(e)
+    } else {
+      toastError('Incorrect file type.')
     }
   }
 
@@ -49,7 +54,7 @@ export default function ImageForm ({ isOpen, onClose, refresh, refreshValue, log
       title: 'Error',
       description: msg,
       status: 'error',
-      duration: 9000,
+      duration: 5000,
       isClosable: true,
       position: 'top'
     })

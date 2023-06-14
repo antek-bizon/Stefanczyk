@@ -4,24 +4,24 @@ import { Box, Text, Wrap, WrapItem, useDisclosure } from '@chakra-ui/react'
 import EditablePost from '../send/EditablePost'
 import RefreshComp from '../elements/RefreshComp'
 
-export default function MyPostPage ({ refresh, refreshValue, logout }) {
+export default function MyPostPage({ refresh, refreshValue, logout }) {
   const [images, setImages] = useState([])
   const [filters, setFilters] = useState([])
   const [tags, setTags] = useState([])
   const [selectedImage, setSelectedImage] = useState(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  function selectImage (id) {
+  function selectImage(id) {
     onOpen()
     setSelectedImage(id)
   }
 
-  function deselectImage () {
+  function deselectImage() {
     onClose()
     setSelectedImage(null)
   }
 
-  async function getAlbumImages () {
+  async function getAlbumImages() {
     try {
       const response = await fetch('http://localhost:3001/api/photos/album', {
         method: 'GET',
@@ -44,7 +44,7 @@ export default function MyPostPage ({ refresh, refreshValue, logout }) {
     }
   }
 
-  async function getFilters () {
+  async function getFilters() {
     try {
       const response = await fetch('http://localhost:3001/api/filters', {
         method: 'GET',
@@ -65,7 +65,7 @@ export default function MyPostPage ({ refresh, refreshValue, logout }) {
     }
   }
 
-  async function getTags () {
+  async function getTags() {
     try {
       const response = await fetch('http://localhost:3001/api/tags', {
         method: 'GET',
@@ -120,6 +120,7 @@ export default function MyPostPage ({ refresh, refreshValue, logout }) {
           refresh={refresh}
           refreshValue={refreshValue}
           logout={logout}
+          selectImage={selectImage}
         />
       )}
     </Box>

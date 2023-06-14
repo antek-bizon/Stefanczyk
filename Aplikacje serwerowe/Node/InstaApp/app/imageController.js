@@ -19,8 +19,6 @@ module.exports = {
     try {
       const fileInfo = await fileController.saveFile(req, user.email)
 
-      logger.log(fileInfo)
-
       imgData.push({
         id: (imgData.length === 0) ? 1 : imgData[imgData.length - 1].id + 1,
         album: user.email,
@@ -35,7 +33,6 @@ module.exports = {
         ],
         tags: []
       })
-      logger.log(imgData)
 
       return sendSuccess({ res, status: 201, data: 'File saved successfully' })
     } catch (err) {
@@ -64,10 +61,6 @@ module.exports = {
 
   getImagesFromAlbumCookie: ({ res, user }) => {
     const images = imgData.filter(e => e.album === user.email)
-    if (images.length === 0) {
-      return sendError({ res, status: 404, msg: 'Album not found' })
-    }
-
     return sendSuccess({ res, data: images })
   },
 
@@ -99,10 +92,14 @@ module.exports = {
 
     for (let i = 0; i < imgData.length; i++) {
       if (queryInt === imgData[i].id) {
-        sendSuccess({ res, data: 'Image deleted' })
         fileController.deleteOne(imgData[i].url)
+        for (const filter of imgData[i].history) {
+          if (filter.url) {
+            fileController.deleteOne(filter.url)
+          }
+        }
         imgData.splice(i, 1)
-        return
+        return sendSuccess({ res, data: 'Image deleted' })
       }
     }
     return sendError({ res, msg: 'Image not found' })
