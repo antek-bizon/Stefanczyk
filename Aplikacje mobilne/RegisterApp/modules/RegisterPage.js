@@ -1,12 +1,39 @@
 import { useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import { Button, Icon, Input, Layout, Text } from '@ui-kitten/components'
 import { TouchableWithoutFeedback } from '@ui-kitten/components/devsupport'
+import { hostIp } from './Ip'
 
-const RegisterPage = ({ registerUser }) => {
+const RegisterPage = ({ adminPage }) => {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [secureTextEntry, setSecureTextEntry] = useState(true)
+
+  const registerUser = async (name, password) => {
+    try {
+      const response = await fetch('http://' + hostIp + '/api/register', {
+        method: 'POST',
+        body: JSON.stringify({ name, password }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      const result = await response.text()
+      if (!response.ok) {
+        if (response.status === 403) {
+          Alert.alert('User already exists', name)
+        } else {
+          console.error(result)
+        }
+      } else {
+        console.log('success')
+        adminPage()
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry)
