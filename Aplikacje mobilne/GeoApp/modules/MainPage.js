@@ -10,7 +10,7 @@ const MainPage = ({ startingPage }) => {
   const theme = useTheme()
   const [isPermited, setPermission] = useState(false)
   const [loading, setLoading] = useState(0)
-  const areAllSelected = typeof locations.find((e) => !e.selected) === 'undefined'
+  const areAllSelected = locations.length !== 0 && typeof locations.find((e) => !e.selected) === 'undefined'
   const selectedLocations = locations.filter(e => e.selected)
   const [mapView, setMapView] = useState(false)
 
