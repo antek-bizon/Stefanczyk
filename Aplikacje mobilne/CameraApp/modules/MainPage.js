@@ -1,77 +1,71 @@
-import { VStack, useToast } from 'native-base'
+import { VStack } from 'native-base'
 import Gallery from './Gallery'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import * as MediaLibrary from 'expo-media-library'
 import { Alert } from 'react-native'
+import Toast from 'react-native-simple-toast'
 import ImageView from './ImageView'
 import CameraPage from './CameraPage'
 
-const MainPage = ({ closeApp }) => {
-  // const images = new Array(20)
-  // images.fill({
-  //   src: 'https://cdn.pixabay.com/photo/2017/02/01/22/02/mountain-landscape-2031539_640.jpg',
-  //   description: 'Landscape'
-  // })
+const getAssets = async () => {
+  try {
+    const { status } = await MediaLibrary.requestPermissionsAsync()
+    if (status !== 'granted') {
+      Alert.alert('Permissions to read images were not granted')
+    }
+    const assets = await MediaLibrary.getAssetsAsync({
+      sortBy: 'modificationTime',
+      first: 3 * 10,
+      mediaType: 'photo'
+    })
+    const map = new Map()
+    assets.assets.forEach((e) => map.set(e.id, { id: e.id, uri: e.uri, filename: e.filename }))
+    return map
+  } catch (e) {
+    console.error(e)
+  }
+}
 
-  const [images, setImages] = useState(null)
-  const [currentPage, setPage] = useState({ name: 'gallery' })
-  const [refresh, setRefresh] = useState(false)
-  const toast = useToast()
+const MainPage = ({ closeApp }) => {
+  const [currentPage, setPage] = useState({ name: 'gallery', images: null })
 
   useEffect(() => {
-    MediaLibrary.requestPermissionsAsync()
-      .then(({ status }) => {
-        if (status !== 'granted') {
-          Alert.alert('Permissions to read images were not granted')
-        }
-        MediaLibrary.getAssetsAsync({
-          sortBy: 'modificationTime',
-          first: 3 * 10,
-          mediaType: 'photo'
-        })
-          .then(item => {
-            const map = new Map()
-            item.assets.forEach((e) => map.set(e.id, { id: e.id, uri: e.uri, filename: e.filename }))
-            setImages(map)
-          })
-          .catch(e => console.error(e))
-      })
+    getAssets()
+      .then(map => setPage(prev => ({ name: prev.name, images: map })))
       .catch(e => console.error(e))
-  }, [refresh, currentPage])
+  }, [])
 
-  const deleteImages = (ids) => {
+  const deleteImages = useCallback((ids) => {
     MediaLibrary.deleteAssetsAsync(ids)
       .then(res => {
-        toast.closeAll()
         if (res) {
-          toast.show({
-            description: 'Images deleted successfully'
-          })
-          setRefresh(!refresh)
+          const msg = (ids.length < 2) ? 'Image' : 'Images'
+          Toast.show(msg + ' deleted successfully', Toast.SHORT)
+          gallery()
         } else {
-          toast.show({
-            description: 'Failed to delete images'
-          })
+          Toast.show('Failed to delete images', Toast.SHORT)
         }
       })
       .catch(e => console.error(e))
-  }
+  }, [])
 
   const deleteImage = (id) => {
     deleteImages([id])
-    gallery()
   }
 
   const viewImage = (id) => {
-    setPage({ name: 'view', imageId: id })
+    setPage(prev => ({ ...prev, name: 'view', imageId: id }))
   }
 
   const gallery = () => {
-    setPage({ name: 'gallery' })
+    setPage(({ name: 'gallery', images: null }))
+    getAssets()
+      .then(map => setPage(({ name: 'gallery', images: map })))
+      .catch(e => console.error(e))
   }
 
   const cameraPage = () => {
-    setPage({ name: 'camera' })
+    setPage(prev => ({ ...prev, name: 'camera' }))
   }
 
   const page = () => {
@@ -79,7 +73,7 @@ const MainPage = ({ closeApp }) => {
       case 'gallery':
         return (
           <Gallery
-            images={images ? Array.from(images.values()) : null}
+            images={currentPage.images ? Array.from(currentPage.images.values()) : null}
             closeApp={closeApp}
             deleteImages={deleteImages}
             viewImage={viewImage}
@@ -89,7 +83,7 @@ const MainPage = ({ closeApp }) => {
       case 'view':
         return (
           <ImageView
-            image={images.get(currentPage.imageId)}
+            image={currentPage.images.get(currentPage.imageId)}
             goBack={gallery}
             deleteImage={deleteImage}
           />

@@ -1,14 +1,12 @@
-import { ArrowBackIcon, Heading, HStack, IconButton, useTheme } from 'native-base'
+import { ArrowBackIcon, Heading, HStack, IconButton } from 'native-base'
 
 export default function AppBar ({ title, backAction }) {
-  const theme = useTheme()
-
   return (
-    <HStack bg={theme.colors.secondary[500]} px='1' py='3' alignItems='center' w='100%'>
+    <HStack bg='secondary.500' px='1' py='3' alignItems='center' w='100%'>
       {
-        backAction && <IconButton onPress={() => backAction()} mx='2' icon={<ArrowBackIcon color={theme.colors.secondary[50]} />} />
+        backAction && <IconButton onPress={() => backAction()} mx='2' icon={<ArrowBackIcon color='lightText' />} />
       }
-      {title && <Heading color={theme.colors.secondary[50]} mx='2'>{title}</Heading>}
+      {title && <Heading color='lightText' mx='2'>{title}</Heading>}
     </HStack>
   )
 }

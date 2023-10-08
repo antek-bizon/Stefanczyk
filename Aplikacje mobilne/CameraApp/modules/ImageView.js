@@ -31,7 +31,7 @@ const ImageView = ({ image, goBack, deleteImage }) => {
           <Image flex='1' resizeMode='cover' alt={image.filename} source={{ uri: image.uri }} />
         </Box>
         <HStack flex='1' justifyContent='space-evenly' alignItems='center'>
-          <Button size='lg' isDisabled={!isAvailable} onPress={() => share()}>Share</Button>
+          <Button size='lg' isDisabled={!isAvailable} onPress={share}>Share</Button>
           <Button size='lg' onPress={() => deleteImage(image.id)}>Delete</Button>
         </HStack>
       </Box>

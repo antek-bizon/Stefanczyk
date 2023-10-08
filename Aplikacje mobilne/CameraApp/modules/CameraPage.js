@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from 'react'
 import AppBar from './Appbar'
 import { Camera } from 'expo-camera'
 import { Alert } from 'react-native'
-import { AddIcon, Box, Button, Center, HStack, Heading, useToast } from 'native-base'
+import Toast from 'react-native-simple-toast'
+import { AddIcon, Box, Button, Center, HStack, Heading, Spinner } from 'native-base'
 import { EvilIcons } from '@expo/vector-icons'
 import * as MediaLibrary from 'expo-media-library'
 
 const CameraPage = ({ goBack }) => {
-  const [isCameraAvaiable, setAvaiable] = useState(false)
+  const [isCameraAvaiable, setAvaiable] = useState(null)
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back)
   const cameraRef = useRef(null)
-  const toast = useToast()
 
   useEffect(() => {
     Camera.requestCameraPermissionsAsync()
@@ -37,12 +37,11 @@ const CameraPage = ({ goBack }) => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync()
+        Toast.showWithGravity('Photo taken', Toast.SHORT, Toast.CENTER)
         const { granted } = await MediaLibrary.requestPermissionsAsync()
         if (granted) {
-          const asset = await MediaLibrary.createAssetAsync(photo.uri)
-          toast.closeAll()
-          toast.show({ description: 'Photo saved' })
-          console.log(asset)
+          await MediaLibrary.createAssetAsync(photo.uri)
+          Toast.showWithGravity('Photo saved', Toast.SHORT, Toast.CENTER)
         } else {
           Alert.alert('Unable to save the photo', 'To be able to save photos you need to grant the permissions')
         }
@@ -60,18 +59,20 @@ const CameraPage = ({ goBack }) => {
           <Box flex='1'>
             <Camera style={{ flex: 1, position: 'relative' }} ref={ref => { cameraRef.current = ref }} type={cameraType}>
               <HStack flex='1' position='absolute' bottom='0' w='100%' justifyContent='space-evenly' alignItems='center' p='10'>
-                <Button borderRadius='full' opacity='0.8' size='60' colorScheme='secondary' onPress={() => toogleCameraType()}>
-                  <EvilIcons name='redo' size={24} color='white' />
+                <Button borderRadius='full' opacity='0.85' size='60' colorScheme='secondary' onPress={() => toogleCameraType()}>
+                  <EvilIcons name='redo' size={35} color='white' />
                 </Button>
-                <Button onPress={() => takeAPhoto()} borderRadius='full' opacity='0.8' size='70' bgColor='primary.300'>
-                  <AddIcon color='black' />
+                <Button onPress={takeAPhoto} borderRadius='full' size='70'>
+                  <AddIcon size={30} color='lightText' />
                 </Button>
               </HStack>
             </Camera>
           </Box>)
         : (
           <Center flex='1'>
-            <Heading>Camera not available</Heading>
+            {isCameraAvaiable === false
+              ? <Heading>Camera not available</Heading>
+              : <Spinner size='xl' accessibilityLabel='Waiting for camera' />}
           </Center>)}
     </>
   )
