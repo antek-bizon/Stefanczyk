@@ -2,6 +2,7 @@ import { Box, Button, HStack, Image } from 'native-base'
 import AppBar from './Appbar'
 import * as Sharing from 'expo-sharing'
 import { useEffect, useState } from 'react'
+import { BackHandler } from 'react-native'
 
 const ImageView = ({ image, goBack, deleteImage }) => {
   const [isAvailable, setAvailable] = useState(false)
@@ -14,6 +15,14 @@ const ImageView = ({ image, goBack, deleteImage }) => {
         }
       })
       .catch(e => console.error(e))
+
+    const handle = () => {
+      goBack()
+      return true
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', handle)
+    return () => BackHandler.removeEventListener('hardwareBackPress', handle)
   }, [])
 
   const share = () => {

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import AppBar from './Appbar'
 import { Camera } from 'expo-camera'
-import { Alert } from 'react-native'
+import { Alert, BackHandler } from 'react-native'
 import Toast from 'react-native-simple-toast'
 import { AddIcon, Box, Button, Center, HStack, Heading, Spinner } from 'native-base'
 import { EvilIcons } from '@expo/vector-icons'
@@ -23,6 +23,14 @@ const CameraPage = ({ goBack }) => {
         }
       })
       .catch(e => console.error(e))
+
+    const handle = () => {
+      goBack()
+      return true
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', handle)
+    return () => BackHandler.removeEventListener('hardwareBackPress', handle)
   }, [])
 
   const toogleCameraType = () => {

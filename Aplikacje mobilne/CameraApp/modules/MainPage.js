@@ -2,7 +2,7 @@ import { VStack } from 'native-base'
 import Gallery from './Gallery'
 import { useCallback, useEffect, useState } from 'react'
 import * as MediaLibrary from 'expo-media-library'
-import { Alert } from 'react-native'
+import { Alert, BackHandler } from 'react-native'
 import Toast from 'react-native-simple-toast'
 import ImageView from './ImageView'
 import CameraPage from './CameraPage'
@@ -33,6 +33,14 @@ const MainPage = ({ closeApp }) => {
     getAssets()
       .then(map => setPage(prev => ({ name: prev.name, images: map })))
       .catch(e => console.error(e))
+
+    const handle = () => {
+      closeApp()
+      return true
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', handle)
+    return () => BackHandler.removeEventListener('hardwareBackPress', handle)
   }, [])
 
   const deleteImages = useCallback((ids) => {
