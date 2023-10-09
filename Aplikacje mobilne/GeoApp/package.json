@@ -19,7 +19,8 @@
     "expo-font": "~11.4.0",
     "expo-location": "~16.1.0",
     "@react-native-async-storage/async-storage": "1.18.2",
-    "react-native-maps": "1.7.1"
+    "react-native-maps": "1.7.1",
+    "@shopify/flash-list": "1.4.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

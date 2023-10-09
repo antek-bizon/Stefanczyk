@@ -15,7 +15,7 @@ export default function App () {
       case 'start':
         return <StartingPage mainPage={mainPage} />
       case 'main':
-        return <MainPage startingPage={startingPage} />
+        return <MainPage closeApp={startingPage} />
       default:
         return <></>
     }

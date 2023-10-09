@@ -1,18 +1,28 @@
-import { StyleSheet, View } from 'react-native'
-import { ActivityIndicator, Appbar, Button, Divider, List, Snackbar, Switch, useTheme } from 'react-native-paper'
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import { Alert, StyleSheet, View } from 'react-native'
 import * as Location from 'expo-location'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useEffect, useState } from 'react'
-import MapView, { Marker } from 'react-native-maps'
+import { ActivityIndicator, Appbar, Button, Divider, List, Snackbar, Switch, useTheme } from 'react-native-paper'
+import { FlashList } from '@shopify/flash-list'
+import MapPage from './MapPage'
 
-const MainPage = ({ startingPage }) => {
-  const [locations, updateLocations] = useState([])
-  const theme = useTheme()
-  const [isPermited, setPermission] = useState(false)
+const MainPage = ({ closeApp }) => {
   const [loading, setLoading] = useState(0)
-  const areAllSelected = locations.length !== 0 && typeof locations.find((e) => !e.selected) === 'undefined'
-  const selectedLocations = locations.filter(e => e.selected)
-  const [mapView, setMapView] = useState(false)
+  const [locations, updateLocations] = useState([])
+  const [isPermited, setPermission] = useState(false)
+  const selected = useMemo(() => {
+    const selLoc = locations.filter(e => e.selected)
+    const areAllSel = locations.length !== 0 && selLoc.length === locations.length
+    return {
+      selLoc,
+      areAllSel
+    }
+  }, [locations])
+
+  const [currentPage, setPage] = useState('pos')
+  const mapPage = () => setPage('map')
+  const posPage = () => setPage('pos')
+  const theme = useTheme()
 
   useEffect(() => {
     AsyncStorage.getAllKeys()
@@ -29,22 +39,38 @@ const MainPage = ({ startingPage }) => {
   }, [])
 
   const getLocation = () => {
-    setLoading(1)
-    Location.getCurrentPositionAsync({})
-      .then((pos) => {
-        const item = {
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          timestamp: pos.timestamp,
-          selected: false
-        }
-        locations.push(item)
-        updateLocations(locations)
-        const key = pos.timestamp.toString() + Math.round(Math.random() * 100).toString()
-        AsyncStorage.setItem(key, JSON.stringify(item))
-          .then(_ => setLoading(2))
-          .catch(err => console.error(err))
+    const promise = new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Getting current position took to long. Try again.'))
+      }, 5000)
+      Location.getCurrentPositionAsync({
+        mayShowUserSettingsDialog: true
       })
+        .then((pos) => {
+          clearTimeout(timeout)
+          const item = {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+            timestamp: pos.timestamp,
+            selected: false
+          }
+          // locations.push(item)
+          updateLocations([...locations, item])
+          const key = pos.timestamp.toString() + Math.round(Math.random() * 100).toString()
+          AsyncStorage.setItem(key, JSON.stringify(item))
+            .then(_ => resolve())
+            .catch(err => console.error(err))
+        })
+        .catch(e => console.error(e))
+    })
+
+    promise
+      .then(_ => setLoading(2))
+      .catch(e => {
+        Alert.alert('Error', e.message)
+        setLoading(0)
+      })
+    setLoading(1)
   }
 
   const deleteLocations = () => {
@@ -54,107 +80,95 @@ const MainPage = ({ startingPage }) => {
       .catch(err => console.error(err))
   }
 
-  return (
-    <>
-      <View style={styles.main}>
-        <Appbar.Header>
-          {!mapView
-            ? (
-              <>
-                <Appbar.BackAction onPress={() => { startingPage() }} />
-                <Appbar.Content title='Save position' />
-              </>)
-            : (
-              <>
-                <Appbar.BackAction onPress={() => { setMapView(false) }} />
-                <Appbar.Content title='Locations on map' />
-              </>)}
+  const onValueChange = useCallback((index) => {
+    locations[index].selected = !locations[index].selected
+    updateLocations([...locations])
+  }, [locations])
 
-        </Appbar.Header>
-        <Divider />
-        {!mapView
-          ? (
-            <>
-              <View>
-                <View style={styles.buttons}>
-                  <Button disabled={!isPermited} onPress={() => getLocation()} mode='contained'>Get position</Button>
-                  <Button
-                    onPress={() => deleteLocations()} mode='contained' buttonColor={theme.colors.error}
-                  >Delete all
-                  </Button>
-                </View>
-                <View style={styles.buttons}>
-                  <Button
-                    disabled={selectedLocations.length === 0}
-                    onPress={() => setMapView(true)}
-                    mode='contained-tonal'
-                  >Go to a map
-                  </Button>
-                  <Switch
-                    style={{ position: 'absolute', right: 25, top: 5 }}
-                    value={areAllSelected} onValueChange={() => {
-                      updateLocations(locations.map((e) => {
-                        e.selected = !areAllSelected
-                        return e
-                      }))
-                    }}
-                  />
-                </View>
-                <Divider />
+  const renderItem = ({ item, index }) => {
+    return (
+      <List.Item
+        key={index}
+        left={props => <List.Icon {...props} icon='longitude' />}
+        right={props => (
+          <Switch
+            {...props}
+            value={item.selected} onValueChange={() => onValueChange(index)}
+          />)}
+        title={`Timestamp: ${item.timestamp}`}
+        description={`latitude: ${item.latitude}\nlongitude: ${item.longitude}`}
+      />
+    )
+  }
+
+  const page = () => {
+    switch (currentPage) {
+      case 'pos':
+        return (
+          <>
+            <Appbar.Header>
+              <Appbar.BackAction onPress={closeApp} />
+              <Appbar.Content title='Save position' />
+            </Appbar.Header>
+            <Divider />
+            <View>
+              <View style={styles.buttons}>
+                <Button disabled={!isPermited} onPress={getLocation} mode='contained'>Get position</Button>
+                <Button
+                  onPress={deleteLocations} mode='contained' buttonColor={theme.colors.error}
+                >Delete all
+                </Button>
               </View>
-              <List.Section>
-                {
-                  locations.map((e, i) => (
-                    <List.Item
-                      key={i}
-                      left={props => <List.Icon {...props} icon='longitude' />}
-                      right={props => (
-                        <Switch
-                          {...props}
-                          value={e.selected} onValueChange={() => {
-                            locations[i].selected = !locations[i].selected
-                            updateLocations([...locations])
-                          }}
-                        />)}
-                      title={`Timestamp: ${e.timestamp}`}
-                      description={`latitude: ${e.latitude}\nlongitude: ${e.longitude}`}
-                    />
-                  ))
-                }
-              </List.Section>
-              <Snackbar
-                visible={loading === 2}
-                onDismiss={() => setLoading(0)}
-                action={{ label: 'OK' }}
-              >
-                Position saved
-              </Snackbar>
-            </>)
-          : (
-            <MapView
-              style={{ flex: 1 }}
-              initialRegion={{
-                latitude: selectedLocations[0]?.latitude ?? 50,
-                longitude: selectedLocations[0]?.longitude ?? 20,
-                latitudeDelta: 0.001,
-                longitudeDelta: 0.001
-              }}
+              <View style={styles.buttons}>
+                <Button
+                  disabled={selected.selLoc.length === 0}
+                  onPress={mapPage}
+                  mode='contained-tonal'
+                >Go to a map
+                </Button>
+                <Switch
+                  style={{ position: 'absolute', right: 25, top: 5 }}
+                  value={selected.areAllSel} onValueChange={() => {
+                    updateLocations(locations.map((e) => {
+                      e.selected = !selected.areAllSel
+                      return e
+                    }))
+                  }}
+                />
+              </View>
+              <Divider />
+            </View>
+            <FlashList
+              data={locations}
+              renderItem={renderItem}
+              numColumns={1}
+              estimatedItemSize={85}
+              extraData={locations}
+            />
+            <Snackbar
+              visible={loading === 2}
+              onDismiss={() => setLoading(0)}
+              action={{ label: 'OK' }}
             >
-              {selectedLocations.length > 0 &&
-                selectedLocations.map((e, i) => (
-                  <Marker
-                    key={i}
-                    coordinate={{ latitude: e.latitude, longitude: e.longitude }}
-                    title={`${e.timestamp}`}
-                    description={`${e.latitude}, ${e.longitude}`}
-                  />))}
-            </MapView>)}
-      </View>
-      {loading === 1 &&
-        <View style={[styles.indicator, { backgroundColor: theme.colors.backdrop }]}>
-          <ActivityIndicator size='large' />
-        </View>}
-    </>
+              Position saved
+            </Snackbar>
+            {loading === 1 &&
+              <View style={[styles.indicator, { backgroundColor: theme.colors.backdrop }]}>
+                <ActivityIndicator size='large' />
+              </View>}
+          </>
+        )
+      case 'map':
+        return (
+          <MapPage selectedLocations={selected.selLoc} goBack={posPage} />
+        )
+      default:
+        return <></>
+    }
+  }
+
+  return (
+    <View style={styles.main}>{page()}</View>
   )
 }
 
