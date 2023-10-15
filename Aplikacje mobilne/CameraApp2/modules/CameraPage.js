@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Camera, FlashMode, WhiteBalance } from 'expo-camera'
+import { Camera } from 'expo-camera'
 import { Alert, BackHandler, Platform, StyleSheet, View } from 'react-native'
 import Toast from 'react-native-simple-toast'
 import * as MediaLibrary from 'expo-media-library'
@@ -44,19 +44,22 @@ export default function CameraPage ({ goBack }) {
           ? await cameraRef.current.getSupportedRatiosAsync()
           : []
         console.log('') // Weird await bug
-        const sizes = await Promise.all(
+        const allSizes = await Promise.all(
           ratios.map(async (r) => cameraRef.current.getAvailablePictureSizesAsync(r)
           ))
 
         const ratioSizesMap = new Map()
         ratios.forEach((r, i) => {
-          ratioSizesMap.set(r, sizes[i])
+          ratioSizesMap.set(r, allSizes[i])
         })
-        const flashMode = FlashMode.off
-        const whiteBalance = WhiteBalance.auto
+        const flashMode = cameraRef.current.props.flashMode
+        const whiteBalance = cameraRef.current.props.whiteBalance
+        const ratio = cameraRef.current.props.ratio
+        const sizes = ratioSizesMap.get(ratio)
+        const size = (sizes.length > 0) ? sizes[sizes.length - 1] : null
 
         setCameraInfo({
-          ratioSizesMap, flashMode, whiteBalance
+          flashMode, whiteBalance, ratio, size, ratioSizesMap
         })
       } catch (e) {
         console.error(e)
@@ -73,9 +76,9 @@ export default function CameraPage ({ goBack }) {
   }
 
   const takeAPhoto = async () => {
-    if (cameraRef.current.current) {
+    if (cameraRef.current) {
       try {
-        const photo = await cameraRef.current.current.takePictureAsync()
+        const photo = await cameraRef.current.takePictureAsync()
         Toast.showWithGravity('Photo taken', Toast.SHORT, Toast.CENTER)
         const { granted } = await MediaLibrary.requestPermissionsAsync()
         if (granted) {
@@ -110,12 +113,17 @@ export default function CameraPage ({ goBack }) {
                 onCameraReady={getCameraInfo}
                 style={styles.flex1}
                 type={cameraType}
+                ratio={cameraInfo.ratio}
+                pictureSize={cameraInfo.size}
+                flashMode={cameraInfo.flashMode}
+                whiteBalance={cameraInfo.whiteBalance}
               />
             </View>
 
             <CameraSettings
               show={isCameraSettings}
-              flashMode={cameraInfo?.flashMode}
+              cameraInfo={cameraInfo}
+              setCameraInfo={setCameraInfo}
             />
 
             <View style={styles.row}>
@@ -145,7 +153,7 @@ export default function CameraPage ({ goBack }) {
             </View>
           </View>)
         : (
-          <View style={styles.flex1}>
+          <View style={[styles.flex1, styles.center]}>
             {cameraInfo === false
               ? <Text variant='displayMedium'>Camera not available</Text>
               : <ActivityIndicator size='large' />}
@@ -171,5 +179,10 @@ const styles = StyleSheet.create({
 
   button: {
     opacity: 0.85
+  },
+
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })

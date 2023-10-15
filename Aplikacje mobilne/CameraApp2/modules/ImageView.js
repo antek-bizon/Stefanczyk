@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BackHandler, Image, StyleSheet, View } from 'react-native'
 import * as Sharing from 'expo-sharing'
-import { Button } from 'react-native-paper'
+import { Button, Text } from 'react-native-paper'
 import AppBar from './AppBar'
 
 export default function ImageView ({ image, goBack, deleteImage }) {
@@ -42,6 +42,9 @@ export default function ImageView ({ image, goBack, deleteImage }) {
             source={{ uri: image.uri }} style={styles.flex1}
           />
         </View>
+        <View style={styles.description}>
+          <Text variant='headlineMedium'>{image.width} x {image.height}</Text>
+        </View>
         <View style={[styles.flex1, styles.row]}>
           <Button mode='contained' onPress={share} disabled={!isAvailable}>Share</Button>
           <Button mode='contained' onPress={() => deleteImage(image.id)}>Delete</Button>
@@ -63,7 +66,13 @@ const styles = StyleSheet.create({
   },
 
   imageContainer: {
-    flex: 3,
+    flex: 5,
     margin: 5
+  },
+
+  description: {
+    flex: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
