@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Camera, FlashMode, WhiteBalance } from 'expo-camera'
-import { Alert, BackHandler, StyleSheet, View } from 'react-native'
+import { Alert, BackHandler, Platform, StyleSheet, View } from 'react-native'
 import Toast from 'react-native-simple-toast'
 import * as MediaLibrary from 'expo-media-library'
 import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-paper'
 import AppBar from './AppBar'
+import CameraSettings from './CameraSettings'
 
 export default function CameraPage ({ goBack }) {
   const [cameraInfo, setCameraInfo] = useState(null)
@@ -12,6 +13,7 @@ export default function CameraPage ({ goBack }) {
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back)
   const cameraRef = useRef(null)
   const theme = useTheme()
+  const [isCameraSettings, setCameraSettings] = useState(false)
 
   useEffect(() => {
     Camera.requestCameraPermissionsAsync()
@@ -35,18 +37,31 @@ export default function CameraPage ({ goBack }) {
   }, [])
 
   const getCameraInfo = async () => {
-    const typesPromise = Camera.getAvailableCameraTypesAsync()
-    const sizesPromise = cameraRef.getAvailablePictureSizesAsync()
-    const ratiosPromise = cameraRef.getSupportedRatiosAsync()
-    const flashMode = FlashMode.off
-    const whiteBalance = WhiteBalance.auto
+    if (cameraRef.current) {
+      console.log('get info')
+      try {
+        const ratios = (Platform.OS === 'android')
+          ? await cameraRef.current.getSupportedRatiosAsync()
+          : []
+        console.log('') // Weird await bug
+        const sizes = await Promise.all(
+          ratios.map(async (r) => cameraRef.current.getAvailablePictureSizesAsync(r)
+          ))
 
-    const [types, sizes, ratios] = await Promise.all(
-      [typesPromise, sizesPromise, ratiosPromise])
+        const ratioSizesMap = new Map()
+        ratios.forEach((r, i) => {
+          ratioSizesMap.set(r, sizes[i])
+        })
+        const flashMode = FlashMode.off
+        const whiteBalance = WhiteBalance.auto
 
-    setCameraInfo({
-      types, sizes, ratios, flashMode, whiteBalance
-    })
+        setCameraInfo({
+          ratioSizesMap, flashMode, whiteBalance
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
 
   const toogleCameraType = () => {
@@ -58,9 +73,9 @@ export default function CameraPage ({ goBack }) {
   }
 
   const takeAPhoto = async () => {
-    if (cameraRef.current) {
+    if (cameraRef.current.current) {
       try {
-        const photo = await cameraRef.current.takePictureAsync()
+        const photo = await cameraRef.current.current.takePictureAsync()
         Toast.showWithGravity('Photo taken', Toast.SHORT, Toast.CENTER)
         const { granted } = await MediaLibrary.requestPermissionsAsync()
         if (granted) {
@@ -75,6 +90,14 @@ export default function CameraPage ({ goBack }) {
     }
   }
 
+  const toggleCameraMenu = () => {
+    if (typeof cameraInfo !== 'object') {
+      Alert.alert('Failed', 'No camera info')
+      setCameraSettings(false)
+    }
+    setCameraSettings(prev => !prev)
+  }
+
   return (
     <>
       <AppBar title='Take a picture' onPress={goBack} />
@@ -83,12 +106,17 @@ export default function CameraPage ({ goBack }) {
           <View style={[styles.flex1, { position: 'relative' }]}>
             <View style={{ aspectRatio: 9 / 16 }}>
               <Camera
+                ref={ref => { cameraRef.current = ref }}
                 onCameraReady={getCameraInfo}
                 style={styles.flex1}
-                ref={ref => { cameraRef.current = ref }}
                 type={cameraType}
               />
             </View>
+
+            <CameraSettings
+              show={isCameraSettings}
+              flashMode={cameraInfo?.flashMode}
+            />
 
             <View style={styles.row}>
               <IconButton
@@ -105,6 +133,14 @@ export default function CameraPage ({ goBack }) {
                 size={60}
                 onPress={takeAPhoto}
                 style={styles.button}
+              />
+              <IconButton
+                icon='cog'
+                mode='contained'
+                size={50}
+                onPress={toggleCameraMenu}
+                style={styles.button}
+                iconColor={theme.colors.secondary}
               />
             </View>
           </View>)
