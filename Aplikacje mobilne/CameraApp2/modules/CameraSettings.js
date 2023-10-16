@@ -1,29 +1,27 @@
 import { FlashMode, WhiteBalance } from 'expo-camera'
-import { Animated, ScrollView, StyleSheet } from 'react-native'
+import { Animated, BackHandler, ScrollView, StyleSheet } from 'react-native'
 import Radio from './Radio'
 import { useEffect, useRef } from 'react'
 
 const width = 200
 
 export default function CameraSettings ({
-  show, cameraInfo, setCameraInfo
+  show, setShow, cameraInfo, setCameraInfo
 }) {
-  const counter = useRef(0)
   const anim = useRef(new Animated.Value(-width))
   const toPos = (show) ? 0 : -width
 
-  // Requires to renders to work properly
-  if (counter.current < 2) {
-    counter.current++
-  } else {
-    if (show) {
-      anim.current = new Animated.Value(-width)
-    } else {
-      anim.current = new Animated.Value(0)
-    }
-  }
-
   useEffect(() => {
+    if (show) {
+      const handle = () => {
+        setShow(false)
+        BackHandler.removeEventListener('hardwareBackPress', handle)
+        return true
+      }
+
+      BackHandler.addEventListener('hardwareBackPress', handle)
+    }
+
     Animated.spring(anim.current, {
       toValue: toPos,
       velocity: 1,
@@ -31,10 +29,6 @@ export default function CameraSettings ({
       friction: 10,
       useNativeDriver: true
     }).start()
-  }, [anim.current])
-
-  useEffect(() => {
-    console.log(show)
   }, [show])
 
   const setFlashMode = (flashMode) => {

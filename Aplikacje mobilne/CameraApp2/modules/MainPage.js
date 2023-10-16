@@ -116,7 +116,6 @@ const getAssets = async () => {
       mediaType: 'photo'
     })
     const map = new Map()
-    console.log(assets.assets)
     assets.assets.forEach((e) => map.set(e.id, { id: e.id, uri: e.uri, filename: e.filename, width: e.width, height: e.height }))
     return map
   } catch (e) {

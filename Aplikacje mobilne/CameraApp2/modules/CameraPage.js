@@ -9,11 +9,11 @@ import CameraSettings from './CameraSettings'
 
 export default function CameraPage ({ goBack }) {
   const [cameraInfo, setCameraInfo] = useState(null)
-  console.log(cameraInfo)
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back)
   const cameraRef = useRef(null)
   const theme = useTheme()
   const [isCameraSettings, setCameraSettings] = useState(false)
+  console.log(isCameraSettings)
 
   useEffect(() => {
     Camera.requestCameraPermissionsAsync()
@@ -37,13 +37,13 @@ export default function CameraPage ({ goBack }) {
   }, [])
 
   const getCameraInfo = async () => {
+    console.log('getCameraInfo') // Weird await bug
     if (cameraRef.current) {
-      console.log('get info')
       try {
         const ratios = (Platform.OS === 'android')
           ? await cameraRef.current.getSupportedRatiosAsync()
           : []
-        console.log('') // Weird await bug
+        console.log('ratios') // Weird await bug
         const allSizes = await Promise.all(
           ratios.map(async (r) => cameraRef.current.getAvailablePictureSizesAsync(r)
           ))
@@ -122,6 +122,7 @@ export default function CameraPage ({ goBack }) {
 
             <CameraSettings
               show={isCameraSettings}
+              setShow={setCameraSettings}
               cameraInfo={cameraInfo}
               setCameraInfo={setCameraInfo}
             />
