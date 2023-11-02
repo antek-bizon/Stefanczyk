@@ -3,9 +3,11 @@ import { Camera } from 'expo-camera'
 import { Alert, BackHandler, Platform, StyleSheet, View } from 'react-native'
 import Toast from 'react-native-simple-toast'
 import * as MediaLibrary from 'expo-media-library'
-import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-paper'
+import * as ImagePicker from 'expo-image-picker'
+import { Appbar, IconButton, Menu, Text, useTheme } from 'react-native-paper'
 import AppBar from './AppBar'
 import CameraSettings from './CameraSettings'
+import LoadingScreen from './LoadingScreen'
 
 export default function CameraPage ({ goBack }) {
   const [cameraInfo, setCameraInfo] = useState(null)
@@ -101,9 +103,39 @@ export default function CameraPage ({ goBack }) {
     setCameraSettings(prev => !prev)
   }
 
+  const [isMenuVisible, setMenuVisible] = useState(false)
+  const showMenu = () => setMenuVisible(true)
+  const hideMenu = () => setMenuVisible(false)
+
+  const menu = (
+    <Menu
+      visible={isMenuVisible}
+      onDismiss={hideMenu}
+      anchor={<Appbar.Action color={theme.colors.onPrimary} icon='dots-vertical' onPress={showMenu} />}
+    >
+      <Menu.Item
+        title='Image picker' onPress={() => {
+          hideMenu()
+          setCameraInfo(null)
+          ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            // aspect: [4, 3],
+            quality: 1
+          }).then(res => {
+            if (!res.canceled) {
+              console.error('todo')
+            }
+            setCameraInfo(true)
+          })
+        }}
+      />
+    </Menu>
+  )
+
   return (
     <>
-      <AppBar title='Take a picture' onPress={goBack} />
+      <AppBar title='Take a picture' onPress={goBack} menu={menu} />
       {cameraInfo
         ? (
           <View style={[styles.flex1, { position: 'relative' }]}>
@@ -157,7 +189,7 @@ export default function CameraPage ({ goBack }) {
           <View style={[styles.flex1, styles.center]}>
             {cameraInfo === false
               ? <Text variant='displayMedium'>Camera not available</Text>
-              : <ActivityIndicator size='large' />}
+              : <LoadingScreen />}
           </View>)}
     </>
   )

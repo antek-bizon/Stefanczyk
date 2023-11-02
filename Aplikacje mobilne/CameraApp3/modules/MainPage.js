@@ -6,7 +6,6 @@ import { Text } from 'react-native-paper'
 import Gallery from './Gallery'
 import ImageView from './ImageView'
 import CameraPage from './CameraPage'
-import SettingsPage from './SettingsPage'
 
 export default function MainPage ({ closeApp }) {
   const [currentPage, setPage] = useState({ name: 'gallery', images: null })
@@ -58,10 +57,6 @@ export default function MainPage ({ closeApp }) {
     setPage(prev => ({ ...prev, name: 'camera' }))
   }
 
-  const settingsPage = () => {
-    setPage(prev => ({ ...prev, name: 'settings' }))
-  }
-
   const page = () => {
     switch (currentPage.name) {
       case 'gallery':
@@ -72,7 +67,6 @@ export default function MainPage ({ closeApp }) {
             deleteImages={deleteImages}
             viewImage={viewImage}
             cameraPage={cameraPage}
-            settingsPage={settingsPage}
           />
         )
       case 'view':
@@ -86,10 +80,6 @@ export default function MainPage ({ closeApp }) {
       case 'camera':
         return (
           <CameraPage goBack={gallery} />
-        )
-      case 'settings':
-        return (
-          <SettingsPage goBack={gallery} />
         )
       default:
         return (

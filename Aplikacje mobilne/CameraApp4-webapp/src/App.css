@@ -1,0 +1,12 @@
+
+.gap {
+    gap: 10px;
+}
+
+.hover {
+    transition: 300ms;
+}
+
+.hover:hover {
+    filter:brightness(90%);
+}

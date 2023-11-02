@@ -1,14 +1,23 @@
 import { useCallback, useState } from 'react'
 import { FlashList } from '@shopify/flash-list'
-import { ActivityIndicator, Appbar, Button, Menu, useTheme } from 'react-native-paper'
+import { Appbar, Button, Menu, useTheme } from 'react-native-paper'
 import GalleryItem from './GalleryItem'
 import { StyleSheet, View } from 'react-native'
 import AppBar from './AppBar'
+import IpDialog from './IpDialog'
+import LoadingScreen from './LoadingScreen'
 
-export default function Gallery ({ closeApp, images, viewImage, deleteImages, cameraPage, settingsPage }) {
+export default function Gallery ({ closeApp, images, viewImage, deleteImages, cameraPage }) {
   const [numCol, setNumCol] = useState(3)
   const [selectedImages, setSelectedImages] = useState(new Set())
   const theme = useTheme()
+  const [isMenuVisible, setMenuVisible] = useState(false)
+  const showMenu = () => setMenuVisible(true)
+  const hideMenu = () => setMenuVisible(false)
+
+  const [isDialogVisible, setDialogVisible] = useState(false)
+  const showDialog = () => setDialogVisible(true)
+  const hideDialog = () => setDialogVisible(false)
 
   const startingPage = () => {
     closeApp(false)
@@ -57,20 +66,18 @@ export default function Gallery ({ closeApp, images, viewImage, deleteImages, ca
     />
   )
 
-  const [isMenuVisible, setMenuVisible] = useState(false)
-
-  const showMenu = () => setMenuVisible(true)
-  const hideMenu = () => setMenuVisible(false)
-
-  console.log(isMenuVisible)
-
   const menu = (
     <Menu
       visible={isMenuVisible}
       onDismiss={hideMenu}
-      anchor={<Appbar.Action icon='dots-vertical' onPress={showMenu} />}
+      anchor={<Appbar.Action color={theme.colors.onPrimary} icon='dots-vertical' onPress={showMenu} />}
     >
-      <Menu.Item title='Set IP' onPress={settingsPage} />
+      <Menu.Item
+        title='Set IP' onPress={() => {
+          hideMenu()
+          showDialog()
+        }}
+      />
     </Menu>
   )
 
@@ -102,26 +109,15 @@ export default function Gallery ({ closeApp, images, viewImage, deleteImages, ca
             estimatedItemSize={150}
             numColumns={numCol}
           />)
-        : <View style={[styles.center, styles.flex1]}><ActivityIndicator style={styles.spinner} size='large' /></View>}
-
+        : <LoadingScreen relative />}
+      {isDialogVisible
+        ? <IpDialog hideDialog={hideDialog} />
+        : null}
     </>
   )
 }
 
 const styles = StyleSheet.create({
-  center: {
-    width: '100%',
-    textAlign: 'center'
-  },
-
-  flex1: {
-    flex: 1
-  },
-
-  spinner: {
-    paddingBottom: 20
-  },
-
   row: {
     flexDirection: 'row',
     padding: 4,
