@@ -8,6 +8,7 @@ import { Appbar, IconButton, Menu, Text, useTheme } from 'react-native-paper'
 import AppBar from './AppBar'
 import CameraSettings from './CameraSettings'
 import LoadingScreen from './LoadingScreen'
+import { uploadImage } from './Upload'
 
 export default function CameraPage ({ goBack }) {
   const [cameraInfo, setCameraInfo] = useState(null)
@@ -15,7 +16,6 @@ export default function CameraPage ({ goBack }) {
   const cameraRef = useRef(null)
   const theme = useTheme()
   const [isCameraSettings, setCameraSettings] = useState(false)
-  console.log(isCameraSettings)
 
   useEffect(() => {
     Camera.requestCameraPermissionsAsync()
@@ -124,7 +124,8 @@ export default function CameraPage ({ goBack }) {
             quality: 1
           }).then(res => {
             if (!res.canceled) {
-              console.error('todo')
+              console.log(res.assets)
+              uploadImage(res.assets)
             }
             setCameraInfo(true)
           })

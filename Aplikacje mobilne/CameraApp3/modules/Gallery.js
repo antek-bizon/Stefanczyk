@@ -6,6 +6,7 @@ import { StyleSheet, View } from 'react-native'
 import AppBar from './AppBar'
 import IpDialog from './IpDialog'
 import LoadingScreen from './LoadingScreen'
+import { uploadImage } from './Upload'
 
 export default function Gallery ({ closeApp, images, viewImage, deleteImages, cameraPage }) {
   const [numCol, setNumCol] = useState(3)
@@ -27,9 +28,29 @@ export default function Gallery ({ closeApp, images, viewImage, deleteImages, ca
     { title: 'Layout', handlePress: useCallback(() => { if (numCol === 3) setNumCol(1); else setNumCol(3) }, [numCol]) },
     { title: 'Camera', handlePress: cameraPage },
     {
+      title: 'Upload',
+      handlePress: useCallback(() => {
+        const toUpload = []
+        for (const image of images) {
+          if (selectedImages.has(image.id)) {
+            toUpload.push(image)
+          }
+
+          if (toUpload.length === selectedImages.size) {
+            break
+          }
+        }
+        if (toUpload.length > 0) {
+          uploadImage(toUpload)
+        }
+      }, [selectedImages]),
+      isDisabled: typeof selectedImages.values().next().value === 'undefined',
+      color: theme.colors.tertiary
+    },
+    {
       title: 'Delete',
       handlePress: useCallback(() => {
-        const toDelete = Array.from(selectedImages.values())
+        const toDelete = Array.from(selectedImages.has())
         if (toDelete.length > 0) {
           setSelectedImages(new Set())
           deleteImages(toDelete)

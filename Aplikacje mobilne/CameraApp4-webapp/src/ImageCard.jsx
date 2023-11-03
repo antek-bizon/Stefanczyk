@@ -1,13 +1,16 @@
+/* eslint-disable react/prop-types */
 import { Button, Card, Flex, Image, Text } from 'rebass'
 
 const defaultImage = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'
 
-// eslint-disable-next-line react/prop-types
-export default function ImageCard ({ filename = '', url = defaultImage, onSelect = () => {} }) {
+export default function ImageCard ({
+  filename = '', url = defaultImage, refresh = () => { }, onRename = () => { },
+  onDelete = () => { }, isSelected = false, onSelect = () => { }
+}) {
   const buttons = () => {
     [
-      { title: 'Delete', handleClick: () => {} },
-      { title: 'Rename', handleClick: () => {} }
+      { title: 'Delete', handleClick: () => { } },
+      { title: 'Rename', handleClick: () => { } }
     ].map((e, i) => (
       <Button key={i} bg='#009688' className='hover' onClick={e.handleClick}>{e.title}</Button>
     ))
@@ -15,20 +18,34 @@ export default function ImageCard ({ filename = '', url = defaultImage, onSelect
 
   return (
     <Card
-      width='20%' bg='#e1bee7' padding='8px'
-      boxShadow='0 2px 16px rgba(0, 0, 0, 0.25)'
-      borderRadius={8}
+      margin='15px 0px' className='tertiary-container border-radius boxShadow'
+      width='20%' padding='16px'
     >
       <Flex flexDirection='column' className='gap'>
-        <Text>{filename}</Text>
-        <Image src={url} borderRadius={8} />
+        <Text height='45px' className='text-wrap on-tertiary-container-text'>{filename}</Text>
+        <Image height='200px' src={url} className='border-radius' />
         {buttons()}
         <input
-          type='checkbox' onClick={(e) => {
-            console.log(e)
-            onSelect()
+          checked={isSelected}
+          type='checkbox' onChange={() => {
+            onSelect(filename)
           }}
         />
+        <Button
+          className='error on-error-text hover' onClick={async () => {
+            await onDelete([filename])
+            refresh()
+          }}
+        >Delete
+        </Button>
+        <Button
+          onClick={async () => {
+            await onRename(filename)
+            refresh()
+          }}
+          className='tertiary on-tertiary-text hover'
+        >Rename
+        </Button>
       </Flex>
     </Card>
   )

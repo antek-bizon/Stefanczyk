@@ -3,6 +3,7 @@ import { BackHandler, Image, StyleSheet, View } from 'react-native'
 import * as Sharing from 'expo-sharing'
 import { Button, Text } from 'react-native-paper'
 import AppBar from './AppBar'
+import { uploadImage } from './Upload'
 
 export default function ImageView ({ image, goBack, deleteImage }) {
   const [isAvailable, setAvailable] = useState(false)
@@ -47,6 +48,7 @@ export default function ImageView ({ image, goBack, deleteImage }) {
         </View>
         <View style={[styles.flex1, styles.row]}>
           <Button mode='contained' onPress={share} disabled={!isAvailable}>Share</Button>
+          <Button mode='contained' onPress={() => uploadImage([image])}>Upload</Button>
           <Button mode='contained' onPress={() => deleteImage(image.id)}>Delete</Button>
         </View>
       </View>

@@ -1,36 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Button, Dialog, TextInput, useTheme } from 'react-native-paper'
-import * as SecureStore from 'expo-secure-store'
 import LoadingScreen from './LoadingScreen'
 import Toast from 'react-native-simple-toast'
-
-const ipRegex = /^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/
-
-function testPort (port) {
-  if (/^[1-9]([0-9]+)?$/.test(port)) {
-    const intPort = parseInt(port)
-    return (intPort <= 65535)
-  }
-
-  return false
-}
-
-async function getIpPort () {
-  return await Promise.allSettled([
-    SecureStore.getItemAsync('ip'), SecureStore.getItemAsync('port')])
-}
-
-async function setIpPort (ip, port) {
-  try {
-    await Promise.allSettled([
-      SecureStore.setItemAsync('ip', ip), SecureStore.setItemAsync('port', port)
-    ])
-    return true
-  } catch (e) {
-    console.error(e)
-    return false
-  }
-}
+import { ipRegex, testPort, getIpPort, setIpPort } from './Ip'
 
 export default function IpDialog ({ hideDialog }) {
   const [ip, setIp] = useState({ val: '' })
