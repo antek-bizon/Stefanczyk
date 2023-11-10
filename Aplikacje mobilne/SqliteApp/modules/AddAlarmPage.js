@@ -1,20 +1,18 @@
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 
-export default function AddAlarmPage ({ navigation, route }) {
+export default function AddAlarmPage ({ navigation }) {
   const theme = useTheme()
-  const onAdd = route.params.onAdd
 
   return (
     <TouchableOpacity
       style={[styles.main, { backgroundColor: theme.colors.secondary }
       ]}
       onPress={() => {
-        onAdd()
-        navigation.navigate('Main page')
+        navigation.navigate('Main page', { toAdd: {} })
       }}
     >
-      <Text style={styles.text} variant='displaySmall'>Click to add a new alarm</Text>
+      <Text style={[styles.text, { color: theme.colors.onSecondary }]} variant='displaySmall'>Click to add a new alarm</Text>
     </TouchableOpacity>
   )
 }

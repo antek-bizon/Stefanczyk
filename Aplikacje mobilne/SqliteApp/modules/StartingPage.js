@@ -6,8 +6,8 @@ export default function StartingPage ({ navigation }) {
 
   const description = (
     <View style={{ alignItems: 'center' }}>
-      {['manage sqlite', 'use animation', 'use ring'].map(
-        (e, i) => <Text variant='bodyLarge' key={i}>{e}</Text>
+      {['Manage sqlite', 'Use animation', 'Use ring'].map(
+        (e, i) => <Text style={{ color: theme.colors.onPrimary }} variant='bodyLarge' key={i}>{e}</Text>
       )}
     </View>
   )
@@ -17,12 +17,11 @@ export default function StartingPage ({ navigation }) {
       alignItems: 'center',
       justifyContent: 'center',
       flex: 1,
-      backgroundColor: theme.colors.primary,
-      gap: 10
+      backgroundColor: theme.colors.primary
     }}
     >
-      <TouchableRipple borderless onPress={() => navigation.navigate('Main page')}>
-        <Text variant='displayLarge'>SqliteApp</Text>
+      <TouchableRipple onPress={() => navigation.navigate('Main page')}>
+        <Text style={{ borderRadius: 30, padding: 10, color: theme.colors.onPrimary }} variant='displayLarge'>SqliteApp</Text>
       </TouchableRipple>
       {description}
 
