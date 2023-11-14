@@ -1,8 +1,18 @@
-import { View } from 'react-native'
+import { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { Text, TouchableRipple, useTheme } from 'react-native-paper'
+
+function random (max) {
+  return Math.floor(Math.random() * max)
+}
+
+function randomColor () {
+  return `rgba(${random(255)}, ${random(255)}, ${random(255)}, 0.9)`
+}
 
 export default function StartingPage ({ navigation }) {
   const theme = useTheme()
+  const [color, setColor] = useState(randomColor())
 
   const description = (
     <View style={{ alignItems: 'center' }}>
@@ -12,19 +22,30 @@ export default function StartingPage ({ navigation }) {
     </View>
   )
 
-  return (
-    <View style={{
-      alignItems: 'center',
-      justifyContent: 'center',
-      flex: 1,
-      backgroundColor: theme.colors.primary
-    }}
-    >
-      <TouchableRipple onPress={() => navigation.navigate('Main page')}>
-        <Text style={{ borderRadius: 30, padding: 10, color: theme.colors.onPrimary }} variant='displayLarge'>SqliteApp</Text>
-      </TouchableRipple>
-      {description}
+  const onPressHandle = () => {
+    navigation.navigate('Main page')
+    setTimeout(() => setColor(randomColor()), 500)
+  }
 
-    </View>
+  return (
+    <TouchableRipple
+      rippleColor={color}
+      onPress={onPressHandle}
+      style={[styles.main, { backgroundColor: theme.colors.primary }]}
+    >
+      <>
+        <Text style={{ borderRadius: 30, padding: 10, color: theme.colors.onPrimary }} variant='displayLarge'>SqliteApp</Text>
+        {description}
+      </>
+    </TouchableRipple>
   )
 }
+
+const styles = StyleSheet.create({
+  main: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1
+  }
+}
+)
