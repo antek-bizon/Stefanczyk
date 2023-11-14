@@ -1,0 +1,102 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+nav,
+aside,
+main {
+    padding: 15px;
+}
+
+nav {
+    background-color: #dcedc8;
+    border-bottom: 1px solid #BDBDBD;
+}
+
+aside {
+    border-right: 1px solid #BDBDBD;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+}
+
+main {
+    width: 100%;
+}
+
+a {
+    color: #1ea89c;
+    padding: 3px;
+    margin-right: 5px;
+}
+
+.row,
+.column {
+    display: flex;
+}
+
+.column {
+    flex-direction: column;
+    gap: 15px;
+}
+
+label>* {
+    margin: 5px 10px;
+}
+
+.w-80 {
+    width: 80px;
+    text-align: center;
+}
+
+.color-box {
+    aspect-ratio: 1 / 1;
+    min-width: 50px;
+    width: 100%;
+    background-color: green;
+    border-radius: 20px;
+}
+
+.btn {
+    border-radius: 30px;
+    padding: 5px 10px;
+}
+
+.del {
+    color: red;
+    border-color: red;
+}
+
+.update {
+    color: #1ea89c;
+    border-color: #1ea89c;
+}
+
+.info {
+    color: rgb(140, 36, 236);
+    border-color: rgb(140, 36, 236);
+}
+
+#cars-table {
+    width: 100%;
+    text-align: center;
+}
+
+dialog {
+    margin: 250px auto;
+}
+
+dialog div {
+    margin: 20px;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.gap {
+    gap: 15px
+}

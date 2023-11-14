@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit / update page</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script-cars.js" defer></script>
+</head>
+
+<body>
+    <nav>
+        <h2 style="margin-bottom: 15px">index page</h2>
+        <div class="row">
+            <a href="/">index</a>
+            <a href="/cars.html">edit/update cars</a>
+            <a href="/admin.html">generate invoice</a>
+            <a href="/search.html">search invoices</a>
+        </div>
+    </nav>
+    <main>
+        <table id="cars-table">
+            <tr>
+                <td>1</td>
+                <td>124265gzsdfgq34yuah4uhah</td>
+                <td>model 1231</td>
+                <td>2002</td>
+                <td>kierowca:true<br>pasażer:true<br>kanapa:true<br>boczne:true</td>
+                <td>
+                    <div class="color-box"></div>
+                </td>
+                <td><button class="del btn">delete car</button></td>
+                <td><button class="update btn" onclick="showDialog()">update car</button></td>
+            </tr>
+        </table>
+    </main>
+    <dialog>
+        <form onsubmit="(e) => updateCar(e)">
+            <div class="row justify-center gap">
+                <input type="text" class="w-80">
+                <select name="year" class="w-80">
+                    <option>2001</option>
+                    <option>2002</option>
+                    <option>2003</option>
+                    <option>2004</option>
+                    <option>2005</option>
+                    <option>2006</option>
+                </select>
+            </div>
+            <div class="row justify-center gap">
+                <button type="button" class="btn update">update</button>
+                <button type="reset" onclick="closeDialog()" class="btn del">cancel</button>
+            </div>
+        </form>
+    </dialog>
+</body>
+
+</html>

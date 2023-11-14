@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Index page</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script-index.js" defer></script>
+</head>
+
+<body>
+    <nav>
+        <h2 style="margin-bottom: 15px">index page</h2>
+        <div class="row">
+            <a href="/">index</a>
+            <a href="/cars.html">edit/update cars</a>
+            <a href="/admin.html">generate invoice</a>
+            <a href="/search.html">search invoices</a>
+        </div>
+    </nav>
+    <form class="row">
+        <aside class="column">
+            <button>Dodaj na serwer</button>
+        </aside>
+        <main>
+            <div class="column">
+                <label><input name="model" type="text" class="w-80">model</label>
+                <label>
+                    <select name="year" class="w-80">
+                        <option>2001</option>
+                        <option>2002</option>
+                        <option>2003</option>
+                        <option>2004</option>
+                        <option>2005</option>
+                        <option>2006</option>
+                    </select>
+                    rok</label>
+                <p>Poduszki:</p>
+                <label><input name="driver" type="checkbox">kierowca</label>
+                <label><input name="passenger" type="checkbox">pasażer</label>
+                <label><input name="rearSeat" type="checkbox">tylna kanapa</label>
+                <label><input name="rearSide" type="checkbox">boczne z tyłu</label>
+                <label><input name="color" type="color">kolor</label>
+            </div>
+        </main>
+    </form>
+</body>
+
+</html>
