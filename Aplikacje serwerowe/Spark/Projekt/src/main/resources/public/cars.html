@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+    <link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+    <link rel="manifest" href="/fav/site.webmanifest">
+    <link rel="mask-icon" href="/fav/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
     <meta charset="UTF-8">
     <title>Edit / update page</title>
     <link rel="stylesheet" href="styles.css">
@@ -20,25 +27,13 @@
     </nav>
     <main>
         <table id="cars-table">
-            <tr>
-                <td>1</td>
-                <td>124265gzsdfgq34yuah4uhah</td>
-                <td>model 1231</td>
-                <td>2002</td>
-                <td>kierowca:true<br>pasażer:true<br>kanapa:true<br>boczne:true</td>
-                <td>
-                    <div class="color-box"></div>
-                </td>
-                <td><button class="del btn">delete car</button></td>
-                <td><button class="update btn" onclick="showDialog()">update car</button></td>
-            </tr>
         </table>
     </main>
     <dialog>
-        <form onsubmit="(e) => updateCar(e)">
+        <form>
             <div class="row justify-center gap">
-                <input type="text" class="w-80">
-                <select name="year" class="w-80">
+                <input required type="text" class="w-80" name="model">
+                <select required name="year" class="w-80">
                     <option>2001</option>
                     <option>2002</option>
                     <option>2003</option>
@@ -48,7 +43,7 @@
                 </select>
             </div>
             <div class="row justify-center gap">
-                <button type="button" class="btn update">update</button>
+                <button type="submit" class="btn update">update</button>
                 <button type="reset" onclick="closeDialog()" class="btn del">cancel</button>
             </div>
         </form>

@@ -14,7 +14,7 @@ async function send (e) {
       color: document.getElementsByName('color')[0].value
     })
 
-    const response = await fetch('http://localhost:4087/add', {
+    const response = await fetch('http://localhost:4087/cars', {
       method: 'POST',
       body,
       headers: {

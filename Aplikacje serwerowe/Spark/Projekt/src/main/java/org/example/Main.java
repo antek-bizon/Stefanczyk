@@ -14,7 +14,7 @@ import static spark.Spark.*;
 import static spark.Spark.get;
 
 public class Main {
-    static int nextId = 0;
+    static int nextId = 1;
     static ArrayList<Car> cars = new ArrayList<>(10);
 
     public static void main(String[] args) {
@@ -25,10 +25,14 @@ public class Main {
         port(4087);
         staticFiles.location("/public");
         get("/test", (req, res) -> "test");
-        post("/add", Main::addCar);
-        get("/json", Main::getJSON);
-        post("/delete", Main::deleteCars);
-        post("/update", Main::updateCars);
+        post("/cars", Main::addCar);
+        get("/cars", Main::getCarsJSON);
+        delete("/cars", Main::deleteCars);
+        put("/cars", Main::updateCars);
+    }
+
+    static String returnMsg(boolean success) {
+        return success ? "{\"success\": true}" : "{\"success\": false}";
     }
 
     @org.jetbrains.annotations.NotNull
@@ -42,43 +46,36 @@ public class Main {
             return gson.toJson(newCar);
         } catch (Exception e) {
             System.err.println(e);
-            return "failed";
+            return returnMsg(false);
         }
     }
 
-    static String getJSON(Request req, Response res) {
+    static String getCarsJSON(Request req, Response res) {
         var gson = new Gson();
         return gson.toJson(cars);
     }
 
     static @NotNull String deleteCars(@NotNull Request req, Response res) {
         var gson = new Gson();
-        String[] ids = gson.fromJson(req.body(), toDelete.class).ids;
+        var ids = gson.fromJson(req.body(), toDelete.class);
 
-        for (var id : ids) {
-            for (var i = 0; i < cars.size(); i++) {
-                if (Objects.equals(cars.get(i).getUuid().toString(), id)) {
-                    cars.remove(i);
-                    break;
-                }
-            }
-        }
+        var result = cars.removeIf(car -> (car.checkIds(ids.id, ids.uuid)));
 
-        return "deleted";
+        return returnMsg(result);
     }
 
     static @NotNull String updateCars(@NotNull Request req, Response res) {
         var gson = new Gson();
-        Car[] updateInfo = gson.fromJson(req.body(), Car[].class);
-        for (var info : updateInfo) {
-            for (var car : cars) {
-                if (car.getUuid() == info.getUuid()) {
-                    car.update(info);
-                    break;
-                }
-            }
+        var updateInfo = gson.fromJson(req.body(), toUpdate.class);
+        var result = cars.stream().filter(car -> (car.checkIds(updateInfo.id, updateInfo.uuid))).findAny();
+        if (result.isEmpty()) {
+            return returnMsg(false);
         }
-        return "updated";
+
+        var carToUpdate = result.get();
+        carToUpdate.setModel(updateInfo.model);
+        carToUpdate.setYear(updateInfo.year);
+        return returnMsg(true);
     }
 }
 
@@ -97,15 +94,24 @@ class Car {
         this.uuid = Generators.randomBasedGenerator().generate();
     }
 
+    public int getId() {
+        return id;
+    }
+
     public UUID getUuid() {
         return uuid;
     }
 
-    public void update(@NotNull Car updateInfo) {
-        model = updateInfo.model;
-        color = updateInfo.color;
-        year = updateInfo.year;
-        airbags = updateInfo.airbags;
+    public boolean checkIds(int id, String uuid) {
+        return (this.id == id && this.uuid.toString().equals(uuid));
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     @Override
@@ -139,5 +145,13 @@ class Airbag {
 }
 
 class toDelete {
-    String[] ids;
+    int id;
+    String uuid;
+}
+
+class toUpdate {
+    int id;
+    String uuid;
+    String model;
+    int year;
 }
