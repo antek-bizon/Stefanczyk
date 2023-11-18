@@ -12,12 +12,12 @@
     <meta charset="UTF-8">
     <title>Edit / update page</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script-cars.js" defer></script>
+    <script type="module" src="script-cars.js" defer></script>
 </head>
 
 <body>
     <nav>
-        <h2 style="margin-bottom: 15px">index page</h2>
+        <h2 style="margin-bottom: 15px">edit / update cars</h2>
         <div class="row">
             <a href="/">index</a>
             <a href="/cars.html">edit/update cars</a>
@@ -44,7 +44,7 @@
             </div>
             <div class="row justify-center gap">
                 <button type="submit" class="btn update">update</button>
-                <button type="reset" onclick="closeDialog()" class="btn del">cancel</button>
+                <button id="cancel" type="reset" class="btn del">cancel</button>
             </div>
         </form>
     </dialog>

@@ -22,8 +22,10 @@ public class Main {
     }
 
     static void init() {
+        var projectDir = System.getProperty("user.dir");
+        var staticDir = "/src/main/resources/public";
+        staticFiles.externalLocation(projectDir + staticDir);
         port(4087);
-        staticFiles.location("/public");
         get("/test", (req, res) -> "test");
         post("/cars", Main::addCar);
         get("/cars", Main::getCarsJSON);
@@ -87,7 +89,8 @@ class Car {
     private String color;
     private ArrayList<Airbag> airbags;
 
-    Car(){}
+    Car() {
+    }
 
     public void generateIds() {
         this.id = Main.nextId++;
@@ -130,6 +133,7 @@ class Car {
 class Airbag {
     final String name;
     final boolean value;
+
     Airbag(String name, boolean exits) {
         this.name = name;
         this.value = exits;
