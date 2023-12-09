@@ -11,17 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      [
-        "expo-notifications",
-        {
-          "sounds": [
-            "assets/alarm-sound.mp3",
-            "assets/alarm-sound.wav"
-          ]
-        }
-      ]
-    ],
     "assetBundlePatterns": [
       "**/*"
     ],
