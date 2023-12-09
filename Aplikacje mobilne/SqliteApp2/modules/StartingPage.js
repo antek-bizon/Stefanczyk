@@ -34,7 +34,7 @@ export default function StartingPage ({ navigation }) {
       style={[styles.main, { backgroundColor: theme.colors.primary }]}
     >
       <>
-        <Text style={{ color: theme.colors.onPrimary }} variant='displayMedium'>SqliteApp</Text>
+        <Text style={{ borderRadius: 30, padding: 10, color: theme.colors.onPrimary }} variant='displayLarge'>SqliteApp 2</Text>
         {description}
       </>
     </TouchableRipple>

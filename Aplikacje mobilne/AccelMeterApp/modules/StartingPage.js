@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { Text, TouchableRipple, useTheme } from 'react-native-paper'
 
 function random (max) {
@@ -14,13 +14,13 @@ export default function StartingPage ({ navigation }) {
   const theme = useTheme()
   const [color, setColor] = useState(randomColor())
 
-  const description = (
-    <View style={{ alignItems: 'center' }}>
-      {['Manage sqlite', 'Use animation', 'Use ring'].map(
-        (e, i) => <Text style={{ color: theme.colors.onPrimary }} variant='bodyLarge' key={i}>{e}</Text>
-      )}
-    </View>
-  )
+  //   const description = (
+  //     <View style={{ alignItems: 'center' }}>
+  //       {['Manage sqlite', 'Use animation', 'Use ring'].map(
+  //         (e, i) => <Text style={{ color: theme.colors.onPrimary }} variant='bodyLarge' key={i}>{e}</Text>
+  //       )}
+  //     </View>
+  //   )
 
   const onPressHandle = () => {
     navigation.navigate('Main page')
@@ -34,8 +34,7 @@ export default function StartingPage ({ navigation }) {
       style={[styles.main, { backgroundColor: theme.colors.primary }]}
     >
       <>
-        <Text style={{ color: theme.colors.onPrimary }} variant='displayMedium'>SqliteApp</Text>
-        {description}
+        <Text style={{ color: theme.colors.onPrimary }} variant='displayMedium'>AccelMeterApp</Text>
       </>
     </TouchableRipple>
   )

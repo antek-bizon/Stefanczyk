@@ -4,18 +4,16 @@ import { Card, IconButton, Switch, Text, useTheme } from 'react-native-paper'
 
 export default function Alarm ({ item, updateAlarm, removeAlarm, isCollapsed, collapse }) {
   const theme = useTheme()
-
-  const daysOfWeek = ['PN', 'WT', 'ŚR', 'CZ', 'PT', 'SB', 'ND'].map(
+  const daysOfWeek = ['PN', 'WT', 'ŚR', 'CZ', 'PT', 'SB', 'ND']
+  const daysOfWeekList = daysOfWeek.map(
     (e, i) => {
       const isSelected = typeof item.selectedDays.find((e) => e === i) !== 'undefined'
       return (
         <Pressable
           key={i}
-          style={{
-            borderRadius: 50,
-            padding: 10,
+          style={[styles.daysOfWeekItem, {
             backgroundColor: (isSelected) ? theme.colors.inversePrimary : null
-          }}
+          }]}
           onPress={() => {
             if (isSelected) {
               item.selectedDays = item.selectedDays.filter((f) => f !== i)
@@ -25,7 +23,7 @@ export default function Alarm ({ item, updateAlarm, removeAlarm, isCollapsed, co
             updateAlarm(item)
           }}
         >
-          <Text>{e}</Text>
+          <Text variant='bodySmall'>{e}</Text>
         </Pressable>
       )
     }
@@ -54,9 +52,17 @@ export default function Alarm ({ item, updateAlarm, removeAlarm, isCollapsed, co
           }}
         />
       </View>
+      <View style={styles.selectedDays}>
+        {isCollapsed
+          ? item.selectedDays.sort().map((e, i) => (
+            <Text key={i}>{daysOfWeek[e]}</Text>
+          ))
+          : null}
+      </View>
+
       <Collapsible collapsed={isCollapsed}>
         <View style={styles.row}>
-          {daysOfWeek}
+          {daysOfWeekList}
         </View>
       </Collapsible>
     </Card>
@@ -68,6 +74,13 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 20,
     marginVertical: 15
+  },
+  daysOfWeekItem: {
+    borderRadius: 50,
+    padding: 8
+  },
+  selectedDays: {
+    height: 40, flexDirection: 'row', gap: 10
   },
   row: {
     flexDirection: 'row',
