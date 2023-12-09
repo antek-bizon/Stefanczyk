@@ -18,7 +18,7 @@ function getTime (alarm, now) {
 
 function clearAlarmTimeouts (alarms) {
   alarms.forEach(e => {
-    console.log(e.timeouts)
+    // console.log(e.timeouts)
     e.timeouts?.forEach(t => clearTimeout(t))
   })
 }
@@ -30,11 +30,9 @@ export default function MainPage ({ navigation, route }) {
   const [isReady, setReady] = useState(false)
   const [sound, setSound] = useState()
   const wasSoundPlaying = useRef(false)
-  const isSoundPlaying = alarms.reduce((acc, val) => acc.sound || (!!val.isOn && !!val.sound), false)
+  const isSoundPlaying = alarms.reduce((acc, val) => acc || (!!val.isOn && !!val.sound), false)
   const wasPhoneVibrating = useRef(false)
-  const isPhoneVibrating = alarms.reduce((acc, val) => acc.vibrations || (!!val.isOn && !!val.vibrations), false)
-
-  console.log(alarms)
+  const isPhoneVibrating = alarms.reduce((acc, val) => acc || (!!val.isOn && !!val.vibrations), false)
 
   if (wasSoundPlaying.current !== isSoundPlaying) {
     if (isSoundPlaying) {
@@ -86,7 +84,7 @@ export default function MainPage ({ navigation, route }) {
   const alarmTimeouts = (time, id) => {
     if (time > -MINUTE) {
       const start = setTimeout(() => {
-        console.log('alarm')
+        // console.log('alarm')
         alarmsHandle(prev => {
           const alarmToUpdate = prev.find(a => a.id === id)
           if (alarmToUpdate) {
@@ -97,7 +95,7 @@ export default function MainPage ({ navigation, route }) {
         })
       }, time)
       const end = setTimeout(() => {
-        console.log('stop alarm')
+        // console.log('stop alarm')
         alarmsHandle(prev => {
           const alarmToUpdate = prev.find(a => a.id === id)
           if (alarmToUpdate) {
@@ -149,6 +147,7 @@ export default function MainPage ({ navigation, route }) {
   const addAlarm = (time) => {
     const newAlarm = {
       time: `${addZeros(time.hours)}:${addZeros(time.minutes)}`,
+      isOn: false,
       vibrations: false,
       sound: false,
       selectedDays: []

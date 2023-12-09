@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { StyleSheet, TouchableOpacity, Vibration, View } from 'react-native'
-import { FAB, Text, useTheme } from 'react-native-paper'
+import { StyleSheet, Vibration, View } from 'react-native'
+import { FAB, Text, TouchableRipple, useTheme } from 'react-native-paper'
 import ClockElement from './ClockElement'
 import { addZeros } from './utils'
 
@@ -71,27 +71,37 @@ export default function AddAlarmPage ({ navigation }) {
     <>
       <View style={[styles.main, { backgroundColor: theme.colors.secondary }]}>
         <View style={styles.time}>
-          <TouchableOpacity>
-            <Text
-              style={[styles.text, { color: theme.colors.onSecondary }]}
-              variant='displayLarge'
+          <View style={styles.touchableContainer}>
+            <TouchableRipple
+              style={styles.touchable}
               onPress={() => setClockState(true)}
-            >{addZeros(time.hours)}
-            </Text>
-          </TouchableOpacity>
+              rippleColor={theme.colors.onSecondary}
+            >
+              <Text
+                style={{ color: theme.colors.onSecondary }}
+                variant='displayLarge'
+              >{addZeros(time.hours)}
+              </Text>
+            </TouchableRipple>
+          </View>
           <Text
-            style={[styles.text, { color: theme.colors.onSecondary }]}
+            style={{ color: theme.colors.onSecondary }}
             variant='displayLarge'
           >:
           </Text>
-          <TouchableOpacity>
-            <Text
-              style={[styles.text, { color: theme.colors.onSecondary }]}
-              variant='displayLarge'
+          <View style={styles.touchableContainer}>
+            <TouchableRipple
+              style={styles.touchable}
               onPress={() => setClockState(false)}
-            >{addZeros(time.minutes)}
-            </Text>
-          </TouchableOpacity>
+              rippleColor={theme.colors.onSecondary}
+            >
+              <Text
+                style={[styles.text, { color: theme.colors.onSecondary }]}
+                variant='displayLarge'
+              >{addZeros(time.minutes)}
+              </Text>
+            </TouchableRipple>
+          </View>
         </View>
         <View style={styles.clock}>
           {clockElements()}
@@ -111,8 +121,12 @@ const styles = StyleSheet.create({
   main: {
     flex: 1
   },
-  text: {
-    marginVertical: 40
+  touchableContainer: {
+    borderRadius: 30,
+    overflow: 'hidden'
+  },
+  touchable: {
+    padding: 10
   },
   time: {
     flexDirection: 'row',

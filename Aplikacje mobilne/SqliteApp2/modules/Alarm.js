@@ -1,6 +1,6 @@
 import Collapsible from 'react-native-collapsible'
-import { Pressable, StyleSheet, Vibration, View } from 'react-native'
-import { Card, IconButton, Switch, Text, useTheme } from 'react-native-paper'
+import { StyleSheet, Vibration, View } from 'react-native'
+import { Card, IconButton, Switch, Text, TouchableRipple, useTheme } from 'react-native-paper'
 import { useRef, useState } from 'react'
 
 export default function Alarm ({ item, updateAlarm, removeAlarm, isCollapsed, collapse }) {
@@ -21,24 +21,24 @@ export default function Alarm ({ item, updateAlarm, removeAlarm, isCollapsed, co
       i = (i + 1) % 7
       const isSelected = typeof item.selectedDays.find((e) => e === i) !== 'undefined'
       return (
-        <Pressable
-          key={i}
-          style={{
-            borderRadius: 50,
-            padding: 10,
-            backgroundColor: (isSelected) ? theme.colors.inversePrimary : null
-          }}
-          onPress={() => {
-            if (isSelected) {
-              item.selectedDays = item.selectedDays.filter((f) => f !== i)
-            } else {
-              item.selectedDays.push(i)
-            }
-            updateAlarm(item)
-          }}
-        >
-          <Text>{e}</Text>
-        </Pressable>
+        <View key={i} style={styles.touchableContainer}>
+          <TouchableRipple
+            style={[styles.touchable, {
+              backgroundColor: (isSelected) ? theme.colors.inversePrimary : null
+            }]}
+            rippleColor={theme.colors.primary}
+            onPress={() => {
+              if (isSelected) {
+                item.selectedDays = item.selectedDays.filter((f) => f !== i)
+              } else {
+                item.selectedDays.push(i)
+              }
+              updateAlarm(item)
+            }}
+          >
+            <Text>{e}</Text>
+          </TouchableRipple>
+        </View>
       )
     }
   )
@@ -80,8 +80,22 @@ export default function Alarm ({ item, updateAlarm, removeAlarm, isCollapsed, co
       </View>
       <View style={styles.selectedDays}>
         {isCollapsed
-          ? item.selectedDays.sort().map((e, i) => (
-            <Text key={i}>{daysOfWeek[e]}</Text>
+          ? item.selectedDays.sort((a, b) => {
+            if (a === 0) {
+              return 1
+            }
+            if (b === 0) {
+              return -1
+            }
+            if (a > b) {
+              return 1
+            }
+            if (a < b) {
+              return -1
+            }
+            return 0
+          }).map((e, i) => (
+            <Text key={i}>{daysOfWeek[(e - 1) >= 0 ? (e - 1) : daysOfWeek.length - 1]}</Text>
           ))
           : null}
       </View>
@@ -103,5 +117,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  selectedDays: {
+    height: 40,
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: 15
+  },
+  touchableContainer: {
+    overflow: 'hidden',
+    borderRadius: 50
+  },
+  touchable: {
+    padding: 10
   }
 })
