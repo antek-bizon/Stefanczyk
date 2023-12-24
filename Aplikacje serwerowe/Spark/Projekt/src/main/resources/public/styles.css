@@ -58,6 +58,7 @@ label>* {
     width: 80%;
     background-color: green;
     border-radius: 20px;
+    border: 1px solid gray;
 }
 
 .btn {

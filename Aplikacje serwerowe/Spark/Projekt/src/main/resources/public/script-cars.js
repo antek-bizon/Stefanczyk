@@ -46,7 +46,9 @@ document.querySelector('form').onsubmit = (ev) => {
 
 function generateTable (data) {
   carsTable.innerHTML = ''
-  for (const car of data) {
+  for (const carData of data) {
+    const { pdfPath, ...car } = carData
+
     const tr = document.createElement('tr')
     defaultCells(tr, car)
 

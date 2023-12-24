@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <title>Invoice page</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- <script src="script-cars.js" defer></script> -->
+    <script type="module" src="script-admin.js" defer></script>
 </head>
 
 <body>
@@ -27,22 +27,10 @@
     </nav>
     <div class="row">
         <aside>
-            <button class="btn info">generuj losowo bazę samochodów</button>
+            <button id="genBtn" class="btn info">generuj losowo bazę samochodów</button>
         </aside>
         <main>
             <table id="cars-table">
-                <tr>
-                    <td>1</td>
-                    <td>124265gzsdfgq34yuah4uhah</td>
-                    <td>model 1231</td>
-                    <td>2002</td>
-                    <td>kierowca:true<br>pasażer:true<br>kanapa:true<br>boczne:true</td>
-                    <td>
-                        <div class="color-box"></div>
-                    </td>
-                    <td><button class="info btn">generuj fakture</button></td>
-                    <td><a>pobierz</a></td>
-                </tr>
             </table>
         </main>
     </div>

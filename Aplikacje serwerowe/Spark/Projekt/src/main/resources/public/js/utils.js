@@ -1,5 +1,7 @@
+export const serverIp = 'http://localhost:4087'
+
 export async function getCars () {
-  const response = await fetch('http://localhost:4087/cars', {
+  const response = await fetch(serverIp + '/cars', {
     method: 'GET'
   })
 
@@ -19,7 +21,7 @@ export async function deleteCar (idParam, uuidParam) {
     id: idParam, uuid: uuidParam
   })
 
-  const response = await fetch('http://localhost:4087/cars', {
+  const response = await fetch(serverIp + '/cars', {
     method: 'DELETE',
     body,
     headers: {
@@ -52,14 +54,14 @@ function getTd (key, value) {
   } else if (typeof value === 'number') {
     td.innerText = value.toString()
   } else if (Array.isArray(value)) {
-    const airbags = [
-      'driver',
-      'passenger',
-      'rearSeat',
-      'rearSide'
-    ]
-    td.innerHTML = airbags
-      .map(bag => `${bag}: ${!!value.find(e => e.name === bag)}`)
+    // const airbags = [
+    //   'Driver Airbag',
+    //   'Passenger Airbag',
+    //   'Side Airbags',
+    //   'Curtain Airbags'
+    // ]
+    td.innerHTML = value
+      .map(airbag => `${airbag.name}: ${airbag.value}`)
       .join('<br>')
   }
 
@@ -67,7 +69,7 @@ function getTd (key, value) {
 }
 
 export async function updateCar (body) {
-  const response = await fetch('http://localhost:4087/cars', {
+  const response = await fetch(serverIp + '/cars', {
     method: 'PUT',
     body,
     headers: {
