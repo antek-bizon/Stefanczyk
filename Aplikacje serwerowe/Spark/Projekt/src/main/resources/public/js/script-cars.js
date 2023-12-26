@@ -1,4 +1,4 @@
-import { updateCar, defaultCells, deleteCar, getCars, wrapInTd, createButton } from './js/utils.js'
+import { updateCar, addCells, deleteCar, getCars, wrapInTd, createButton } from './utils.js'
 
 const carsTable = document.getElementById('cars-table')
 const dialog = document.querySelector('dialog')
@@ -47,10 +47,11 @@ document.querySelector('form').onsubmit = (ev) => {
 function generateTable (data) {
   carsTable.innerHTML = ''
   for (const carData of data) {
-    const { pdfPath, ...car } = carData
+    const { id, uuid, model, year, color, airbags } = carData
+    const car = { id, uuid, model, year, color, airbags }
 
     const tr = document.createElement('tr')
-    defaultCells(tr, car)
+    addCells(tr, car)
 
     const updateBtn = createButton({
       text: 'update car',

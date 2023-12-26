@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <title>Search invoices page</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- <script src="script-cars.js" defer></script> -->
+    <script src="./js/script-search.js" type="module" defer></script>
 </head>
 
 <body>
@@ -27,8 +27,9 @@
     </nav>
     <div class="row">
         <aside>
-            <button class="btn info">generuj losowo bazę samochodów</button>
-            <button class="btn update">faktura za wszytkie auto</button>
+            <button id="genBtn" class="btn info">generuj losowo bazę samochodów</button>
+            <button id="allCars" class="btn update">faktura za wszytkie auta</button>
+            <div id="allCarsLinks"></div>
             <select name="year" class="w-80">
                 <option>2001</option>
                 <option>2002</option>
@@ -37,26 +38,15 @@
                 <option>2005</option>
                 <option>2006</option>
             </select>
-            <button class="btn update">faktura za auta z danego rocznika</button>
-            <input type="text" name="min" placeholder="Minimalna cena">
-            <input type="text" name="max" placeholder="Maksymalna cena">
-            <button class="btn update">faktura za auta z danego zakresu cen</button>
+            <button id="carsByYear" class="btn update">faktura za auta z danego rocznika</button>
+            <div id="carsByYearLinks"></div>
+            <input type="number" name="min" placeholder="Minimalna cena">
+            <input type="number" name="max" placeholder="Maksymalna cena">
+            <button id="carsByPrice" class="btn update">faktura za auta z danego zakresu cen</button>
+            <div id="carsByPriceLinks"></div>
         </aside>
         <main>
-            <table id="cars-table">
-                <tr>
-                    <td>1</td>
-                    <td>124265gzsdfgq34yuah4uhah</td>
-                    <td>model 1231</td>
-                    <td>2002</td>
-                    <td>kierowca:true<br>pasażer:true<br>kanapa:true<br>boczne:true</td>
-                    <td>
-                        <div class="color-box"></div>
-                    </td>
-                    <td><button class="info btn">generuj fakture</button></td>
-                    <td><a>pobierz</a></td>
-                </tr>
-            </table>
+            <table id="cars-table"></table>
         </main>
     </div>
 </body>

@@ -34,7 +34,7 @@ export async function deleteCar (idParam, uuidParam) {
   }
 }
 
-export function defaultCells (tr, car) {
+export function addCells (tr, car) {
   for (const key of Object.keys(car)) {
     tr.append(getTd(key, car[key]))
   }
@@ -52,14 +52,13 @@ function getTd (key, value) {
       td.innerText = value
     }
   } else if (typeof value === 'number') {
-    td.innerText = value.toString()
+    if (key === 'date') {
+      const date = new Date(value)
+      td.innerText = date.toLocaleDateString()
+    } else {
+      td.innerText = value.toString()
+    }
   } else if (Array.isArray(value)) {
-    // const airbags = [
-    //   'Driver Airbag',
-    //   'Passenger Airbag',
-    //   'Side Airbags',
-    //   'Curtain Airbags'
-    // ]
     td.innerHTML = value
       .map(airbag => `${airbag.name}: ${airbag.value}`)
       .join('<br>')

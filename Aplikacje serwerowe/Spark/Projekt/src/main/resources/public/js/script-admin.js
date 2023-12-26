@@ -1,4 +1,4 @@
-import { createButton, defaultCells, getCars, serverIp, wrapInTd } from './js/utils.js'
+import { createButton, addCells, getCars, serverIp, wrapInTd } from './utils.js'
 
 const carsTable = document.getElementById('cars-table')
 
@@ -13,9 +13,11 @@ function renderTable () {
 function generateTable (data) {
   carsTable.innerHTML = ''
   for (const carData of data) {
-    const { pdfPath, ...car } = carData
+    const { id, uuid, model, year, color, airbags, pdfPath } = carData
+    const car = { id, uuid, model, year, color, airbags }
+
     const tr = document.createElement('tr')
-    defaultCells(tr, car)
+    addCells(tr, car)
 
     const genBtn = createButton({
       text: 'generate VAT invoice',
