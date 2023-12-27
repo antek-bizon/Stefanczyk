@@ -69,8 +69,18 @@ function generateTable (data) {
       }
     })
 
+    const uploadLink = document.createElement('a')
+    uploadLink.text = 'upload'
+    uploadLink.href = `/upload.html?id=${id}&uuid=${uuid}`
+
+    const galleryLink = document.createElement('a')
+    galleryLink.text = 'gallery'
+    galleryLink.href = `/gallery.html?id=${id}&uuid=${uuid}`
+
     tr.append(wrapInTd(updateBtn))
     tr.append(wrapInTd(deleteBtn))
+    tr.append(wrapInTd(uploadLink))
+    tr.append(wrapInTd(galleryLink))
     carsTable.append(tr)
   }
 }

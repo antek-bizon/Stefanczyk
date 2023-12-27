@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+body {
+    min-height: 100vh;
+}
+
 nav,
 aside,
 main {
@@ -100,4 +104,41 @@ dialog div {
 
 .gap {
     gap: 15px
+}
+
+#dragDrop {
+    position: relative;
+    margin: auto;
+    width: 80%;
+    min-height: 500px;
+    border: 2px dashed black;
+    border-radius: 30px;
+    background-color: rgb(255, 194, 194);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#dragDrop p {
+    padding-bottom: 15px;
+}
+
+#dropItems {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 30px;
+    width: 100%;
+    height: 100%;
+}
+
+#dropItems img {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+}
+
+.gallery img {
+    width: 200px;
+    margin-right: 20px;
 }
