@@ -42,6 +42,13 @@ async function uploadFiles () {
     const response = await fetch(serverIp + '/image', { method: 'POST', body: fd })
     const result = await response.json()
     console.log(result)
+    if (response.ok && result.success === true) {
+      files.length = 0
+      dropItemsDiv.innerHTML = ''
+      window.alert('Files uploaded')
+    } else {
+      window.alert('Failed to upload')
+    }
   } catch (e) {
     console.error(e)
   }

@@ -57,6 +57,7 @@ public class Main {
         post("/image", Main::uploadImage);
         get("/image", Main::sendImage);
         get("/images", Main::getImages);
+        post("/modifyImage", Main::modifyImage);
     }
 
     private static String returnMsg(boolean success) {
@@ -131,7 +132,7 @@ public class Main {
 
             return gson.toJson(cars);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.toString());
             res.status(500);
             return returnMsg(false);
         }
@@ -168,7 +169,7 @@ public class Main {
 
             return returnMsg(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.toString());
             return returnMsg(false);
         }
     }
@@ -252,7 +253,7 @@ public class Main {
                     });
             return returnMsg(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.toString());
             return returnMsg(false);
         }
 
@@ -260,7 +261,6 @@ public class Main {
 
     private static String sendImage(Request req, Response res) {
         try {
-
             final String id = String.valueOf(Integer.parseInt(req.queryParams("id")));
             final String uuid = req.queryParams("uuid");
             final String img = req.queryParams("img");
@@ -277,7 +277,7 @@ public class Main {
 
             return returnMsg(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println(e.toString());
             res.status(404);
             return returnMsg(false);
         }
@@ -308,26 +308,66 @@ public class Main {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.toString());
+            System.err.println(e.toString());
         }
 
         return gson.toJson(items);
     }
-}
 
-class toDelete {
-    int id;
-    String uuid;
-}
+    private static String modifyImage(Request req, Response res) {
+        try {
+            var gson = new Gson();
+            var data = gson.fromJson(req.body(), ModifyImage.class);
+            final String imagePath = data.getPath();
+            File file = new File(imagePath);
+            if (!file.exists()) {
+                throw new Exception("No file");
+            }
 
-class toUpdate {
-    int id;
-    String uuid;
-    String model;
-    int year;
-}
+            Image.modify(imagePath, data.getType(), data.getData());
 
-class Range {
-    int from;
-    int to;
+            return returnMsg(true);
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            return returnMsg(false);
+        }
+
+    }
+
+    class toDelete {
+        int id;
+        String uuid;
+    }
+
+    class toUpdate {
+        int id;
+        String uuid;
+        String model;
+        int year;
+    }
+
+    class Range {
+        int from;
+        int to;
+    }
+
+    class ModifyImage {
+        int id;
+        String uuid;
+        String img;
+        String type;
+        String data;
+
+        public String getPath() {
+            return Main.imagesPath + "/" + id + "-" + uuid + "/" + img;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getData() {
+            return data;
+        }
+    }
 }

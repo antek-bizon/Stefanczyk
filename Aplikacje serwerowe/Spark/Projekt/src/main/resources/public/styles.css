@@ -29,6 +29,7 @@ aside {
 
 main {
     width: 100%;
+    text-align: center;
 }
 
 a {
@@ -138,7 +139,53 @@ dialog div {
     margin-right: 10px;
 }
 
-.gallery img {
+.gallery {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.gallery div {
     width: 200px;
-    margin-right: 20px;
+    height: 150px;
+    background-size: cover;
+    border: 1px solid gray;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.gallery div a {
+    background-color: #dcedc8;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+.bigImage {
+    border: 2px dashed gray;
+    border-radius: 30px;
+    width: 80%;
+    z-index: 1;
+}
+
+#imgCont {
+    position: relative;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 10%;
+    height: 0;
+    width: 80%;
+    height: 100%;
+    z-index: 2;
+    user-select: none;
+}
+
+#cropRect {
+    position: absolute;
+    border: 2px dashed black;
+    background-color: #1e3ea880;
+    display: none;
+    z-index: 3;
 }
