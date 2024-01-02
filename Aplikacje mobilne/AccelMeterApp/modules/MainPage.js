@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react'
 import BigButton from './BigButton'
 import { Accelerometer } from 'expo-sensors'
 
+const serverIp = '192.168.8.126:3000'
+
 export default function MainPage () {
   const theme = useTheme()
   const [{ x, y, z }, setDataHandle] = useState({
@@ -29,30 +31,46 @@ export default function MainPage () {
   const ws = useRef(null)
 
   useEffect(() => {
-    Accelerometer.setUpdateInterval(500)
+    Accelerometer.setUpdateInterval(50)
 
     return () => {
       unsubscribe()
+      disconnect()
     }
   }, [])
 
   const connect = () => {
-    ws.current = new WebSocket()
+    const url = 'ws://' + serverIp
+    console.log(url)
+    ws.current = new WebSocket(url)
     ws.current.onopen = () => {
       setConnection(true)
+      ws.current.send(JSON.stringify({ route: 'connected', type: 'mobile' }))
     }
-    ws.current.onclose = () => {
+    ws.current.onclose = (e) => {
       setConnection(false)
+      console.log(e.code, e.reason)
     }
-    ws.current.onmessage = () => {
-
+    ws.current.onmessage = (e) => {
+      console.log(e.data)
     }
     ws.current.onerror = (e) => {
       console.error(e.message)
     }
   }
 
-  const disconnect = () => {}
+  const disconnect = () => {
+    if (ws.current) {
+      ws.current.close()
+    }
+  }
+
+  useEffect(() => {
+    if (connection) {
+      // console.log('sending', x, y, z)
+      ws.current.send(JSON.stringify({ route: 'data', data: { x, y, z } }))
+    }
+  }, [x, y, z])
 
   return (
     <View style={[styles.main, { backgroundColor: theme.colors.secondary }]}>

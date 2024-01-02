@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <script id="vertexShader" type="x-shader/x-vertex">
+        varying float vAmount;
+
+        void main() {
+            vec3 newPosition = position + normal;
+            vAmount = newPosition.z;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-vertex">
+        varying float vAmount;
+
+        void main() {
+            vec3 water = (smoothstep(0.01, 0.35, vAmount) - smoothstep(0.34, 0.36, vAmount)) * vec3(0.0, 0.0, 1.0);
+            vec3 sand = (smoothstep(0.3, 0.32, vAmount) - smoothstep(0.35, 0.39, vAmount)) * vec3(0.78, 0.7, 0.5);
+            vec3 grass = (smoothstep(0.36, 0.4, vAmount) - smoothstep(0.40, 0.60, vAmount)) * vec3(0.0, 0.6, 0.01);
+            vec3 rock = (smoothstep(0.43, 0.75, vAmount) - smoothstep(0.50, 0.85, vAmount)) * vec3(0.68, 0.65, 0.63);
+            vec3 snow = smoothstep(0.70, 0.8, vAmount) * vec3(1.0, 1.0, 1.0);
+
+            gl_FragColor = vec4(water + sand + grass + rock + snow, 1.0);
+        }
+    </script> -->
+    <script src="./js/main.js" type="module"></script>
+</body>
+
+</html>

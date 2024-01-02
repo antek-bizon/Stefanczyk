@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native'
 import { Text, TouchableRipple, useTheme } from 'react-native-paper'
 
-export default function BigButton ({ text = '', onPress = () => {} }) {
+export default function BigButton ({ text = '', onPress = () => { } }) {
   const theme = useTheme()
 
   return (
@@ -19,13 +19,11 @@ export default function BigButton ({ text = '', onPress = () => {} }) {
 
 const styles = StyleSheet.create({
   main: {
-    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: 30
   },
   bigButton: {
-    width: 120,
-    height: 120,
     borderRadius: 50,
     backgroundColor: 'blue',
     overflow: 'hidden'
