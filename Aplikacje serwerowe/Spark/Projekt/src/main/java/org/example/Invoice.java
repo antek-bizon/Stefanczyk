@@ -49,10 +49,10 @@ public class Invoice {
     }
 
     private void generateInvoice(String fileName, String title, ArrayList<Car> selectedCars) {
-        var date = Instant.now().toString();
+        String date = String.valueOf(Instant.now().toEpochMilli());
         Document document = new Document();
         String directoryPath = Main.staticFilesPath + "/pdfs/";
-        invoiceFilename = fileName + " -> " + date + ".pdf";
+        invoiceFilename = fileName + " - " + date + ".pdf";
         String absolutePath = directoryPath + invoiceFilename;
 
         try {

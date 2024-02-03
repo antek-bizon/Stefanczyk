@@ -22,7 +22,7 @@ import static spark.Spark.*;
 public class Main {
     static int nextId = 0;
     static final ArrayList<Car> cars = new ArrayList<>(10);
-    static final String staticFilesPath = System.getProperty("user.dir") + "/src/main/resources/public";
+    public static final String staticFilesPath = System.getProperty("user.dir") + "/src/main/resources/public";
     static final String imagesPath = System.getProperty("user.dir") + "/src/main/resources/images";
     static final Invoices invoices = new Invoices();
 
@@ -242,7 +242,7 @@ public class Main {
                             System.out.println(p);
                             var inputStream = p.getInputStream();
                             byte[] bytes = inputStream.readAllBytes();
-                            String fileName = Instant.now().toString() + ".jpg";
+                            String fileName = Instant.now().toEpochMilli() + ".jpg";
                             String absolutePath = directoryPath + "/" + fileName;
                             FileOutputStream fos = new FileOutputStream(absolutePath);
                             fos.write(bytes);
@@ -277,7 +277,7 @@ public class Main {
 
             return returnMsg(true);
         } catch (Exception e) {
-            System.err.println(e.toString());
+            System.err.println(e);
             res.status(404);
             return returnMsg(false);
         }
@@ -328,7 +328,7 @@ public class Main {
 
             return returnMsg(true);
         } catch (Exception e) {
-            System.err.println(e.toString());
+            System.err.println(e);
             return returnMsg(false);
         }
 
