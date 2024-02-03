@@ -1,9 +1,9 @@
 package org.example.model;
 
-
-import org.example.Main;
 import org.example.controller.PhotoService;
 import org.example.response.NotFoundException;
+
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -38,7 +38,7 @@ public class Photos implements PhotoService {
     public Photo getPhotoById(String id) throws NotFoundException {
         Photo photo = photos.get(id);
         if (photo == null) {
-            throw new NotFoundException("Photo with id '" + id + "' not found");
+            throw new NotFoundException("Photo with id " + id + " not found");
         }
         return photo;
     }
@@ -53,23 +53,40 @@ public class Photos implements PhotoService {
             }
         }
         if (foundPhoto == null) {
-            throw new NotFoundException("Photo with name '" + name + "' not found");
+            throw new NotFoundException("Photo with name " + name + " not found");
         }
         return foundPhoto;
     }
 
     @Override
-    public void deletePhoto(String id) throws NotFoundException {
+    public Void deletePhoto(String id) throws NotFoundException {
         if (!photos.containsKey(id)) {
-            throw new NotFoundException("Photo with id '" + id + "' not found");
+            throw new NotFoundException("Photo with id " + id + " not found");
         }
         photos.remove(id);
+        return null;
     }
 
     @Override
-    public byte[] getPhotoFile(String id) throws Exception {
+    public byte[] getPhotoFile(String id) throws RuntimeException {
         Photo photo = getPhotoById(id);
-        return Files.readAllBytes(photo.getPath());
+        try {
+            return Files.readAllBytes(photo.getPath());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Photo renamePhoto(String id, String json) throws RuntimeException {
+        Photo photo = getPhotoById(id);
+        var gson = new Gson();
+        String name = gson.fromJson(json, RenamePhotoJson.class).name;
+        photo.setName(name);
+        return photo;
+    }
+
+    static class RenamePhotoJson {
+        String name;
     }
 }
-

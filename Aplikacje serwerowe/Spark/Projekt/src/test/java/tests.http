@@ -1,0 +1,30 @@
+@url = http://localhost:7777
+
+###
+
+GET {{url}}/api/photos HTTP/1.1
+
+###
+
+GET {{url}}/api/photos/0 HTTP/1.1
+
+###
+
+GET {{url}}/api/photos/photo/Dacia.jpg HTTP/1.1
+
+###
+
+DELETE {{url}}/api/photos/0 HTTP/1.1
+
+###
+
+GET {{url}}/api/photos/data/0 HTTP/1.1
+
+###
+
+PUT {{url}}/api/photos/0 HTTP/1.1
+Content-Type: application/json
+
+{
+    name: "Nowe_Audi.jpg"
+}
