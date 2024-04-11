@@ -1,26 +1,49 @@
 package com.example.photoapp.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.example.photoapp.data.vm.UserViewModel
 import com.example.photoapp.databinding.FragmentLoginBinding
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
-    private lateinit var loginBinding: FragmentLoginBinding
+    private lateinit var binding: FragmentLoginBinding
+    private val viewModel by activityViewModels<UserViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        loginBinding = FragmentLoginBinding.inflate(inflater, container, false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        return loginBinding.root
+        binding.btnLogin.setOnClickListener {
+            doLogin()
+        }
+
+        return binding.root
+    }
+
+    private fun doLogin() {
+        val username = binding.etName.text.toString()
+        val password = binding.etPassword.text.toString()
+        if (isCorrect(username, password)) {
+            viewModel.loginUser(username, password)
+        }
+    }
+
+    private fun isCorrect(username: String, password: String): Boolean {
+        var isCorrect = true
+        if (username.isBlank()) {
+            binding.etName.error = "Username is required"
+            isCorrect = false
+        }
+        if (password.isBlank()) {
+            binding.etPassword.error = "Password is required"
+            isCorrect = false
+        }
+        return isCorrect
     }
 }

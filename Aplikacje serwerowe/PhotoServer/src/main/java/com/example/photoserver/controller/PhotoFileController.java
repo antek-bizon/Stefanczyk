@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/photo-files")
+@RequestMapping("/api/photo-files")
 public class PhotoFileController {
 
     @Autowired
@@ -19,13 +19,13 @@ public class PhotoFileController {
     @GetMapping
     public ResponseEntity<List<Long>> getAllPhotoFileIds() {
         List<Long> photoFiles = photoFileService.getAllPhotoFileIds();
-        return ResponseEntity.ok().body(photoFiles);
+        return ResponseEntity.ok(photoFiles);
     }
 
     @GetMapping("/{photoFileId}")
     public ResponseEntity<PhotoFile> getPhotoFileById(@PathVariable Long photoFileId) {
         PhotoFile photoFile = photoFileService.getPhotoFileById(photoFileId);
-        return ResponseEntity.ok().body(photoFile);
+        return ResponseEntity.ok(photoFile);
     }
 
     @PostMapping
@@ -40,7 +40,7 @@ public class PhotoFileController {
         if (updatedPhotoFile == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(updatedPhotoFile);
+        return ResponseEntity.ok(updatedPhotoFile);
     }
 
     @DeleteMapping("/{photoFileId}")

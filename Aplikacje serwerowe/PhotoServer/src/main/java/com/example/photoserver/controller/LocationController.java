@@ -1,6 +1,6 @@
 package com.example.photoserver.controller;
 
-import com.example.photoserver.dto.LocationDTO;
+import com.example.photoserver.dto.response.LocationDTO;
 import com.example.photoserver.entity.Location;
 import com.example.photoserver.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/locations")
+@RequestMapping("/api/locations")
 public class LocationController {
 
     @Autowired
@@ -37,7 +37,8 @@ public class LocationController {
     }
 
     @PutMapping("/{locationId}")
-    public ResponseEntity<Location> updateLocation(@PathVariable Long locationId, @RequestBody LocationDTO locationDTO) {
+    public ResponseEntity<Location> updateLocation(@PathVariable Long locationId,
+            @RequestBody LocationDTO locationDTO) {
         Location existingLocation = locationService.getLocationById(locationId);
         existingLocation.setName(locationDTO.getName());
         existingLocation.setLatitude(locationDTO.getLatitude());
